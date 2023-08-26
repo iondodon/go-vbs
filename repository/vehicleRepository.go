@@ -44,8 +44,8 @@ func NewVehicleRepository() VehicleRepository {
 
 	// Insert mock data
 	_, err = db.Exec(`
-		INSERT INTO vehicle (uuid, registrationNumber) 
-		VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123');
+		INSERT INTO vehicle (id, uuid, registrationNumber) 
+		VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123');
 	`)
 	if err != nil {
 		log.Fatalf("Failed to insert row: %v", err)
