@@ -23,12 +23,12 @@ func NewVehicleRepository() VehicleRepository {
 	if err != nil {
 		log.Fatalf("failed to open database: %v", err)
 	}
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
+	//defer func(db *sql.DB) {
+	//	err := db.Close()
+	//	if err != nil {
+	//
+	//	}
+	//}(db)
 
 	// DDL
 	_, err = db.Exec(`
