@@ -35,7 +35,10 @@ func NewVehicleRepository() VehicleRepository {
 		CREATE TABLE vehicle (
 			id BIGINT AUTO_INCREMENT PRIMARY KEY,
 			uuid CHAR(36) UNIQUE NOT NULL,
-			registrationNumber VARCHAR(10) UNIQUE NOT NULL
+			registrationNumber VARCHAR(10) UNIQUE NOT NULL,
+			make VARCHAR(20) NOT NULL,
+			model VARCHAR(20) NOT NULL,
+			fuel_type VARCHAR(10) NOT NULL,
 		)
 	`)
 	if err != nil {
