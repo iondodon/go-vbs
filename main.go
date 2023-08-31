@@ -1,25 +1,25 @@
 package main
 
 import (
-	"fmt"
-	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+	"go-vbs/controller"
 	"go-vbs/repository"
 	"go-vbs/usecase"
+	"net/http"
 )
+
+// a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 
 func main() {
 	vrp := repository.NewVehicleRepository()
 	gvuc := usecase.NewGetVehicleUseCase(vrp)
+	vc := controller.NewVehicleController(gvuc)
 
-	vUUID, err := uuid.Parse("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
-	if err != nil {
-		fmt.Println(err)
-	}
+	r := mux.NewRouter()
 
-	vehicle, err := gvuc.ByUUID(vUUID)
-	if err != nil {
-		fmt.Println(err)
-	}
+	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID)
 
-	fmt.Println(vehicle)
+	http.Handle("/", r)
+
+	http.ListenAndServe(":8000", nil)
 }
