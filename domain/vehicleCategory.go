@@ -11,4 +11,5 @@ const (
 type VehicleCategory struct {
 	ID          int64
 	VehicleType VehicleType
+	PricePerDay float32
 }

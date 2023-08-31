@@ -2,13 +2,55 @@ package repository
 
 import (
 	"database/sql"
-	"errors"
-	"fmt"
-	uuidLib "github.com/google/uuid"
-	_ "github.com/mattn/go-sqlite3"
 	"go-vbs/domain"
 	"log"
+
+	uuidLib "github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 )
+
+const insertMockData = `
+	INSERT INTO vehicle_category(id, category, price_per_day)
+	VALUES (1, 'Van', 12.321);
+	
+	INSERT INTO vehicle (id, uuid, registration_number, make, model, fuel_type, category_id)
+	VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "diesel", 1);
+`
+
+const ddl = `
+	CREATE TABLE vehicle_category (
+		id BIGINT AUTO_INCREMENT PRIMARY KEY,
+		category VARCHAR(10) NOT NULL,
+		price_per_day REAL NOT NULL
+	);
+
+	CREATE TABLE vehicle (
+		id BIGINT AUTO_INCREMENT PRIMARY KEY,
+		uuid CHAR(36) UNIQUE NOT NULL,
+		registration_number VARCHAR(10) UNIQUE NOT NULL,
+		make VARCHAR(20) NOT NULL,
+		model VARCHAR(20) NOT NULL,
+		fuel_type VARCHAR(10) NOT NULL,
+		category_id BIGINT NOT NULL,
+		FOREIGN KEY (category_id) REFERENCES vehicle_category(id)
+	);
+`
+
+const getVehicleByUUID = `
+	SELECT 
+	    v.id, 
+	    v.uuid, 
+	    v.registration_number, 
+	    v.make, 
+	    v.model, 
+	    v.fuel_type, 
+	    vc.id, 
+	    vc.category, 
+	    vc.price_per_day 
+	FROM vehicle v
+		JOIN vehicle_category vc on v.category_id = vc.id       
+	WHERE v.uuid = ?
+`
 
 type VehicleRepository interface {
 	FindByUUID(vid uuidLib.UUID) (*domain.Vehicle, error)
@@ -31,27 +73,13 @@ func NewVehicleRepository() VehicleRepository {
 	//}(db)
 
 	// DDL
-	_, err = db.Exec(`
-		CREATE TABLE vehicle (
-			id BIGINT AUTO_INCREMENT PRIMARY KEY,
-			uuid CHAR(36) UNIQUE NOT NULL,
-			registrationNumber VARCHAR(10) UNIQUE NOT NULL,
-			make VARCHAR(20) NOT NULL,
-			model VARCHAR(20) NOT NULL,
-			fuelType VARCHAR(10) NOT NULL,
-			vehCatID BIGINT NOT NULL,
-			vehCatType VARCHAR(10) NOT NULL
-		)
-	`)
+	_, err = db.Exec(ddl)
 	if err != nil {
 		log.Fatalf("Failed to create table: %v", err)
 	}
 
 	// Insert mock data
-	_, err = db.Exec(`
-		INSERT INTO vehicle (id, uuid, registrationNumber, make, model, fuelType, vehCatID, vehCatType)
-		VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "diesel", 123, "Van");
-	`)
+	_, err = db.Exec(insertMockData)
 	if err != nil {
 		log.Fatalf("Failed to insert row: %v", err)
 	}
@@ -62,31 +90,29 @@ func NewVehicleRepository() VehicleRepository {
 }
 
 func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
-	var veh domain.Vehicle
-	var vehUUID string
-	err := vrp.db.QueryRow("SELECT * FROM vehicle WHERE uuid = ?", vUUID.String()).Scan(
-		&veh.ID,
-		&vehUUID,
-		&veh.RegistrationNumber,
-		&veh.Make,
-		&veh.Model,
-		&veh.FuelType,
-		&veh.VehicleCategory.ID,
-		&veh.VehicleCategory.VehicleType,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			log.Println("No rows returned")
-		} else {
-			log.Fatalf("Failed to query table: %v", err)
-		}
-		return nil, fmt.Errorf("error")
+	vehicle := domain.Vehicle{
+		VehicleCategory: domain.VehicleCategory{},
 	}
-
-	veh.UUID, err = uuidLib.Parse(vehUUID)
+	var vehUUID string
+	err := vrp.db.QueryRow(getVehicleByUUID, vUUID.String()).Scan(
+		&vehicle.ID,
+		&vehUUID,
+		&vehicle.RegistrationNumber,
+		&vehicle.Make,
+		&vehicle.Model,
+		&vehicle.FuelType,
+		&vehicle.VehicleCategory.ID,
+		&vehicle.VehicleCategory.VehicleType,
+		&vehicle.VehicleCategory.PricePerDay,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &veh, nil
+	vehicle.UUID, err = uuidLib.Parse(vehUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &vehicle, nil
 }
