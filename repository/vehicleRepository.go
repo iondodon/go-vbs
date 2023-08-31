@@ -38,7 +38,9 @@ func NewVehicleRepository() VehicleRepository {
 			registrationNumber VARCHAR(10) UNIQUE NOT NULL,
 			make VARCHAR(20) NOT NULL,
 			model VARCHAR(20) NOT NULL,
-			fuel_type VARCHAR(10) NOT NULL,
+			fuelType VARCHAR(10) NOT NULL,
+			vehCatID BIGINT NOT NULL,
+			vehCatType VARCHAR(10) NOT NULL
 		)
 	`)
 	if err != nil {
@@ -47,8 +49,8 @@ func NewVehicleRepository() VehicleRepository {
 
 	// Insert mock data
 	_, err = db.Exec(`
-		INSERT INTO vehicle (id, uuid, registrationNumber) 
-		VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123');
+		INSERT INTO vehicle (id, uuid, registrationNumber, make, model, fuelType, vehCatID, vehCatType)
+		VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "diesel", 123, "Van");
 	`)
 	if err != nil {
 		log.Fatalf("Failed to insert row: %v", err)
@@ -60,15 +62,20 @@ func NewVehicleRepository() VehicleRepository {
 }
 
 func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
-	var id int
-	var uuid string
-	var registrationNumber string
-
-	// Use QueryRow to execute the query and get a single row.
-	err := vrp.db.QueryRow("SELECT * FROM vehicle WHERE uuid = ?", vUUID.String()).Scan(&id, &uuid, &registrationNumber)
+	var veh domain.Vehicle
+	var vehUUID string
+	err := vrp.db.QueryRow("SELECT * FROM vehicle WHERE uuid = ?", vUUID.String()).Scan(
+		&veh.ID,
+		&vehUUID,
+		&veh.RegistrationNumber,
+		&veh.Make,
+		&veh.Model,
+		&veh.FuelType,
+		&veh.VehicleCategory.ID,
+		&veh.VehicleCategory.VehicleType,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			// Handle no rows case here
 			log.Println("No rows returned")
 		} else {
 			log.Fatalf("Failed to query table: %v", err)
@@ -76,17 +83,10 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 		return nil, fmt.Errorf("error")
 	}
 
-	fmt.Printf("Fetched vehicle: ID = %d, UUID = %s, RegistrationNumber = %s\n", id, uuid, registrationNumber)
-
-	vid, err := uuidLib.Parse(uuid)
+	veh.UUID, err = uuidLib.Parse(vehUUID)
 	if err != nil {
-		fmt.Printf("Failed to parse UUID: %v\n", err)
-		return nil, fmt.Errorf("error")
+		return nil, err
 	}
 
-	return &domain.Vehicle{
-		ID:                 id,
-		UUID:               vid,
-		RegistrationNumber: registrationNumber,
-	}, nil
+	return &veh, nil
 }
