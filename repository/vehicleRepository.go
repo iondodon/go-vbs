@@ -24,6 +24,28 @@ const ddl = `
 		price_per_day REAL NOT NULL
 	);
 
+	CREATE TABLE booking_date(
+	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	    time TIMESTAMP NOT NULL
+	);
+
+	CREATE TABLE customer(
+	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	    uuid CHAR(36) NOT NULL,
+	    username VARCHAR(20) NOT NULL
+	);
+
+	CREATE TABLE booking (
+	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	    uuid CHAR(36) UNIQUE NOT NULL,
+	    booking_date_id BIGINT NOT NULL,
+	    vehicle_id BIGINT NOT NULL,
+	    customer_id BIGINT NOT NULL,
+	    FOREIGN KEY (customer_id) REFERENCES customer(id),
+	    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id),
+	    FOREIGN KEY (booking_date_id) REFERENCES booking_date(id)
+	);
+
 	CREATE TABLE vehicle (
 		id BIGINT AUTO_INCREMENT PRIMARY KEY,
 		uuid CHAR(36) UNIQUE NOT NULL,
@@ -90,9 +112,7 @@ func NewVehicleRepository() VehicleRepository {
 }
 
 func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
-	vehicle := domain.Vehicle{
-		VehicleCategory: domain.VehicleCategory{},
-	}
+	var vehicle domain.Vehicle
 	var vehUUID string
 	err := vrp.db.QueryRow(getVehicleByUUID, vUUID.String()).Scan(
 		&vehicle.ID,
