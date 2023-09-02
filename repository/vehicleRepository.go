@@ -12,9 +12,18 @@ import (
 const insertMockData = `
 	INSERT INTO vehicle_category(id, category, price_per_day)
 	VALUES (1, 'Van', 12.321);
-	
+
 	INSERT INTO vehicle (id, uuid, registration_number, make, model, fuel_type, category_id)
 	VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "diesel", 1);
+
+	INSERT INTO customer (id, uuid, username)
+	VALUES (1, 'eba846c2-1d57-4f5d-b17e-fa9f922ac093', 'username123');
+
+	INSERT INTO booking(id, uuid, vehicle_id, customer_id)
+	VALUES (1, 'de399bc0-a622-4449-b264-5783562c38fa', 1, 1);
+
+	INSERT INTO booking_date (id, time, booking_id)
+	VALUES (1, current_date, 1);
 `
 
 const ddl = `
@@ -24,12 +33,14 @@ const ddl = `
 		price_per_day REAL NOT NULL
 	);
 
-	CREATE TABLE booking_date(
+	CREATE TABLE booking_date (
 	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	    time TIMESTAMP NOT NULL
+	    time TIMESTAMP NOT NULL,
+	    booking_id BIGINT NOT NULL,
+	    FOREIGN KEY (booking_id) REFERENCES booking(id)
 	);
 
-	CREATE TABLE customer(
+	CREATE TABLE customer (
 	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	    uuid CHAR(36) NOT NULL,
 	    username VARCHAR(20) NOT NULL
@@ -38,12 +49,10 @@ const ddl = `
 	CREATE TABLE booking (
 	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	    uuid CHAR(36) UNIQUE NOT NULL,
-	    booking_date_id BIGINT NOT NULL,
 	    vehicle_id BIGINT NOT NULL,
 	    customer_id BIGINT NOT NULL,
 	    FOREIGN KEY (customer_id) REFERENCES customer(id),
-	    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id),
-	    FOREIGN KEY (booking_date_id) REFERENCES booking_date(id)
+	    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id)
 	);
 
 	CREATE TABLE vehicle (
@@ -72,6 +81,12 @@ const getVehicleByUUID = `
 	FROM vehicle v
 		JOIN vehicle_category vc on v.category_id = vc.id       
 	WHERE v.uuid = ?
+`
+
+const selectBookingsByVehicleId = `
+	SELECT id, uuid
+	FROM booking
+	WHERE vehicle_id = ?
 `
 
 type VehicleRepository interface {
@@ -131,6 +146,30 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 
 	vehicle.UUID, err = uuidLib.Parse(vehUUID)
 	if err != nil {
+		return nil, err
+	}
+
+	rows, err := vrp.db.Query(selectBookingsByVehicleId, vehicle.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			return
+		}
+	}(rows)
+
+	for rows.Next() {
+		var booking domain.Booking
+		err := rows.Scan(&booking.ID, &booking.UUID)
+		if err != nil {
+			return nil, err
+		}
+		vehicle.Bookings = append(vehicle.Bookings, booking)
+	}
+
+	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
