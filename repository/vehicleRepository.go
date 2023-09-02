@@ -79,14 +79,21 @@ const getVehicleByUUID = `
 	    vc.category, 
 	    vc.price_per_day 
 	FROM vehicle v
-		JOIN vehicle_category vc on v.category_id = vc.id       
+		JOIN vehicle_category vc on v.category_id = vc.id
 	WHERE v.uuid = ?
 `
 
-const selectBookingsByVehicleId = `
-	SELECT id, uuid
-	FROM booking
-	WHERE vehicle_id = ?
+const selectBookingsByVehicleID = `
+	SELECT b.id, b.uuid, c.uuid, c.username
+	FROM booking b
+		JOIN customer c on b.customer_id = c.id
+	WHERE b.vehicle_id = ?
+`
+
+const selectBookingDatesByBookingID = `
+	SELECT bd.id, bd.time
+	FROM booking_date bd
+	WHERE bd.id = ?
 `
 
 type VehicleRepository interface {
@@ -151,7 +158,7 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 		return nil, err
 	}
 
-	rows, err := vrp.db.Query(selectBookingsByVehicleId, vehicle.ID)
+	rows, err := vrp.db.Query(selectBookingsByVehicleID, vehicle.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -164,13 +171,15 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 
 	for rows.Next() {
 		var booking domain.Booking
-		err := rows.Scan(&booking.ID, &booking.UUID)
+		var customer domain.Customer
+		err := rows.Scan(&booking.ID, &booking.UUID, &customer.UUID, &customer.Username)
 		if err != nil {
 			return nil, err
 		}
+		booking.Vehicle = &vehicle
+		booking.Customer = &customer
 		vehicle.Bookings = append(vehicle.Bookings, &booking)
 	}
-
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}

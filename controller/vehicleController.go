@@ -36,5 +36,7 @@ func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *ht
 		fmt.Println(err)
 	}
 
-	fmt.Println(vehicle)
+	fmt.Printf("%+v\n", vehicle)
+	fmt.Printf("%+v\n", vehicle.Bookings[0])
+	fmt.Printf("%+v\n", vehicle.Bookings[0].Customer)
 }
