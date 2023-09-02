@@ -16,6 +16,6 @@ type Vehicle struct {
 	Make               string
 	Model              string
 	FuelType           FuelType
-	VehicleCategory    VehicleCategory
-	Bookings           []Booking
+	VehicleCategory    *VehicleCategory
+	Bookings           []*Booking
 }

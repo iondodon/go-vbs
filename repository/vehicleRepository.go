@@ -128,6 +128,7 @@ func NewVehicleRepository() VehicleRepository {
 
 func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
 	var vehicle domain.Vehicle
+	var vehCat domain.VehicleCategory
 	var vehUUID string
 	err := vrp.db.QueryRow(getVehicleByUUID, vUUID.String()).Scan(
 		&vehicle.ID,
@@ -136,13 +137,14 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 		&vehicle.Make,
 		&vehicle.Model,
 		&vehicle.FuelType,
-		&vehicle.VehicleCategory.ID,
-		&vehicle.VehicleCategory.VehicleType,
-		&vehicle.VehicleCategory.PricePerDay,
+		&vehCat.ID,
+		&vehCat.VehicleType,
+		&vehCat.PricePerDay,
 	)
 	if err != nil {
 		return nil, err
 	}
+	vehicle.VehicleCategory = &vehCat
 
 	vehicle.UUID, err = uuidLib.Parse(vehUUID)
 	if err != nil {
@@ -166,7 +168,7 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 		if err != nil {
 			return nil, err
 		}
-		vehicle.Bookings = append(vehicle.Bookings, booking)
+		vehicle.Bookings = append(vehicle.Bookings, &booking)
 	}
 
 	if err := rows.Err(); err != nil {
