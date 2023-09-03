@@ -47,7 +47,7 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			log.Print(err)
+			errorLog.Print(err)
 		}
 	}()
 
@@ -65,10 +65,10 @@ func main() {
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Println(err)
+		errorLog.Println(err)
 	}
 
-	log.Println("Shutting down...")
+	infoLog.Println("Shutting down...")
 
 	os.Exit(0)
 }
