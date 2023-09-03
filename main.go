@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gorilla/mux"
 	"go-vbs/controller"
+	"go-vbs/integration"
 	"go-vbs/repository"
 	"go-vbs/usecase"
 	"log"
@@ -19,12 +20,21 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	vrp := repository.NewVehicleRepository()
+	db, err := integration.NewDBConn()
+	defer func(db integration.DB) {
+		err := db.Close()
+		if err != nil {
+			errorLog.Fatal(err)
+		}
+	}(db)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	vrp := repository.NewVehicleRepository(db)
 	gvuc := usecase.NewGetVehicleUseCase(vrp)
 	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
 
 	r := mux.NewRouter()
-
 	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID)
 
 	srv := &http.Server{
