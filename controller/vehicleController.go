@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	uuidLib "github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"go-vbs/usecase"
+	"log"
 	"net/http"
 )
 
@@ -13,11 +13,17 @@ type VehicleController interface {
 }
 
 type vehicleController struct {
+	infoLog, errorLog *log.Logger
 	getVehicleUseCase usecase.GetVehicle
 }
 
-func NewVehicleController(getVehicleUseCase usecase.GetVehicle) VehicleController {
+func NewVehicleController(
+	infoLog, errorLog *log.Logger,
+	getVehicleUseCase usecase.GetVehicle,
+) VehicleController {
 	return &vehicleController{
+		infoLog:           infoLog,
+		errorLog:          errorLog,
 		getVehicleUseCase: getVehicleUseCase,
 	}
 }
@@ -28,15 +34,15 @@ func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *ht
 
 	vUUID, err := uuidLib.Parse(uuid)
 	if err != nil {
-		fmt.Println(err)
+		vc.infoLog.Println(err)
 	}
 
 	vehicle, err := vc.getVehicleUseCase.ByUUID(vUUID)
 	if err != nil {
-		fmt.Println(err)
+		vc.infoLog.Println(err)
 	}
 
-	fmt.Printf("%+v\n", vehicle)
-	fmt.Printf("%+v\n", vehicle.Bookings[0])
-	fmt.Printf("%+v\n", vehicle.Bookings[0].Customer)
+	vc.infoLog.Printf("%+v\n", vehicle)
+	vc.infoLog.Printf("%+v\n", vehicle.Bookings[0])
+	vc.infoLog.Printf("%+v\n", vehicle.Bookings[0].Customer)
 }

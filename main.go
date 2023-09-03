@@ -16,9 +16,12 @@ import (
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 
 func main() {
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	vrp := repository.NewVehicleRepository()
 	gvuc := usecase.NewGetVehicleUseCase(vrp)
-	vc := controller.NewVehicleController(gvuc)
+	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
 
 	r := mux.NewRouter()
 
@@ -29,6 +32,7 @@ func main() {
 		Handler:      r,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
+		ErrorLog:     errorLog,
 	}
 
 	go func() {
