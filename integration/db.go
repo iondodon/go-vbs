@@ -68,21 +68,26 @@ type DB interface {
 	Query(query string, args ...any) (*sql.Rows, error)
 }
 
-func NewDBConn() (DB, error) {
-	inMemDB, err := sql.Open("sqlite3", ":memory:")
+func NewInMemDBConn() (DB, error) {
+	db, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
 
 	// DDL
-	if _, err = inMemDB.Exec(ddl); err != nil {
+	if _, err = db.Exec(ddl); err != nil {
 		return nil, err
 	}
 
 	// Insert mock data
-	if _, err = inMemDB.Exec(insertMockData); err != nil {
+	if _, err = db.Exec(insertMockData); err != nil {
 		return nil, err
 	}
 
-	return inMemDB, nil
+	return db, nil
 }

@@ -2,10 +2,11 @@ package repository
 
 import (
 	"database/sql"
-	uuidLib "github.com/google/uuid"
-	_ "github.com/mattn/go-sqlite3"
 	"go-vbs/domain"
 	"go-vbs/integration"
+
+	uuidLib "github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const getVehicleByUUID = `

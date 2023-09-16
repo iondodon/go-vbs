@@ -1,29 +1,67 @@
 package repository
 
 import (
-	"database/sql"
-	uuidLib "github.com/google/uuid"
-	"go-vbs/integration/mocks"
-	"go.uber.org/mock/gomock"
+	"go-vbs/domain"
+	"log"
 	"testing"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	uuidLib "github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_vehicleRepository_FindByUUID(t *testing.T) {
-	t.Run("name", func(t *testing.T) {
-		mockDB := mocks.NewMockDB(gomock.NewController(t))
+	uuid, err := uuidLib.Parse("d06a5744-ce7d-4aa7-ba47-076cae095bb1")
+	if err != nil {
+		t.Fatal("unexpected error: %w", err)
+	}
 
-		var vrp VehicleRepository = &vehicleRepository{
-			db: mockDB,
+	mv := domain.Vehicle{
+		ID:                 123,
+		UUID:               uuid,
+		RegistrationNumber: "reg number",
+		Make:               "Tesla",
+		Model:              "X",
+		FuelType:           "diesel",
+		VehicleCategory: &domain.VehicleCategory{
+			ID:          321,
+			VehicleType: "SMALL_CAR",
+			PricePerDay: 123.321,
+		},
+		Bookings: nil,
+	}
+
+	t.Run("the correct query is executed", func(t *testing.T) {
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 		}
+		defer db.Close()
 
-		uuid, _ := uuidLib.Parse("d06a5744-ce7d-4aa7-ba47-076cae095bb1")
+		var vrp VehicleRepository = &vehicleRepository{db: db}
 
-		mockDB.EXPECT().
-			QueryRow(getVehicleByUUID, uuid.String()).
-			Return(&sql.Row{}).
-			Times(1)
+		rows := sqlmock.
+			NewRows([]string{
+				"id", "uuid", "registration_number", "make", "model", "fuel_type",
+				"id", "category", "price_per_day",
+			}).
+			AddRow(
+				mv.ID, mv.UUID, mv.RegistrationNumber, mv.Make, mv.Model, mv.FuelType,
+				mv.VehicleCategory.ID, mv.VehicleCategory.VehicleType, mv.VehicleCategory.PricePerDay,
+			)
 
-		_, _ = vrp.FindByUUID(uuid)
+		mock.ExpectQuery(getVehicleByUUID).WithArgs(uuid.String()).WillReturnRows(rows)
+		mock.ExpectQuery(selectBookingsByVehicleID).WithArgs(mv.ID).WillReturnRows(sqlmock.NewRows([]string{}))
+
+		v, err := vrp.FindByUUID(uuid)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, v)
+
+		err = mock.ExpectationsWereMet()
+		if err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
 	})
 
 }
