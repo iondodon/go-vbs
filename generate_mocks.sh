@@ -10,5 +10,5 @@ for file in $(find . -name "*.go" | grep -v "mocks_test"); do
     mkdir -p $mockDir
 
     # Generate the mock
-    mockgen -source=$file -destination=$mockDir/mock_$(basename $file)
+    mockgen -source=$file -destination=$mockDir/mock_$(basename $file) -package="mocks_test"
 done
