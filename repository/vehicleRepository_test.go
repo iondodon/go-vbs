@@ -2,7 +2,6 @@ package repository
 
 import (
 	"go-vbs/domain"
-	"log"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -13,16 +12,16 @@ import (
 func Test_vehicleRepository_FindByUUID(t *testing.T) {
 	uuid, err := uuidLib.Parse("d06a5744-ce7d-4aa7-ba47-076cae095bb1")
 	if err != nil {
-		t.Fatal("unexpected error: %w", err)
+		t.Fatalf("unexpected error: %s", err.Error())
 	}
 
-	mv := domain.Vehicle{
+	mv := &domain.Vehicle{
 		ID:                 123,
 		UUID:               uuid,
 		RegistrationNumber: "reg number",
 		Make:               "Tesla",
 		Model:              "X",
-		FuelType:           "diesel",
+		FuelType:           "DIESEL",
 		VehicleCategory: &domain.VehicleCategory{
 			ID:          321,
 			VehicleType: "SMALL_CAR",
@@ -34,7 +33,7 @@ func Test_vehicleRepository_FindByUUID(t *testing.T) {
 	t.Run("the correct query is executed", func(t *testing.T) {
 		db, mock, err := sqlmock.New()
 		if err != nil {
-			log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err.Error())
 		}
 		defer db.Close()
 
@@ -50,10 +49,10 @@ func Test_vehicleRepository_FindByUUID(t *testing.T) {
 				mv.VehicleCategory.ID, mv.VehicleCategory.VehicleType, mv.VehicleCategory.PricePerDay,
 			)
 
-		mock.ExpectQuery(getVehicleByUUID).WithArgs(uuid.String()).WillReturnRows(rows)
+		mock.ExpectQuery(getVehicleByUUID).WithArgs(mv.UUID.String()).WillReturnRows(rows)
 		mock.ExpectQuery(selectBookingsByVehicleID).WithArgs(mv.ID).WillReturnRows(sqlmock.NewRows([]string{}))
 
-		v, err := vrp.FindByUUID(uuid)
+		v, err := vrp.FindByUUID(mv.UUID)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, v)

@@ -39,7 +39,7 @@ const selectBookingDatesByBookingID = `
 `
 
 type VehicleRepository interface {
-	FindByUUID(vid uuidLib.UUID) (*domain.Vehicle, error)
+	FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error)
 }
 
 type vehicleRepository struct {
