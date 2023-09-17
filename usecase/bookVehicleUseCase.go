@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"go-vbs/dto"
-	"go-vbs/repository"
+	"github.com/iondodon/go-vbs/dto"
+	"github.com/iondodon/go-vbs/repository"
 
 	"github.com/google/uuid"
 )

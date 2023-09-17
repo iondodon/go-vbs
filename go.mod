@@ -1,4 +1,4 @@
-module go-vbs
+module github.com/iondodon/go-vbs
 
 go 1.21.1
 

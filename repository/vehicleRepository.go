@@ -2,8 +2,9 @@ package repository
 
 import (
 	"database/sql"
-	"go-vbs/domain"
-	"go-vbs/integration"
+
+	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/integration"
 
 	uuidLib "github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"

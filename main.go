@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"go-vbs/controller"
-	"go-vbs/integration"
-	"go-vbs/repository"
-	"go-vbs/usecase"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/iondodon/go-vbs/controller"
+	"github.com/iondodon/go-vbs/integration"
+	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/usecase"
 
 	"github.com/gorilla/mux"
 )

@@ -22,6 +22,4 @@ go.work
 
 /.idea/
 
-**/mocks_test/
-
 coverage.out

@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"go-vbs/domain"
-	"go-vbs/repository"
+	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/repository"
 
 	"github.com/google/uuid"
 )

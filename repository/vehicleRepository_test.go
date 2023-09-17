@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"go-vbs/domain"
 	"testing"
+
+	"github.com/iondodon/go-vbs/domain"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	uuidLib "github.com/google/uuid"
