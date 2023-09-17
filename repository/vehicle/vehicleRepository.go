@@ -1,4 +1,4 @@
-package repository
+package vehicle
 
 import (
 	"database/sql"
@@ -48,16 +48,14 @@ type vehicleRepository struct {
 }
 
 func NewVehicleRepository(db integration.DB) VehicleRepository {
-	return &vehicleRepository{
-		db: db,
-	}
+	return &vehicleRepository{db: db}
 }
 
-func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+func (repo *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
 	var vehicle domain.Vehicle
 	var vehCat domain.VehicleCategory
 	var vehUUID string
-	err := vrp.db.QueryRow(getVehicleByUUID, vUUID.String()).Scan(
+	err := repo.db.QueryRow(getVehicleByUUID, vUUID.String()).Scan(
 		&vehicle.ID,
 		&vehUUID,
 		&vehicle.RegistrationNumber,
@@ -78,7 +76,7 @@ func (vrp *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, e
 		return nil, err
 	}
 
-	rows, err := vrp.db.Query(selectBookingsByVehicleID, vehicle.ID)
+	rows, err := repo.db.Query(selectBookingsByVehicleID, vehicle.ID)
 	if err != nil {
 		return nil, err
 	}

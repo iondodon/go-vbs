@@ -10,8 +10,8 @@ import (
 
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
-	"github.com/iondodon/go-vbs/repository"
-	"github.com/iondodon/go-vbs/usecase"
+	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
+	"github.com/iondodon/go-vbs/usecase/vehicle"
 
 	"github.com/gorilla/mux"
 )
@@ -32,8 +32,8 @@ func main() {
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-	vrp := repository.NewVehicleRepository(db)
-	gvuc := usecase.NewGetVehicleUseCase(vrp)
+	vrp := vehRepo.NewVehicleRepository(db)
+	gvuc := vehicle.NewGetVehicleUseCase(vrp)
 	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
 
 	r := mux.NewRouter()

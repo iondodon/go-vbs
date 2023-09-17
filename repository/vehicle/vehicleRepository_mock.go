@@ -6,7 +6,7 @@
 //	mockgen.exe -source=./repository/vehicleRepository.go -destination=./repository/vehicleRepository_mock_test.go -package=repository
 //
 // Package repository is a generated GoMock package.
-package repository
+package vehicle
 
 import (
 	reflect "reflect"
