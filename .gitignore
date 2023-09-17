@@ -22,4 +22,6 @@ go.work
 
 /.idea/
 
-**/mocks/
+**/mocks_test/
+
+coverage.out

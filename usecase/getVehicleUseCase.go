@@ -1,26 +1,27 @@
 package usecase
 
 import (
-	"github.com/google/uuid"
 	"go-vbs/domain"
 	"go-vbs/repository"
+
+	"github.com/google/uuid"
 )
 
-type GetVehicle interface {
+type GetVehicleUseCase interface {
 	ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error)
 }
 
-type getVehicle struct {
+type getVehicleUseCase struct {
 	vehicleRepository repository.VehicleRepository
 }
 
-func NewGetVehicleUseCase(vehicleRepository repository.VehicleRepository) GetVehicle {
-	return &getVehicle{
+func NewGetVehicleUseCase(vehicleRepository repository.VehicleRepository) GetVehicleUseCase {
+	return &getVehicleUseCase{
 		vehicleRepository: vehicleRepository,
 	}
 }
 
-func (gvuc *getVehicle) ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
+func (gvuc *getVehicleUseCase) ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
 	vehicle, err := gvuc.vehicleRepository.FindByUUID(vUUID)
 	if err != nil {
 		return nil, err

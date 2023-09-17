@@ -1,19 +1,20 @@
 package usecase
 
 import (
-	"github.com/google/uuid"
 	"go-vbs/dto"
 	"go-vbs/repository"
+
+	"github.com/google/uuid"
 )
 
-type BookVehicle interface {
+type BookVehicleUseCase interface {
 	ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO)
 }
 
-type bookVehicle struct {
+type bookVehicleUseCase struct {
 	vehicleRepository repository.VehicleRepository
 }
 
-func (*bookVehicle) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) {
+func (*bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) {
 	return
 }
