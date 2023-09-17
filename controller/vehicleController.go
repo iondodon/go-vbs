@@ -1,11 +1,13 @@
 package controller
 
 import (
-	uuidLib "github.com/google/uuid"
-	"github.com/gorilla/mux"
+	"encoding/json"
 	"go-vbs/usecase"
 	"log"
 	"net/http"
+
+	uuidLib "github.com/google/uuid"
+	"github.com/gorilla/mux"
 )
 
 type VehicleController interface {
@@ -42,7 +44,11 @@ func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *ht
 		vc.infoLog.Println(err)
 	}
 
-	vc.infoLog.Printf("%+v\n", vehicle)
-	vc.infoLog.Printf("%+v\n", vehicle.Bookings[0])
-	vc.infoLog.Printf("%+v\n", vehicle.Bookings[0].Customer)
+	if err := json.NewEncoder(w).Encode(vehicle); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }

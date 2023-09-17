@@ -10,12 +10,12 @@ const (
 )
 
 type Vehicle struct {
-	ID                 int64
-	UUID               uuid.UUID
-	RegistrationNumber string
-	Make               string
-	Model              string
-	FuelType           FuelType
-	VehicleCategory    *VehicleCategory
-	Bookings           []*Booking
+	ID                 int64            `json:"id"`
+	UUID               uuid.UUID        `json:"uuid"`
+	RegistrationNumber string           `json:"registartion_number"`
+	Make               string           `json:"make"`
+	Model              string           `json:"model"`
+	FuelType           FuelType         `json:"fuel_type"`
+	VehicleCategory    *VehicleCategory `json:"vehicle_category"`
+	Bookings           []*Booking       `json:"-"`
 }

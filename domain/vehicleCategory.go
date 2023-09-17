@@ -9,7 +9,7 @@ const (
 )
 
 type VehicleCategory struct {
-	ID          int64
-	VehicleType VehicleType
-	PricePerDay float32
+	ID          int64       `json:"id"`
+	VehicleType VehicleType `json:"vehicle_type"`
+	PricePerDay float32     `json:"price_per_day"`
 }

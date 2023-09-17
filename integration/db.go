@@ -9,7 +9,7 @@ const insertMockData = `
 	VALUES (1, 'Van', 12.321);
 
 	INSERT INTO vehicle (id, uuid, registration_number, make, model, fuel_type, category_id)
-	VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "diesel", 1);
+	VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "DIESEL", 1);
 
 	INSERT INTO customer (id, uuid, username)
 	VALUES (1, 'eba846c2-1d57-4f5d-b17e-fa9f922ac093', 'username123');
