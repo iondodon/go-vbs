@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iondodon/go-vbs/usecase/vehicle"
+	vehUSPkg "github.com/iondodon/go-vbs/usecase/vehicle"
 
 	uuidLib "github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -17,12 +17,12 @@ type VehicleController interface {
 
 type vehicleController struct {
 	infoLog, errorLog *log.Logger
-	getVehicleUseCase vehicle.GetVehicleUseCase
+	getVehicleUseCase vehUSPkg.GetVehicleUseCase
 }
 
 func NewVehicleController(
 	infoLog, errorLog *log.Logger,
-	getVehicleUseCase vehicle.GetVehicleUseCase,
+	getVehicleUseCase vehUSPkg.GetVehicleUseCase,
 ) VehicleController {
 	return &vehicleController{
 		infoLog:           infoLog,

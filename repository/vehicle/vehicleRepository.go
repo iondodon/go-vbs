@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/dto"
 	"github.com/iondodon/go-vbs/integration"
 
 	uuidLib "github.com/google/uuid"
@@ -39,8 +40,19 @@ const selectBookingDatesByBookingID = `
 	WHERE bd.id = ?
 `
 
+const vehicleHasBookedDatesOnPeriod = `
+	SELECT EXISTS(
+		SELECT 1 
+		FROM booking b
+			JOIN vehicle v on b.vehicle_uuid = v.uuid
+			JOIN booking_date db on bd.booking_id = b.id
+		WHERE v.uuid = ? AND bd.time => ? and db.time <= ?
+	)
+`
+
 type VehicleRepository interface {
 	FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error)
+	VehicleHasBookedDatesOnPeriod(vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
 type vehicleRepository struct {
@@ -103,4 +115,15 @@ func (repo *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, 
 	}
 
 	return &vehicle, nil
+}
+
+func (repo *vehicleRepository) VehicleHasBookedDatesOnPeriod(vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+	var exists bool
+
+	err := repo.db.QueryRow(vehicleHasBookedDatesOnPeriod, vUUID, period.FromDate, period.ToDate).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }
