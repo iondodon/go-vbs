@@ -2,9 +2,10 @@ package controller
 
 import (
 	"encoding/json"
-	"go-vbs/usecase"
 	"log"
 	"net/http"
+
+	"github.com/iondodon/go-vbs/usecase"
 
 	uuidLib "github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -44,11 +45,14 @@ func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *ht
 		vc.infoLog.Println(err)
 	}
 
-	if err := json.NewEncoder(w).Encode(vehicle); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	responseJSON, err := json.Marshal(vehicle)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+
 	w.WriteHeader(http.StatusOK)
+	w.Write(responseJSON)
 }
