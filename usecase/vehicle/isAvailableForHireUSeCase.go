@@ -25,5 +25,5 @@ func (us *isAvailableForHireUseCase) CheckForPeriod(vUUID uuid.UUID, period dto.
 		return false, err
 	}
 
-	return hasBookedDates, nil
+	return !hasBookedDates, nil
 }
