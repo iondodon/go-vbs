@@ -31,8 +31,6 @@ const ddl = `
 	CREATE TABLE booking_date (
 	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	    time TIMESTAMP NOT NULL,
-	    booking_id BIGINT NOT NULL,
-	    FOREIGN KEY (booking_id) REFERENCES booking(id)
 	);
 
 	CREATE TABLE customer (
@@ -66,6 +64,7 @@ type DB interface {
 	Close() error
 	QueryRow(query string, args ...any) *sql.Row
 	Query(query string, args ...any) (*sql.Rows, error)
+	Exec(query string, args ...any) (sql.Result, error)
 }
 
 func NewInMemDBConn() (DB, error) {

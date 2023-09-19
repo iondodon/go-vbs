@@ -13,8 +13,14 @@ const findAllInPeriodInclusive = `
 	WHERE bd.time >= ? AND bd.time <= ?
 `
 
+const saveNewBookingDate = `
+	INSERT INTO booking_dates(time)
+	VALUES (?)
+`
+
 type BookingDateRepository interface {
 	FindAllInPeriodInclusive(from, to time.Time) ([]domain.BookingDate, error)
+	Save(bd domain.BookingDate) error
 }
 
 type bookingDateRepository struct {
@@ -50,4 +56,12 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) 
 	}
 
 	return bookingDates, nil
+}
+
+func (repo *bookingDateRepository) Save(bd domain.BookingDate) error {
+	_, err := repo.db.Exec(saveNewBookingDate, bd.Time)
+	if err != nil {
+		return err
+	}
+	return nil
 }
