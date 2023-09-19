@@ -7,6 +7,7 @@ import (
 	"github.com/iondodon/go-vbs/dto"
 	custRepo "github.com/iondodon/go-vbs/repository/customer"
 	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
+	bdUCs "github.com/iondodon/go-vbs/usecase/bookingdate"
 	vehUCs "github.com/iondodon/go-vbs/usecase/vehicle"
 
 	"github.com/google/uuid"
@@ -19,10 +20,11 @@ type BookVehicleUseCase interface {
 }
 
 type bookVehicleUseCase struct {
-	infoLog, errorLog    *log.Logger
-	vehRepo              vehRepo.VehicleRepository
-	custRepo             custRepo.CustomerRepository
-	isAvailableForHireUS vehUCs.IsAvailableForHireUseCase
+	infoLog, errorLog      *log.Logger
+	vehRepo                vehRepo.VehicleRepository
+	custRepo               custRepo.CustomerRepository
+	isAvailableForHireUS   vehUCs.IsAvailableForHireUseCase
+	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase
 }
 
 func NewBookVehicleUseCase(
@@ -30,13 +32,15 @@ func NewBookVehicleUseCase(
 	vrp vehRepo.VehicleRepository,
 	crp custRepo.CustomerRepository,
 	isAvailableForHireUS vehUCs.IsAvailableForHireUseCase,
+	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase,
 ) BookVehicleUseCase {
 	return &bookVehicleUseCase{
-		infoLog:              infoLog,
-		errorLog:             errorLog,
-		vehRepo:              vrp,
-		custRepo:             crp,
-		isAvailableForHireUS: isAvailableForHireUS,
+		infoLog:                infoLog,
+		errorLog:               errorLog,
+		vehRepo:                vrp,
+		custRepo:               crp,
+		isAvailableForHireUS:   isAvailableForHireUS,
+		getBookingDatesUseCase: getBookingDatesUseCase,
 	}
 }
 
@@ -62,6 +66,13 @@ func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, peri
 	}
 
 	uc.infoLog.Printf("Booking vehicle with UUID %s \n", vehicleUUID)
+
+	_, err = uc.getBookingDatesUseCase.ForPeriod(customerUID, vehicleUUID, period)
+	if err != nil {
+		return err
+	}
+
+	// create new Booking and save it
 
 	return nil
 }
