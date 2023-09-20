@@ -17,8 +17,8 @@ const insertMockData = `
 	INSERT INTO booking(id, uuid, vehicle_id, customer_id)
 	VALUES (1, 'de399bc0-a622-4449-b264-5783562c38fa', 1, 1);
 
-	INSERT INTO booking_date (id, time, booking_id)
-	VALUES (1, current_date, 1);
+	INSERT INTO booking_date (id, time)
+	VALUES (1, current_date);
 `
 
 const ddl = `
@@ -30,7 +30,7 @@ const ddl = `
 
 	CREATE TABLE booking_date (
 	    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	    time TIMESTAMP NOT NULL,
+	    time TIMESTAMP NOT NULL
 	);
 
 	CREATE TABLE customer (
