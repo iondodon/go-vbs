@@ -44,9 +44,10 @@ const vehicleHasBookedDatesOnPeriod = `
 	SELECT EXISTS(
 		SELECT 1 
 		FROM booking b
-			JOIN vehicle v on b.vehicle_uuid = v.uuid
-			JOIN booking_date db on bd.booking_id = b.id
-		WHERE v.uuid = ? AND bd.time => ? and db.time <= ?
+			JOIN vehicle v on b.vehicle_id = v.id
+			JOIN bookings_bookingdates bb on bb.booking_id = b.id
+			JOIN booking_date bd on bb.bookingdate_id = bd.id
+		WHERE v.uuid = ? AND bd.time >= ? and bd.time <= ?
 	)
 `
 

@@ -19,6 +19,9 @@ const insertMockData = `
 
 	INSERT INTO booking_date (id, time)
 	VALUES (1, current_date);
+
+	INSERT INTO bookings_bookingdates (booking_id, bookingdate_id)
+	VALUES (1, 1)
 `
 
 const ddl = `
@@ -46,6 +49,13 @@ const ddl = `
 	    customer_id BIGINT NOT NULL,
 	    FOREIGN KEY (customer_id) REFERENCES customer(id),
 	    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id)
+	);
+
+	CREATE TABLE bookings_bookingdates (
+		booking_id BIGINT NOT NULL,
+		bookingdate_id BIGINT NOT NULL,
+		FOREIGN KEY (booking_id) REFERENCES booking(id),
+	    FOREIGN KEY (bookingdate_id) REFERENCES booking_date(id)
 	);
 
 	CREATE TABLE vehicle (

@@ -50,8 +50,6 @@ func NewBookVehicleUseCase(
 }
 
 func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
-	uc.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
-
 	isAvailable, err := uc.isAvailableForHireUS.CheckForPeriod(vehicleUUID, period)
 	if err != nil {
 		return err
@@ -60,7 +58,7 @@ func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, peri
 		return fmt.Errorf(alreadyHired, vehicleUUID)
 	}
 
-	uc.infoLog.Printf("Booking vehicle with UUID %s \n", vehicleUUID)
+	uc.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
 
 	bDates, err := uc.getBookingDatesUseCase.ForPeriod(customerUID, vehicleUUID, period)
 	if err != nil {
