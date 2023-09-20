@@ -10,8 +10,13 @@ import (
 
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
+	bookingRepoPkg "github.com/iondodon/go-vbs/repository/booking"
+	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
+	custRepo "github.com/iondodon/go-vbs/repository/customer"
 	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
-	"github.com/iondodon/go-vbs/usecase/vehicle"
+	bookVehUCPkg "github.com/iondodon/go-vbs/usecase/booking"
+	bookingDateUCPkg "github.com/iondodon/go-vbs/usecase/bookingdate"
+	vehicleUCPKG "github.com/iondodon/go-vbs/usecase/vehicle"
 
 	"github.com/gorilla/mux"
 )
@@ -32,12 +37,23 @@ func main() {
 	if err != nil {
 		errorLog.Fatal(err)
 	}
+
 	vrp := vehRepo.NewVehicleRepository(db)
-	gvuc := vehicle.NewGetVehicleUseCase(vrp)
+	crp := custRepo.NewCustomerRepository(db)
+	brp := bookingRepoPkg.NewBookingRepository(db)
+	bdRepo := bdRepoPkg.NewBookingDateRepository(db)
+
+	gvuc := vehicleUCPKG.NewGetVehicleUseCase(vrp)
+	isAvaiForHireUC := vehicleUCPKG.NewIsAvailableForHireUseCase(vrp)
+	getBookingDatesUC := bookingDateUCPkg.NewGetBookingDatesUseCase(bdRepo)
+	bvuc := bookVehUCPkg.NewBookVehicleUseCase(infoLog, errorLog, vrp, crp, brp, isAvaiForHireUC, getBookingDatesUC)
+
 	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
+	bv := controller.NewBookingController(infoLog, errorLog, bvuc)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID)
+	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID).Methods(http.MethodGet)
+	r.HandleFunc("/bookings", bv.HandleBookVehicle).Methods(http.MethodPost)
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",

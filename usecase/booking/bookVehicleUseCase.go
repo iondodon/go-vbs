@@ -18,7 +18,7 @@ import (
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
 type BookVehicleUseCase interface {
-	ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
+	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
 }
 
 type bookVehicleUseCase struct {
