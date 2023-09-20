@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
+	bookingRepo "github.com/iondodon/go-vbs/repository/booking"
 	custRepo "github.com/iondodon/go-vbs/repository/customer"
 	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
 	bdUCs "github.com/iondodon/go-vbs/usecase/bookingdate"
@@ -23,6 +25,7 @@ type bookVehicleUseCase struct {
 	infoLog, errorLog      *log.Logger
 	vehRepo                vehRepo.VehicleRepository
 	custRepo               custRepo.CustomerRepository
+	bookingRepo            bookingRepo.BookingRepository
 	isAvailableForHireUS   vehUCs.IsAvailableForHireUseCase
 	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase
 }
@@ -31,6 +34,7 @@ func NewBookVehicleUseCase(
 	infoLog, errorLog *log.Logger,
 	vrp vehRepo.VehicleRepository,
 	crp custRepo.CustomerRepository,
+	brp bookingRepo.BookingRepository,
 	isAvailableForHireUS vehUCs.IsAvailableForHireUseCase,
 	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase,
 ) BookVehicleUseCase {
@@ -39,6 +43,7 @@ func NewBookVehicleUseCase(
 		errorLog:               errorLog,
 		vehRepo:                vrp,
 		custRepo:               crp,
+		bookingRepo:            brp,
 		isAvailableForHireUS:   isAvailableForHireUS,
 		getBookingDatesUseCase: getBookingDatesUseCase,
 	}
@@ -55,24 +60,34 @@ func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, peri
 		return fmt.Errorf(alreadyHired, vehicleUUID)
 	}
 
-	_, err = uc.vehRepo.FindByUUID(vehicleUUID)
-	if err != nil {
-		return err
-	}
-
-	_, err = uc.custRepo.FindByUUID(customerUID)
-	if err != nil {
-		return err
-	}
-
 	uc.infoLog.Printf("Booking vehicle with UUID %s \n", vehicleUUID)
 
-	_, err = uc.getBookingDatesUseCase.ForPeriod(customerUID, vehicleUUID, period)
+	bDates, err := uc.getBookingDatesUseCase.ForPeriod(customerUID, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
 
-	// create new Booking and save it
+	veh, err := uc.vehRepo.FindByUUID(vehicleUUID)
+	if err != nil {
+		return err
+	}
+
+	cust, err := uc.custRepo.FindByUUID(customerUID)
+	if err != nil {
+		return err
+	}
+
+	booking := domain.Booking{
+		UUID:         uuid.New(),
+		BookingDates: bDates,
+		Vehicle:      veh,
+		Customer:     cust,
+	}
+
+	err = uc.bookingRepo.Save(&booking)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -19,8 +19,8 @@ const saveNewBookingDate = `
 `
 
 type BookingDateRepository interface {
-	FindAllInPeriodInclusive(from, to time.Time) ([]domain.BookingDate, error)
-	Save(bd domain.BookingDate) error
+	FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error)
+	Save(bd *domain.BookingDate) error
 }
 
 type bookingDateRepository struct {
@@ -31,8 +31,8 @@ func NewBookingDateRepository(db integration.DB) BookingDateRepository {
 	return &bookingDateRepository{db: db}
 }
 
-func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) ([]domain.BookingDate, error) {
-	var bookingDates []domain.BookingDate
+func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error) {
+	var bookingDates []*domain.BookingDate
 
 	rows, err := repo.db.Query(findAllInPeriodInclusive, from, to)
 	if err != nil {
@@ -49,6 +49,8 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) 
 		if err != nil {
 			return nil, err
 		}
+
+		bookingDates = append(bookingDates, &bd)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -58,7 +60,7 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) 
 	return bookingDates, nil
 }
 
-func (repo *bookingDateRepository) Save(bd domain.BookingDate) error {
+func (repo *bookingDateRepository) Save(bd *domain.BookingDate) error {
 	_, err := repo.db.Exec(saveNewBookingDate, bd.Time)
 	if err != nil {
 		return err

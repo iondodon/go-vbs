@@ -10,7 +10,7 @@ import (
 )
 
 type GetBookingDatesUseCase interface {
-	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]domain.BookingDate, error)
+	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
 }
 
 type getBookingDatesUseCase struct {
@@ -21,7 +21,7 @@ func NewGetBookingDatesUseCase(bdRepo bdRepoPkg.BookingDateRepository) GetBookin
 	return &getBookingDatesUseCase{bdRepo: bdRepo}
 }
 
-func (uc *getBookingDatesUseCase) ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]domain.BookingDate, error) {
+func (uc *getBookingDatesUseCase) ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
@@ -38,8 +38,8 @@ func (uc *getBookingDatesUseCase) ForPeriod(customerUUID, vehicleUUID uuid.UUID,
 	for date := fromDate; date.Before(toDate) || date.Equal(toDate); date = date.Add(time.Hour + 24) {
 		if !contains(dates, date) {
 			bd := domain.BookingDate{Time: date}
-			uc.bdRepo.Save(bd)
-			persistedBookingDates = append(persistedBookingDates, bd)
+			uc.bdRepo.Save(&bd)
+			persistedBookingDates = append(persistedBookingDates, &bd)
 		}
 	}
 
