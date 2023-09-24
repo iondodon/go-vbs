@@ -66,6 +66,7 @@ func main() {
 	}
 
 	go func() {
+		infoLog.Println("Server started")
 		if err := srv.ListenAndServe(); err != nil {
 			errorLog.Print(err)
 		}
