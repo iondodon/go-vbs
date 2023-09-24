@@ -10,8 +10,14 @@ const insertNewBookingSQL = `
 	VALUES (?, ?, ?)
 `
 
+const selectAllBookings = `
+	SELECT b.id, b.uuid, b.vehicle_id, b.customer_id 
+	FROM booking b
+`
+
 type BookingRepository interface {
 	Save(b *domain.Booking) error
+	GetAll() ([]domain.Booking, error)
 }
 
 type bookingRepository struct {
@@ -28,4 +34,32 @@ func (repo *bookingRepository) Save(b *domain.Booking) error {
 		return err
 	}
 	return nil
+}
+
+func (repo *bookingRepository) GetAll() ([]domain.Booking, error) {
+	rows, err := repo.db.Query(selectAllBookings)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	bookings := []domain.Booking{}
+	for rows.Next() {
+		booking := domain.Booking{}
+		booking.Vehicle = &domain.Vehicle{}
+		booking.Customer = &domain.Customer{}
+
+		err := rows.Scan(&booking.ID, &booking.UUID, &booking.Vehicle.ID, &booking.Customer.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		bookings = append(bookings, booking)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return bookings, nil
 }

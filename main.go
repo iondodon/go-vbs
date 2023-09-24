@@ -47,13 +47,15 @@ func main() {
 	isAvaiForHireUC := vehicleUCPKG.NewIsAvailableForHireUseCase(vrp)
 	getBookingDatesUC := bookingDateUCPkg.NewGetBookingDatesUseCase(bdRepo)
 	bvuc := bookVehUCPkg.NewBookVehicleUseCase(infoLog, errorLog, vrp, crp, brp, isAvaiForHireUC, getBookingDatesUC)
+	getAllBookinsUC := bookVehUCPkg.NewGetAllBookingsUseCase(brp)
 
 	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
-	bv := controller.NewBookingController(infoLog, errorLog, bvuc)
+	bc := controller.NewBookingController(infoLog, errorLog, bvuc, getAllBookinsUC)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID).Methods(http.MethodGet)
-	r.HandleFunc("/bookings", bv.HandleBookVehicle).Methods(http.MethodPost)
+	r.HandleFunc("/bookings", bc.HandleBookVehicle).Methods(http.MethodPost)
+	r.HandleFunc("/bookings", bc.HandleGetAllBookings).Methods(http.MethodGet)
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",

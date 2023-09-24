@@ -36,7 +36,6 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) 
 
 	rows, err := repo.db.Query(findAllInPeriodInclusive, from, to)
 	if err != nil {
-		defer rows.Close()
 		return nil, err
 	}
 

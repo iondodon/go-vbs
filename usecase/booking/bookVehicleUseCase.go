@@ -22,12 +22,12 @@ type BookVehicleUseCase interface {
 }
 
 type bookVehicleUseCase struct {
-	infoLog, errorLog      *log.Logger
-	vehRepo                vehRepo.VehicleRepository
-	custRepo               custRepo.CustomerRepository
-	bookingRepo            bookingRepo.BookingRepository
-	isAvailableForHireUS   vehUCs.IsAvailableForHireUseCase
-	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase
+	infoLog, errorLog  *log.Logger
+	vehRepo            vehRepo.VehicleRepository
+	custRepo           custRepo.CustomerRepository
+	bookingRepo        bookingRepo.BookingRepository
+	isAvailableForHire vehUCs.IsAvailableForHireUseCase
+	getBookingDates    bdUCs.GetBookingDatesUseCase
 }
 
 func NewBookVehicleUseCase(
@@ -39,18 +39,18 @@ func NewBookVehicleUseCase(
 	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase,
 ) BookVehicleUseCase {
 	return &bookVehicleUseCase{
-		infoLog:                infoLog,
-		errorLog:               errorLog,
-		vehRepo:                vrp,
-		custRepo:               crp,
-		bookingRepo:            brp,
-		isAvailableForHireUS:   isAvailableForHireUS,
-		getBookingDatesUseCase: getBookingDatesUseCase,
+		infoLog:            infoLog,
+		errorLog:           errorLog,
+		vehRepo:            vrp,
+		custRepo:           crp,
+		bookingRepo:        brp,
+		isAvailableForHire: isAvailableForHireUS,
+		getBookingDates:    getBookingDatesUseCase,
 	}
 }
 
 func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
-	isAvailable, err := uc.isAvailableForHireUS.CheckForPeriod(vehicleUUID, period)
+	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(vehicleUUID, period)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, peri
 
 	uc.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
 
-	bDates, err := uc.getBookingDatesUseCase.ForPeriod(customerUID, vehicleUUID, period)
+	bDates, err := uc.getBookingDates.ForPeriod(customerUID, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
