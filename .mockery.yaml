@@ -1,0 +1,19 @@
+all: False
+
+template: mockery
+
+dir: "{{.InterfaceDir}}"
+outpkg: "{{.PackageName}}"
+mockname: "Mock{{.InterfaceName}}"
+
+# https://pkg.go.dev/github.com/vektra/mockery/v3/template#section-readme
+filename: '{{ .InterfaceFile | base | trimSuffix ".go" }}_mock.go'
+
+with-expecter: true
+
+packages:
+  github.com/iondodon/go-vbs/repository/vehicle:
+    config:
+    interfaces:
+      VehicleRepository:
+        config:
