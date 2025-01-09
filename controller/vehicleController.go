@@ -17,12 +17,12 @@ type VehicleController interface {
 
 type vehicleController struct {
 	infoLog, errorLog *log.Logger
-	getVehicleUseCase vehUCs.GetVehicleUseCase
+	getVehicleUseCase vehUCs.GetVehicle
 }
 
 func NewVehicleController(
 	infoLog, errorLog *log.Logger,
-	getVehicleUseCase vehUCs.GetVehicleUseCase,
+	getVehicleUseCase vehUCs.GetVehicle,
 ) VehicleController {
 	return &vehicleController{
 		infoLog:           infoLog,

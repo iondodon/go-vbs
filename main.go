@@ -38,24 +38,24 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	vrp := vehRepo.NewVehicleRepository(db)
-	crp := custRepo.NewCustomerRepository(db)
-	brp := bookingRepoPkg.NewBookingRepository(db)
-	bdRepo := bdRepoPkg.NewBookingDateRepository(db)
+	vehicleRepository := vehRepo.NewVehicleRepository(db)
+	customerRepository := custRepo.NewCustomerRepository(db)
+	bookingRepository := bookingRepoPkg.NewBookingRepository(db)
+	bookingDateRepository := bdRepoPkg.NewBookingDateRepository(db)
 
-	gvuc := vehicleUCPKG.NewGetVehicleUseCase(vrp)
-	isAvaiForHireUC := vehicleUCPKG.NewIsAvailableForHireUseCase(vrp)
-	getBookingDatesUC := bookingDateUCPkg.NewGetBookingDatesUseCase(bdRepo)
-	bvuc := bookVehUCPkg.NewBookVehicleUseCase(infoLog, errorLog, vrp, crp, brp, isAvaiForHireUC, getBookingDatesUC)
-	getAllBookinsUC := bookVehUCPkg.NewGetAllBookingsUseCase(brp)
+	getVehicle := vehicleUCPKG.NewGetVehicle(vehicleRepository)
+	isAvaiForHire := vehicleUCPKG.NewIsAvailableForHire(vehicleRepository)
+	getBookingDates := bookingDateUCPkg.NewGetBookingDates(bookingDateRepository)
+	bookVehicle := bookVehUCPkg.NewBookVehicle(infoLog, errorLog, vehicleRepository, customerRepository, bookingRepository, isAvaiForHire, getBookingDates)
+	getAllBookins := bookVehUCPkg.NewGetAllBookings(bookingRepository)
 
-	vc := controller.NewVehicleController(infoLog, errorLog, gvuc)
-	bc := controller.NewBookingController(infoLog, errorLog, bvuc, getAllBookinsUC)
+	vehicleController := controller.NewVehicleController(infoLog, errorLog, getVehicle)
+	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/vehicles/{uuid}", vc.HandleGetVehicleByUUID).Methods(http.MethodGet)
-	r.HandleFunc("/bookings", bc.HandleBookVehicle).Methods(http.MethodPost)
-	r.HandleFunc("/bookings", bc.HandleGetAllBookings).Methods(http.MethodGet)
+	r.HandleFunc("/vehicles/{uuid}", vehicleController.HandleGetVehicleByUUID).Methods(http.MethodGet)
+	r.HandleFunc("/bookings", bookingController.HandleBookVehicle).Methods(http.MethodPost)
+	r.HandleFunc("/bookings", bookingController.HandleGetAllBookings).Methods(http.MethodGet)
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",

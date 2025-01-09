@@ -18,13 +18,13 @@ type BookingController interface {
 type bookingController struct {
 	infoLog, errorLog  *log.Logger
 	bookVehicleUseCase bookingUCs.BookVehicleUseCase
-	getAllBookings     bookingUCs.GetAllBookingsUseCase
+	getAllBookings     bookingUCs.GetAllBookings
 }
 
 func NewBookingController(
 	infoLog, errorLog *log.Logger,
 	bookVehicleUseCase bookingUCs.BookVehicleUseCase,
-	getAllBookings bookingUCs.GetAllBookingsUseCase,
+	getAllBookings bookingUCs.GetAllBookings,
 ) BookingController {
 	return &bookingController{
 		infoLog:            infoLog,

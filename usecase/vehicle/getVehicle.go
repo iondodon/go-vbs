@@ -7,21 +7,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type GetVehicleUseCase interface {
+type GetVehicle interface {
 	ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error)
 }
 
-type getVehicleUseCase struct {
+type getVehicle struct {
 	vehicleRepository vehRepo.VehicleRepository
 }
 
-func NewGetVehicleUseCase(vehicleRepository vehRepo.VehicleRepository) GetVehicleUseCase {
-	return &getVehicleUseCase{
+func NewGetVehicle(vehicleRepository vehRepo.VehicleRepository) GetVehicle {
+	return &getVehicle{
 		vehicleRepository: vehicleRepository,
 	}
 }
 
-func (gvuc *getVehicleUseCase) ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
+func (gvuc *getVehicle) ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
 	vehicle, err := gvuc.vehicleRepository.FindByUUID(vUUID)
 	if err != nil {
 		return nil, err

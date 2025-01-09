@@ -6,19 +6,19 @@ import (
 	vehRepoPkg "github.com/iondodon/go-vbs/repository/vehicle"
 )
 
-type IsAvailableForHireUseCase interface {
+type IsAvailableForHire interface {
 	CheckForPeriod(vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
-type isAvailableForHireUseCase struct {
+type isAvailableForHire struct {
 	vehRepo vehRepoPkg.VehicleRepository
 }
 
-func NewIsAvailableForHireUseCase(vrp vehRepoPkg.VehicleRepository) IsAvailableForHireUseCase {
-	return &isAvailableForHireUseCase{vehRepo: vrp}
+func NewIsAvailableForHire(vrp vehRepoPkg.VehicleRepository) IsAvailableForHire {
+	return &isAvailableForHire{vehRepo: vrp}
 }
 
-func (us *isAvailableForHireUseCase) CheckForPeriod(vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (us *isAvailableForHire) CheckForPeriod(vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
 	hasBookedDates, err := us.vehRepo.VehicleHasBookedDatesOnPeriod(vUUID, period)
 
 	if err != nil {

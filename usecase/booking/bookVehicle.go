@@ -26,17 +26,17 @@ type bookVehicleUseCase struct {
 	vehRepo            vehRepo.VehicleRepository
 	custRepo           custRepo.CustomerRepository
 	bookingRepo        bookingRepo.BookingRepository
-	isAvailableForHire vehUCs.IsAvailableForHireUseCase
-	getBookingDates    bdUCs.GetBookingDatesUseCase
+	isAvailableForHire vehUCs.IsAvailableForHire
+	getBookingDates    bdUCs.GetBookingDates
 }
 
-func NewBookVehicleUseCase(
+func NewBookVehicle(
 	infoLog, errorLog *log.Logger,
 	vrp vehRepo.VehicleRepository,
 	crp custRepo.CustomerRepository,
 	brp bookingRepo.BookingRepository,
-	isAvailableForHireUS vehUCs.IsAvailableForHireUseCase,
-	getBookingDatesUseCase bdUCs.GetBookingDatesUseCase,
+	isAvailableForHireUS vehUCs.IsAvailableForHire,
+	getBookingDatesUseCase bdUCs.GetBookingDates,
 ) BookVehicleUseCase {
 	return &bookVehicleUseCase{
 		infoLog:            infoLog,
