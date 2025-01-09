@@ -17,11 +17,11 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type BookVehicleUseCase interface {
+type BookVehicle interface {
 	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
 }
 
-type bookVehicleUseCase struct {
+type bookVehicle struct {
 	infoLog, errorLog  *log.Logger
 	vehRepo            vehRepo.VehicleRepository
 	custRepo           custRepo.CustomerRepository
@@ -37,8 +37,8 @@ func NewBookVehicle(
 	brp bookingRepo.BookingRepository,
 	isAvailableForHireUS vehUCs.IsAvailableForHire,
 	getBookingDatesUseCase bdUCs.GetBookingDates,
-) BookVehicleUseCase {
-	return &bookVehicleUseCase{
+) BookVehicle {
+	return &bookVehicle{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		vehRepo:            vrp,
@@ -49,7 +49,7 @@ func NewBookVehicle(
 	}
 }
 
-func (uc *bookVehicleUseCase) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *bookVehicle) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(vehicleUUID, period)
 	if err != nil {
 		return err

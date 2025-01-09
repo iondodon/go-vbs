@@ -17,8 +17,6 @@ import (
 	bookVehUCPkg "github.com/iondodon/go-vbs/usecase/booking"
 	bookingDateUCPkg "github.com/iondodon/go-vbs/usecase/bookingdate"
 	vehicleUCPKG "github.com/iondodon/go-vbs/usecase/vehicle"
-
-	"github.com/gorilla/mux"
 )
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
@@ -52,14 +50,14 @@ func main() {
 	vehicleController := controller.NewVehicleController(infoLog, errorLog, getVehicle)
 	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
 
-	r := mux.NewRouter()
-	r.HandleFunc("/vehicles/{uuid}", vehicleController.HandleGetVehicleByUUID).Methods(http.MethodGet)
-	r.HandleFunc("/bookings", bookingController.HandleBookVehicle).Methods(http.MethodPost)
-	r.HandleFunc("/bookings", bookingController.HandleGetAllBookings).Methods(http.MethodGet)
+	router := http.NewServeMux()
+	router.HandleFunc("GET /vehicles/{uuid}", vehicleController.HandleGetVehicleByUUID)
+	router.HandleFunc("POST /bookings", bookingController.HandleBookVehicle)
+	router.HandleFunc("GET /bookings", bookingController.HandleGetAllBookings)
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",
-		Handler:      r,
+		Handler:      router,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 		ErrorLog:     errorLog,

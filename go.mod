@@ -1,14 +1,13 @@
 module github.com/iondodon/go-vbs
 
-go 1.21.1
+go 1.23.4
 
 require (
-	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/google/uuid v1.3.1
-	github.com/gorilla/mux v1.8.0
-	github.com/mattn/go-sqlite3 v1.14.17
-	github.com/stretchr/testify v1.8.4
-	go.uber.org/mock v0.3.0
+	github.com/DATA-DOG/go-sqlmock v1.5.2
+	github.com/google/uuid v1.6.0
+	github.com/mattn/go-sqlite3 v1.14.24
+	github.com/stretchr/testify v1.10.0
+	go.uber.org/mock v0.5.0
 )
 
 require (

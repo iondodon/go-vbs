@@ -8,7 +8,6 @@ import (
 	vehUCs "github.com/iondodon/go-vbs/usecase/vehicle"
 
 	uuidLib "github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
 type VehicleController interface {
@@ -32,8 +31,7 @@ func NewVehicleController(
 }
 
 func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	uuid := vars["uuid"]
+	uuid := r.PathValue("uuid")
 
 	vUUID, err := uuidLib.Parse(uuid)
 	if err != nil {
