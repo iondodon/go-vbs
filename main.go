@@ -48,10 +48,12 @@ func main() {
 	bookVehicle := bookVehUCPkg.NewBookVehicle(infoLog, errorLog, vehicleRepository, customerRepository, bookingRepository, isAvaiForHire, getBookingDates)
 	getAllBookins := bookVehUCPkg.NewGetAllBookings(bookingRepository)
 
+	loginController := controller.NewLoginController(infoLog, errorLog)
 	vehicleController := controller.NewVehicleController(infoLog, errorLog, getVehicle)
 	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
 
 	router := http.NewServeMux()
+	router.Handle("GET /login", controller.Handler(loginController.Login))
 	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleController.HandleGetVehicleByUUID))
 	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
 	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))
