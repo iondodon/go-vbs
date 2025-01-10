@@ -11,8 +11,8 @@ import (
 )
 
 type BookingController interface {
-	HandleBookVehicle(w http.ResponseWriter, r *http.Request)
-	HandleGetAllBookings(w http.ResponseWriter, r *http.Request)
+	HandleBookVehicle(w http.ResponseWriter, r *http.Request) error
+	HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error
 }
 
 type bookingController struct {
@@ -34,44 +34,43 @@ func NewBookingController(
 	}
 }
 
-func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) {
+func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
 	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	var cbr dto.CreateBookingRequestDTO
 	err = json.Unmarshal(reqBody, &cbr)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	err = c.bookVehicleUseCase.ForPeriod(cbr.CustomerUUID, cbr.VehicleUUID, cbr.DatePeriodD)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+
+	return nil
 }
 
-func (c *bookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) {
+func (c *bookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
 	bookings, err := c.getAllBookings.Execute()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	jsonResp, err := json.Marshal(bookings)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResp)
+
+	return nil
 }

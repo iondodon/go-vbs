@@ -51,9 +51,9 @@ func main() {
 	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
 
 	router := http.NewServeMux()
-	router.HandleFunc("GET /vehicles/{uuid}", vehicleController.HandleGetVehicleByUUID)
-	router.HandleFunc("POST /bookings", bookingController.HandleBookVehicle)
-	router.HandleFunc("GET /bookings", bookingController.HandleGetAllBookings)
+	router.HandleFunc("GET /vehicles/{uuid}", controller.Handler(vehicleController.HandleGetVehicleByUUID))
+	router.HandleFunc("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
+	router.HandleFunc("GET /bookings", controller.Handler(bookingController.HandleGetAllBookings))
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",

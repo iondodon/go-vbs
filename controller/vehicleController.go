@@ -11,7 +11,7 @@ import (
 )
 
 type VehicleController interface {
-	HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request)
+	HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error
 }
 
 type vehicleController struct {
@@ -30,27 +30,28 @@ func NewVehicleController(
 	}
 }
 
-func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) {
+func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
 	uuid := r.PathValue("uuid")
 
 	vUUID, err := uuidLib.Parse(uuid)
 	if err != nil {
-		vc.infoLog.Println(err)
+		return err
 	}
 
 	vehicle, err := vc.getVehicleUseCase.ByUUID(vUUID)
 	if err != nil {
-		vc.infoLog.Println(err)
+		return err
 	}
 
 	responseJSON, err := json.Marshal(vehicle)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJSON)
+
+	return nil
 }
