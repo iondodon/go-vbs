@@ -54,6 +54,7 @@ func main() {
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(loginController.Login))
+	router.Handle("GET /refresh", controller.Handler(loginController.Refresh))
 	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleController.HandleGetVehicleByUUID))
 	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
 	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))

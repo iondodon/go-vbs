@@ -13,6 +13,7 @@ func JWT(next http.Handler) http.Handler {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(w, "Authorization header is required", http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
@@ -20,6 +21,7 @@ func JWT(next http.Handler) http.Handler {
 		parts := strings.Split(authHeader, " ")
 		if len(parts) != 2 || parts[0] != "Bearer" {
 			http.Error(w, "Invalid Authorization header format", http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
@@ -36,10 +38,11 @@ func JWT(next http.Handler) http.Handler {
 			}
 
 			// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-			return []byte("signingkeysigningkeysigni"), nil
+			return []byte("access_token_key"), nil
 		})
 		if err != nil {
 			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
