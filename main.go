@@ -48,7 +48,7 @@ func main() {
 	bookVehicle := bookVehUCPkg.NewBookVehicle(infoLog, errorLog, vehicleRepository, customerRepository, bookingRepository, isAvaiForHire, getBookingDates)
 	getAllBookins := bookVehUCPkg.NewGetAllBookings(bookingRepository)
 
-	tokenController := controller.NewLoginController(infoLog, errorLog)
+	tokenController := controller.NewTokenController(infoLog, errorLog)
 	vehicleController := controller.NewVehicleController(infoLog, errorLog, getVehicle)
 	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
 
