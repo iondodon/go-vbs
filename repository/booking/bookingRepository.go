@@ -1,19 +1,12 @@
 package booking
 
 import (
+	"context"
+
+	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/integration"
+	"github.com/iondodon/go-vbs/repository"
 )
-
-const insertNewBookingSQL = `
-	INSERT INTO booking(uuid, vehicle_id, customer_id)
-	VALUES (?, ?, ?)
-`
-
-const selectAllBookings = `
-	SELECT b.id, b.uuid, b.vehicle_id, b.customer_id 
-	FROM booking b
-`
 
 type BookingRepository interface {
 	Save(b *domain.Booking) error
@@ -21,44 +14,45 @@ type BookingRepository interface {
 }
 
 type bookingRepository struct {
-	db integration.DB
+	queries *repository.Queries
 }
 
-func NewBookingRepository(db integration.DB) BookingRepository {
-	return &bookingRepository{db: db}
+func NewBookingRepository(queries *repository.Queries) BookingRepository {
+	return &bookingRepository{queries: queries}
 }
 
 func (repo *bookingRepository) Save(b *domain.Booking) error {
-	_, err := repo.db.Exec(insertNewBookingSQL, b.UUID, b.Vehicle.ID, b.Customer.ID)
+	err := repo.queries.InsertNewBooking(context.Background(), repository.InsertNewBookingParams{
+		Uuid:       b.UUID,
+		VehicleID:  b.Vehicle.ID,
+		CustomerID: b.Customer.ID,
+	})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (repo *bookingRepository) GetAll() ([]domain.Booking, error) {
-	rows, err := repo.db.Query(selectAllBookings)
+	bookingsRows, err := repo.queries.SelectAllBookings(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
 	bookings := []domain.Booking{}
-	for rows.Next() {
+	for _, booking_row := range bookingsRows {
 		booking := domain.Booking{}
-		booking.Vehicle = &domain.Vehicle{}
-		booking.Customer = &domain.Customer{}
+		booking.ID = booking_row.ID.(int64)
+		booking.UUID = booking_row.Uuid.(uuid.UUID)
 
-		err := rows.Scan(&booking.ID, &booking.UUID, &booking.Vehicle.ID, &booking.Customer.ID)
-		if err != nil {
-			return nil, err
-		}
+		booking.Vehicle = &domain.Vehicle{}
+		booking.Vehicle.ID = booking_row.VehicleID
+
+		booking.Customer = &domain.Customer{}
+		booking.Customer.ID = booking_row.CustomerID
 
 		bookings = append(bookings, booking)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return bookings, nil

@@ -1,0 +1,62 @@
+CREATE TABLE vehicle_category (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(10) NOT NULL,
+    price_per_day REAL NOT NULL
+);
+
+CREATE TABLE booking_date (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    time TIMESTAMP NOT NULL
+);
+
+CREATE TABLE customer (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) NOT NULL,
+    username VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE booking (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    vehicle_id BIGINT NOT NULL,
+    customer_id BIGINT NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customer(id),
+    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id)
+);
+
+CREATE TABLE bookings_bookingdates (
+    booking_id BIGINT NOT NULL,
+    bookingdate_id BIGINT NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES booking(id),
+    FOREIGN KEY (bookingdate_id) REFERENCES booking_date(id)
+);
+
+CREATE TABLE vehicle (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    registration_number VARCHAR(10) UNIQUE NOT NULL,
+    make VARCHAR(20) NOT NULL,
+    model VARCHAR(20) NOT NULL,
+    fuel_type VARCHAR(10) NOT NULL,
+    category_id BIGINT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES vehicle_category(id)
+);
+
+
+INSERT INTO vehicle_category(id, category, price_per_day)
+VALUES (1, 'Van', 12.321);
+
+INSERT INTO vehicle (id, uuid, registration_number, make, model, fuel_type, category_id)
+VALUES (1, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'ABC-123', 'Make', 'Y', "DIESEL", 1);
+
+INSERT INTO customer (id, uuid, username)
+VALUES (1, 'eba846c2-1d57-4f5d-b17e-fa9f922ac093', 'username123');
+
+INSERT INTO booking(id, uuid, vehicle_id, customer_id)
+VALUES (1, 'de399bc0-a622-4449-b264-5783562c38fa', 1, 1);
+
+INSERT INTO booking_date (id, time)
+VALUES (1, current_date);
+
+INSERT INTO bookings_bookingdates (booking_id, bookingdate_id)
+VALUES (1, 1)

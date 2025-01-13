@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
+	"github.com/iondodon/go-vbs/repository"
 	bookingRepoPkg "github.com/iondodon/go-vbs/repository/booking"
 	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
 	custRepo "github.com/iondodon/go-vbs/repository/customer"
@@ -27,7 +29,7 @@ func main() {
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	db, err := integration.NewInMemDBConn()
-	defer func(db integration.DB) {
+	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
 			errorLog.Fatal(err)
@@ -37,10 +39,12 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	vehicleRepository := vehRepo.NewVehicleRepository(db)
-	customerRepository := custRepo.NewCustomerRepository(db)
-	bookingRepository := bookingRepoPkg.NewBookingRepository(db)
-	bookingDateRepository := bdRepoPkg.NewBookingDateRepository(db)
+	queries := repository.New(db)
+
+	vehicleRepository := vehRepo.NewVehicleRepository(queries)
+	customerRepository := custRepo.NewCustomerRepository(queries)
+	bookingRepository := bookingRepoPkg.NewBookingRepository(queries)
+	bookingDateRepository := bdRepoPkg.NewBookingDateRepository(queries)
 
 	getVehicle := vehicleUCPKG.NewGetVehicle(vehicleRepository)
 	isAvaiForHire := vehicleUCPKG.NewIsAvailableForHire(vehicleRepository)

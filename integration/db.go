@@ -70,14 +70,7 @@ const ddl = `
 	);
 `
 
-type DB interface {
-	Close() error
-	QueryRow(query string, args ...any) *sql.Row
-	Query(query string, args ...any) (*sql.Rows, error)
-	Exec(query string, args ...any) (sql.Result, error)
-}
-
-func NewInMemDBConn() (DB, error) {
+func NewInMemDBConn() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
@@ -85,16 +78,6 @@ func NewInMemDBConn() (DB, error) {
 
 	err = db.Ping()
 	if err != nil {
-		return nil, err
-	}
-
-	// DDL
-	if _, err = db.Exec(ddl); err != nil {
-		return nil, err
-	}
-
-	// Insert mock data
-	if _, err = db.Exec(insertMockData); err != nil {
 		return nil, err
 	}
 

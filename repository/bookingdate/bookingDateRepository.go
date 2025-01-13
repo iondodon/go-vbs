@@ -1,22 +1,12 @@
 package bookingdate
 
 import (
+	"context"
 	"time"
 
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/integration"
+	"github.com/iondodon/go-vbs/repository"
 )
-
-const findAllInPeriodInclusive = `
-	SELECT bd.id, bd.time
-	FROM booking_date bd
-	WHERE bd.time >= ? AND bd.time <= ?
-`
-
-const saveNewBookingDate = `
-	INSERT INTO booking_dates(time)
-	VALUES (?)
-`
 
 type BookingDateRepository interface {
 	FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error)
@@ -24,43 +14,38 @@ type BookingDateRepository interface {
 }
 
 type bookingDateRepository struct {
-	db integration.DB
+	queries *repository.Queries
 }
 
-func NewBookingDateRepository(db integration.DB) BookingDateRepository {
-	return &bookingDateRepository{db: db}
+func NewBookingDateRepository(queries *repository.Queries) BookingDateRepository {
+	return &bookingDateRepository{queries: queries}
 }
 
 func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error) {
 	var bookingDates []*domain.BookingDate
 
-	rows, err := repo.db.Query(findAllInPeriodInclusive, from, to)
+	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(context.Background(), repository.FindAllInPeriodInclusiveParams{
+		Time:   from,
+		Time_2: to,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
-
-	for rows.Next() {
+	for _, booking_date_row := range booking_date_rows {
 		bd := domain.BookingDate{}
 
-		err := rows.Scan(&bd.ID, &bd.Time)
-		if err != nil {
-			return nil, err
-		}
+		bd.ID = booking_date_row.ID.(int64)
+		bd.Time = booking_date_row.Time
 
 		bookingDates = append(bookingDates, &bd)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return bookingDates, nil
 }
 
 func (repo *bookingDateRepository) Save(bd *domain.BookingDate) error {
-	_, err := repo.db.Exec(saveNewBookingDate, bd.Time)
+	err := repo.queries.SaveNewBookingDate(context.Background(), bd.Time)
 	if err != nil {
 		return err
 	}
