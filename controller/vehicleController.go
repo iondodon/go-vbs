@@ -38,7 +38,7 @@ func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *ht
 		return err
 	}
 
-	vehicle, err := vc.getVehicleUseCase.ByUUID(vUUID)
+	vehicle, err := vc.getVehicleUseCase.ByUUID(r.Context(), vUUID)
 	if err != nil {
 		return err
 	}
