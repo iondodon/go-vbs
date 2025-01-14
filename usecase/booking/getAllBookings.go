@@ -1,13 +1,15 @@
 package booking
 
 import (
+	"context"
+
 	"github.com/iondodon/go-vbs/domain"
 
 	bookingRepos "github.com/iondodon/go-vbs/repository/booking"
 )
 
 type GetAllBookings interface {
-	Execute() ([]domain.Booking, error)
+	Execute(context.Context) ([]domain.Booking, error)
 }
 
 type getAllBookings struct {
@@ -18,6 +20,6 @@ func NewGetAllBookings(bookingRepo bookingRepos.BookingRepository) GetAllBooking
 	return &getAllBookings{bookingRepo: bookingRepo}
 }
 
-func (uc *getAllBookings) Execute() ([]domain.Booking, error) {
-	return uc.bookingRepo.GetAll()
+func (uc *getAllBookings) Execute(ctx context.Context) ([]domain.Booking, error) {
+	return uc.bookingRepo.GetAll(ctx)
 }

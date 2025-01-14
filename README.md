@@ -4,3 +4,4 @@ This is [VBS](https://github.com/iondodon/vbs) (originally implemented in Java) 
 
 - goose
 - sqlc
+- mockery

@@ -1,6 +1,8 @@
 package vehicle
 
 import (
+	"context"
+
 	"github.com/iondodon/go-vbs/domain"
 	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
 
@@ -8,7 +10,7 @@ import (
 )
 
 type GetVehicle interface {
-	ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error)
+	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
 }
 
 type getVehicle struct {
@@ -21,8 +23,8 @@ func NewGetVehicle(vehicleRepository vehRepo.VehicleRepository) GetVehicle {
 	}
 }
 
-func (gvuc *getVehicle) ByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
-	vehicle, err := gvuc.vehicleRepository.FindByUUID(vUUID)
+func (gvuc *getVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
+	vehicle, err := gvuc.vehicleRepository.FindByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
 	}

@@ -24,7 +24,7 @@ func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) GetBookingDates 
 }
 
 func (uc *getBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
-	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(period.FromDate, period.ToDate)
+	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
 	}

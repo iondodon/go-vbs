@@ -12,8 +12,8 @@ import (
 )
 
 type VehicleRepository interface {
-	FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error)
-	VehicleHasBookedDatesOnPeriod(vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
+	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
+	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
 type vehicleRepository struct {
@@ -24,8 +24,8 @@ func NewVehicleRepository(queries *repository.Queries) VehicleRepository {
 	return &vehicleRepository{queries: queries}
 }
 
-func (repo *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, error) {
-	vehicleRow, err := repo.queries.GetVehicleByUUID(context.Background(), vUUID)
+func (repo *vehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+	vehicleRow, err := repo.queries.GetVehicleByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (repo *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, 
 	vehCat.VehicleType = domain.VehicleType(vehicleRow.Category)
 	vehicle.VehicleCategory = &vehCat
 
-	vehicleBookingsRows, err := repo.queries.SelectBookingsByVehicleID(context.Background(), vehicle.ID)
+	vehicleBookingsRows, err := repo.queries.SelectBookingsByVehicleID(ctx, vehicle.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +65,8 @@ func (repo *vehicleRepository) FindByUUID(vUUID uuidLib.UUID) (*domain.Vehicle, 
 	return &vehicle, nil
 }
 
-func (repo *vehicleRepository) VehicleHasBookedDatesOnPeriod(vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
-	res, err := repo.queries.VehicleHasBookedDatesOnPeriod(context.Background(), repository.VehicleHasBookedDatesOnPeriodParams{
+func (repo *vehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+	res, err := repo.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,
 		Time_2: period.ToDate,

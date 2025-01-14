@@ -4,6 +4,8 @@
 package vehicle
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
@@ -38,8 +40,8 @@ func (_m *MockVehicleRepository) EXPECT() *MockVehicleRepository_Expecter {
 }
 
 // FindByUUID provides a mock function for the type MockVehicleRepository
-func (_mock *MockVehicleRepository) FindByUUID(vUUID uuid.UUID) (*domain.Vehicle, error) {
-	ret := _mock.Called(vUUID)
+func (_mock *MockVehicleRepository) FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
+	ret := _mock.Called(ctx, vUUID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindByUUID")
@@ -47,18 +49,18 @@ func (_mock *MockVehicleRepository) FindByUUID(vUUID uuid.UUID) (*domain.Vehicle
 
 	var r0 *domain.Vehicle
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uuid.UUID) (*domain.Vehicle, error)); ok {
-		return returnFunc(vUUID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*domain.Vehicle, error)); ok {
+		return returnFunc(ctx, vUUID)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uuid.UUID) *domain.Vehicle); ok {
-		r0 = returnFunc(vUUID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) *domain.Vehicle); ok {
+		r0 = returnFunc(ctx, vUUID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.Vehicle)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(uuid.UUID) error); ok {
-		r1 = returnFunc(vUUID)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = returnFunc(ctx, vUUID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -71,14 +73,15 @@ type MockVehicleRepository_FindByUUID_Call struct {
 }
 
 // FindByUUID is a helper method to define mock.On call
+//   - ctx
 //   - vUUID
-func (_e *MockVehicleRepository_Expecter) FindByUUID(vUUID interface{}) *MockVehicleRepository_FindByUUID_Call {
-	return &MockVehicleRepository_FindByUUID_Call{Call: _e.mock.On("FindByUUID", vUUID)}
+func (_e *MockVehicleRepository_Expecter) FindByUUID(ctx interface{}, vUUID interface{}) *MockVehicleRepository_FindByUUID_Call {
+	return &MockVehicleRepository_FindByUUID_Call{Call: _e.mock.On("FindByUUID", ctx, vUUID)}
 }
 
-func (_c *MockVehicleRepository_FindByUUID_Call) Run(run func(vUUID uuid.UUID)) *MockVehicleRepository_FindByUUID_Call {
+func (_c *MockVehicleRepository_FindByUUID_Call) Run(run func(ctx context.Context, vUUID uuid.UUID)) *MockVehicleRepository_FindByUUID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uuid.UUID))
+		run(args[0].(context.Context), args[1].(uuid.UUID))
 	})
 	return _c
 }
@@ -88,14 +91,14 @@ func (_c *MockVehicleRepository_FindByUUID_Call) Return(vehicle *domain.Vehicle,
 	return _c
 }
 
-func (_c *MockVehicleRepository_FindByUUID_Call) RunAndReturn(run func(vUUID uuid.UUID) (*domain.Vehicle, error)) *MockVehicleRepository_FindByUUID_Call {
+func (_c *MockVehicleRepository_FindByUUID_Call) RunAndReturn(run func(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)) *MockVehicleRepository_FindByUUID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // VehicleHasBookedDatesOnPeriod provides a mock function for the type MockVehicleRepository
-func (_mock *MockVehicleRepository) VehicleHasBookedDatesOnPeriod(vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
-	ret := _mock.Called(vUUID, period)
+func (_mock *MockVehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+	ret := _mock.Called(ctx, vUUID, period)
 
 	if len(ret) == 0 {
 		panic("no return value specified for VehicleHasBookedDatesOnPeriod")
@@ -103,16 +106,16 @@ func (_mock *MockVehicleRepository) VehicleHasBookedDatesOnPeriod(vUUID uuid.UUI
 
 	var r0 bool
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(uuid.UUID, dto.DatePeriodDTO) (bool, error)); ok {
-		return returnFunc(vUUID, period)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, dto.DatePeriodDTO) (bool, error)); ok {
+		return returnFunc(ctx, vUUID, period)
 	}
-	if returnFunc, ok := ret.Get(0).(func(uuid.UUID, dto.DatePeriodDTO) bool); ok {
-		r0 = returnFunc(vUUID, period)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, dto.DatePeriodDTO) bool); ok {
+		r0 = returnFunc(ctx, vUUID, period)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
-	if returnFunc, ok := ret.Get(1).(func(uuid.UUID, dto.DatePeriodDTO) error); ok {
-		r1 = returnFunc(vUUID, period)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID, dto.DatePeriodDTO) error); ok {
+		r1 = returnFunc(ctx, vUUID, period)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -125,15 +128,16 @@ type MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call struct {
 }
 
 // VehicleHasBookedDatesOnPeriod is a helper method to define mock.On call
+//   - ctx
 //   - vUUID
 //   - period
-func (_e *MockVehicleRepository_Expecter) VehicleHasBookedDatesOnPeriod(vUUID interface{}, period interface{}) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
-	return &MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call{Call: _e.mock.On("VehicleHasBookedDatesOnPeriod", vUUID, period)}
+func (_e *MockVehicleRepository_Expecter) VehicleHasBookedDatesOnPeriod(ctx interface{}, vUUID interface{}, period interface{}) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
+	return &MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call{Call: _e.mock.On("VehicleHasBookedDatesOnPeriod", ctx, vUUID, period)}
 }
 
-func (_c *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call) Run(run func(vUUID uuid.UUID, period dto.DatePeriodDTO)) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
+func (_c *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call) Run(run func(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO)) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uuid.UUID), args[1].(dto.DatePeriodDTO))
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(dto.DatePeriodDTO))
 	})
 	return _c
 }
@@ -143,7 +147,7 @@ func (_c *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call) Return(b boo
 	return _c
 }
 
-func (_c *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call) RunAndReturn(run func(vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
+func (_c *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call) RunAndReturn(run func(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)) *MockVehicleRepository_VehicleHasBookedDatesOnPeriod_Call {
 	_c.Call.Return(run)
 	return _c
 }

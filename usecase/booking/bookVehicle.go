@@ -52,7 +52,7 @@ func NewBookVehicle(
 }
 
 func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
-	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(vehicleUUID, period)
+	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
@@ -67,12 +67,12 @@ func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, v
 		return err
 	}
 
-	veh, err := uc.vehRepo.FindByUUID(vehicleUUID)
+	veh, err := uc.vehRepo.FindByUUID(ctx, vehicleUUID)
 	if err != nil {
 		return err
 	}
 
-	cust, err := uc.custRepo.FindByUUID(customerUID)
+	cust, err := uc.custRepo.FindByUUID(ctx, customerUID)
 	if err != nil {
 		return err
 	}

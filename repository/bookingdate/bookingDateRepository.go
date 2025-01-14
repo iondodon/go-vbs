@@ -10,7 +10,7 @@ import (
 )
 
 type BookingDateRepository interface {
-	FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error)
+	FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error)
 	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
 }
 
@@ -22,10 +22,10 @@ func NewBookingDateRepository(queries *repository.Queries) BookingDateRepository
 	return &bookingDateRepository{queries: queries}
 }
 
-func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error) {
+func (repo *bookingDateRepository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
 	var bookingDates []*domain.BookingDate
 
-	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(context.Background(), repository.FindAllInPeriodInclusiveParams{
+	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
 		Time:   from,
 		Time_2: to,
 	})

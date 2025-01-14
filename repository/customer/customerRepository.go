@@ -9,7 +9,7 @@ import (
 )
 
 type CustomerRepository interface {
-	FindByUUID(cUUID uuidlib.UUID) (*domain.Customer, error)
+	FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error)
 }
 
 type customerRepository struct {
@@ -20,10 +20,10 @@ func NewCustomerRepository(queries *repository.Queries) CustomerRepository {
 	return &customerRepository{queries: queries}
 }
 
-func (repo *customerRepository) FindByUUID(cUUID uuidlib.UUID) (*domain.Customer, error) {
+func (repo *customerRepository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
 	var customer domain.Customer
 
-	customerRow, err := repo.queries.GetCustomerByUUID(context.Background(), cUUID)
+	customerRow, err := repo.queries.GetCustomerByUUID(ctx, cUUID)
 	if err != nil {
 		return nil, err
 	}

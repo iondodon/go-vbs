@@ -68,7 +68,7 @@ func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Req
 }
 
 func (c *bookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
-	bookings, err := c.getAllBookings.Execute()
+	bookings, err := c.getAllBookings.Execute(r.Context())
 	if err != nil {
 		return err
 	}

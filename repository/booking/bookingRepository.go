@@ -11,7 +11,7 @@ import (
 
 type BookingRepository interface {
 	Save(context.Context, *sql.Tx, *domain.Booking) error
-	GetAll() ([]domain.Booking, error)
+	GetAll(context.Context) ([]domain.Booking, error)
 }
 
 type bookingRepository struct {
@@ -34,8 +34,8 @@ func (repo *bookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.B
 	return nil
 }
 
-func (repo *bookingRepository) GetAll() ([]domain.Booking, error) {
-	bookingsRows, err := repo.queries.SelectAllBookings(context.Background())
+func (repo *bookingRepository) GetAll(ctx context.Context) ([]domain.Booking, error) {
+	bookingsRows, err := repo.queries.SelectAllBookings(ctx)
 	if err != nil {
 		return nil, err
 	}

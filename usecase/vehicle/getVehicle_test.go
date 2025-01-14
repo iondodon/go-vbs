@@ -1,6 +1,7 @@
 package vehicle
 
 import (
+	"context"
 	"testing"
 
 	"github.com/iondodon/go-vbs/domain"
@@ -22,9 +23,9 @@ func Test_getVehicle_ByUUID(t *testing.T) {
 	expectedVeh := &domain.Vehicle{}
 
 	t.Run("the repository is called with the correct UUID", func(t *testing.T) {
-		mockVehRepo.EXPECT().FindByUUID(uuid).Return(expectedVeh, nil).Times(1)
+		mockVehRepo.EXPECT().FindByUUID(context.Background(), uuid).Return(expectedVeh, nil).Times(1)
 
-		veh, err := gvuc.ByUUID(uuid)
+		veh, err := gvuc.ByUUID(context.Background(), uuid)
 
 		assert.Nil(t, err)
 		assert.Equal(t, expectedVeh, veh)
