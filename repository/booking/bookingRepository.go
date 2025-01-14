@@ -2,6 +2,7 @@ package booking
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
@@ -9,7 +10,7 @@ import (
 )
 
 type BookingRepository interface {
-	Save(b *domain.Booking) error
+	Save(context.Context, *sql.Tx, *domain.Booking) error
 	GetAll() ([]domain.Booking, error)
 }
 
@@ -21,13 +22,12 @@ func NewBookingRepository(queries *repository.Queries) BookingRepository {
 	return &bookingRepository{queries: queries}
 }
 
-func (repo *bookingRepository) Save(b *domain.Booking) error {
-	err := repo.queries.InsertNewBooking(context.Background(), repository.InsertNewBookingParams{
+func (repo *bookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
+	if err := repo.queries.WithTx(tx).InsertNewBooking(ctx, repository.InsertNewBookingParams{
 		Uuid:       b.UUID,
 		VehicleID:  b.Vehicle.ID,
 		CustomerID: b.Customer.ID,
-	})
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 

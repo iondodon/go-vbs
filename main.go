@@ -54,7 +54,7 @@ func main() {
 
 	tokenController := controller.NewTokenController(infoLog, errorLog)
 	vehicleController := controller.NewVehicleController(infoLog, errorLog, getVehicle)
-	bookingController := controller.NewBookingController(infoLog, errorLog, bookVehicle, getAllBookins)
+	bookingController := controller.NewBookingController(infoLog, errorLog, db, bookVehicle, getAllBookins)
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(tokenController.Login))

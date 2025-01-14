@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io"
 	"log"
@@ -17,18 +18,21 @@ type BookingController interface {
 
 type bookingController struct {
 	infoLog, errorLog  *log.Logger
+	db                 *sql.DB
 	bookVehicleUseCase bookingUCs.BookVehicle
 	getAllBookings     bookingUCs.GetAllBookings
 }
 
 func NewBookingController(
 	infoLog, errorLog *log.Logger,
+	db *sql.DB,
 	bookVehicleUseCase bookingUCs.BookVehicle,
 	getAllBookings bookingUCs.GetAllBookings,
 ) BookingController {
 	return &bookingController{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
+		db:                 db,
 		bookVehicleUseCase: bookVehicleUseCase,
 		getAllBookings:     getAllBookings,
 	}
@@ -41,13 +45,20 @@ func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Req
 	}
 
 	var cbr dto.CreateBookingRequestDTO
-	err = json.Unmarshal(reqBody, &cbr)
-	if err != nil {
+	if err = json.Unmarshal(reqBody, &cbr); err != nil {
 		return err
 	}
 
-	err = c.bookVehicleUseCase.ForPeriod(cbr.CustomerUUID, cbr.VehicleUUID, cbr.DatePeriodD)
-	if err != nil {
+	tx, err := c.db.BeginTx(r.Context(), &sql.TxOptions{})
+
+	if err = c.bookVehicleUseCase.ForPeriod(r.Context(), tx, cbr.CustomerUUID, cbr.VehicleUUID, cbr.DatePeriodD); err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return rbErr
+		}
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
 		return err
 	}
 

@@ -2,6 +2,7 @@ package bookingdate
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/iondodon/go-vbs/domain"
@@ -10,7 +11,7 @@ import (
 
 type BookingDateRepository interface {
 	FindAllInPeriodInclusive(from, to time.Time) ([]*domain.BookingDate, error)
-	Save(bd *domain.BookingDate) error
+	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
 }
 
 type bookingDateRepository struct {
@@ -44,9 +45,8 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(from, to time.Time) 
 	return bookingDates, nil
 }
 
-func (repo *bookingDateRepository) Save(bd *domain.BookingDate) error {
-	err := repo.queries.SaveNewBookingDate(context.Background(), bd.Time)
-	if err != nil {
+func (repo *bookingDateRepository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
+	if err := repo.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
 		return err
 	}
 	return nil

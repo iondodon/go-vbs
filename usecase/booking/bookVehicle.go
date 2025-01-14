@@ -1,6 +1,8 @@
 package booking
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"log"
 
@@ -18,7 +20,7 @@ import (
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
 type BookVehicle interface {
-	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
+	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
 }
 
 type bookVehicle struct {
@@ -49,7 +51,7 @@ func NewBookVehicle(
 	}
 }
 
-func (uc *bookVehicle) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(vehicleUUID, period)
 	if err != nil {
 		return err
@@ -60,7 +62,7 @@ func (uc *bookVehicle) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.
 
 	uc.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
 
-	bDates, err := uc.getBookingDates.ForPeriod(customerUID, vehicleUUID, period)
+	bDates, err := uc.getBookingDates.ForPeriod(ctx, tx, customerUID, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
@@ -82,7 +84,7 @@ func (uc *bookVehicle) ForPeriod(customerUID, vehicleUUID uuid.UUID, period dto.
 		Customer:     cust,
 	}
 
-	err = uc.bookingRepo.Save(&booking)
+	err = uc.bookingRepo.Save(ctx, tx, &booking)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,8 @@
 package bookingdate
 
 import (
+	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +12,7 @@ import (
 )
 
 type GetBookingDates interface {
-	ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
+	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
 }
 
 type getBookingDates struct {
@@ -21,7 +23,7 @@ func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) GetBookingDates 
 	return &getBookingDates{bdRepo: bdRepo}
 }
 
-func (uc *getBookingDates) ForPeriod(customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (uc *getBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
@@ -38,7 +40,7 @@ func (uc *getBookingDates) ForPeriod(customerUUID, vehicleUUID uuid.UUID, period
 	for date := fromDate; date.Before(toDate) || date.Equal(toDate); date = date.Add(time.Hour + 24) {
 		if !contains(dates, date) {
 			bd := domain.BookingDate{Time: date}
-			uc.bdRepo.Save(&bd)
+			uc.bdRepo.Save(ctx, tx, &bd)
 			persistedBookingDates = append(persistedBookingDates, &bd)
 		}
 	}
