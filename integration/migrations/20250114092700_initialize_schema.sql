@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 CREATE TABLE vehicle_category (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     category VARCHAR(10) NOT NULL,
@@ -41,3 +43,11 @@ CREATE TABLE vehicle (
     category_id BIGINT NOT NULL,
     FOREIGN KEY (category_id) REFERENCES vehicle_category(id)
 );
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+SELECT 'DROP TABLE IF EXISTS "' || name || '";'
+FROM sqlite_master
+WHERE type = 'table';
+-- +goose StatementEnd

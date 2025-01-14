@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 INSERT INTO vehicle_category(id, category, price_per_day)
 VALUES (1, 'Van', 12.321);
 
@@ -14,4 +16,10 @@ INSERT INTO booking_date (id, time)
 VALUES (1, current_date);
 
 INSERT INTO bookings_bookingdates (booking_id, bookingdate_id)
-VALUES (1, 1)
+VALUES (1, 1);
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+
+-- +goose StatementEnd
