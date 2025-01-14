@@ -50,6 +50,9 @@ func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Req
 	}
 
 	tx, err := c.db.BeginTx(r.Context(), &sql.TxOptions{})
+	if err != nil {
+		return err
+	}
 
 	if err = c.bookVehicleUseCase.ForPeriod(r.Context(), tx, cbr.CustomerUUID, cbr.VehicleUUID, cbr.DatePeriodD); err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
