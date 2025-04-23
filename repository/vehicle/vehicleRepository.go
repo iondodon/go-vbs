@@ -2,6 +2,7 @@ package vehicle
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
@@ -32,7 +33,12 @@ func (repo *vehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUI
 
 	var vehicle domain.Vehicle
 	vehicle.ID = vehicleRow.ID.(int64)
-	vehicle.UUID = vehicleRow.Uuid.(uuidLib.UUID)
+	uuidStr := vehicleRow.Uuid.(string)
+	parsedUUID, err := uuidLib.Parse(uuidStr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse UUID: %w", err)
+	}
+	vehicle.UUID = parsedUUID
 	vehicle.RegistrationNumber = vehicleRow.RegistrationNumber
 	vehicle.Make = vehicleRow.Make
 	vehicle.Model = vehicleRow.Model
@@ -55,7 +61,12 @@ func (repo *vehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUI
 		var customer domain.Customer
 
 		booking.ID = vehicleBookingRow.ID.(int64)
-		booking.UUID = vehicleBookingRow.Uuid.(uuidLib.UUID)
+		uuidStr := vehicleBookingRow.Uuid.(string)
+		parsedUUID, err := uuidLib.Parse(uuidStr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse UUID: %w", err)
+		}
+		booking.UUID = parsedUUID
 		booking.Vehicle = &vehicle
 		booking.Customer = &customer
 

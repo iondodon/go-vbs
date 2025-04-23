@@ -1,0 +1,4 @@
+GET http://localhost:8000/login
+
+GET http://localhost:8000/vehicles/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpc3MiOiJ0ZXN0Iiwic3ViIjoic29tZWJvZHkiLCJhdWQiOlsic29tZWJvZHlfZWxzZSJdLCJleHAiOjE3NDU0MTEyMDksIm5iZiI6MTc0NTQwNzYwOSwiaWF0IjoxNzQ1NDA3NjA5LCJqdGkiOiIxIn0.31qiCZkE7_vuevM-l1zN2JjSRzhGb7F5VOH8nqrjVd0

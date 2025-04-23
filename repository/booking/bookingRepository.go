@@ -3,6 +3,7 @@ package booking
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
@@ -44,7 +45,12 @@ func (repo *bookingRepository) GetAll(ctx context.Context) ([]domain.Booking, er
 	for _, booking_row := range bookingsRows {
 		booking := domain.Booking{}
 		booking.ID = booking_row.ID.(int64)
-		booking.UUID = booking_row.Uuid.(uuid.UUID)
+		uuidStr := booking_row.Uuid.(string)
+		parsedUUID, err := uuid.Parse(uuidStr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse UUID: %w", err)
+		}
+		booking.UUID = parsedUUID
 
 		booking.Vehicle = &domain.Vehicle{}
 		booking.Vehicle.ID = booking_row.VehicleID
