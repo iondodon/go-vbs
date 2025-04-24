@@ -63,14 +63,19 @@ func main() {
 	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
 	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))
 
-	router.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir("./swagger-ui"))))
-	router.Handle("/docs/openapi.yaml", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/docs/openapi.yaml" {
-			http.NotFound(w, r)
-			return
-		}
-		http.ServeFile(w, r, "openapi.yaml")
-	}))
+	// Mount Swagger UI only in development mode
+	if os.Getenv("GO_ENV") == "development" {
+		infoLog.Println("Running in development mode - Swagger UI enabled")
+		router.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir("./swagger-ui"))))
+		router.Handle("/docs/openapi.yaml", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/docs/openapi.yaml" {
+				http.NotFound(w, r)
+				return
+			}
+			http.ServeFile(w, r, "openapi.yaml")
+		}))
+		infoLog.Println("Swagger UI available at http://localhost:8000/docs")
+	}
 
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",
@@ -82,7 +87,6 @@ func main() {
 
 	go func() {
 		infoLog.Println("Server started")
-		infoLog.Println("Swagger UI available at http://localhost:8000/docs")
 		if err := srv.ListenAndServe(); err != nil {
 			errorLog.Print(err)
 		}
