@@ -9,6 +9,9 @@ import (
 	"os/signal"
 	"time"
 
+	_ "github.com/iondodon/go-vbs/docs" // 👈 Required for swaggo
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
@@ -21,6 +24,17 @@ import (
 	bookingDateUCPkg "github.com/iondodon/go-vbs/usecase/bookingdate"
 	vehicleUCPKG "github.com/iondodon/go-vbs/usecase/vehicle"
 )
+
+// @title           Your API Title
+// @version         1.0
+// @description     Description of your API
+// @host            localhost:8080
+// @BasePath        /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and your JWT token.
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 
@@ -63,6 +77,8 @@ func main() {
 	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
 	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))
 
+	router.Handle("/swagger/", httpSwagger.WrapHandler)
+
 	srv := &http.Server{
 		Addr:         "127.0.0.1:8000",
 		Handler:      router,
@@ -73,6 +89,7 @@ func main() {
 
 	go func() {
 		infoLog.Println("Server started")
+		infoLog.Println("Swagger UI available at http://localhost:8000/swagger/index.html")
 		if err := srv.ListenAndServe(); err != nil {
 			errorLog.Print(err)
 		}

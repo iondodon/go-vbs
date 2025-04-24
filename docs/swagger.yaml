@@ -1,0 +1,64 @@
+basePath: /
+definitions:
+  dto.CreateBookingRequestDTO:
+    properties:
+      customer_uuid:
+        type: string
+      date_period:
+        $ref: '#/definitions/dto.DatePeriodDTO'
+      vehicle_uuid:
+        type: string
+    type: object
+  dto.DatePeriodDTO:
+    properties:
+      from_date:
+        type: string
+      to_date:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Description of your API
+  title: Your API Title
+  version: "1.0"
+paths:
+  /bookings:
+    post:
+      consumes:
+      - application/json
+      description: Books a vehicle for a given customer and period
+      parameters:
+      - description: Booking request
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBookingRequestDTO'
+      produces:
+      - text/plain
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a booking
+      tags:
+      - bookings
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and your JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
