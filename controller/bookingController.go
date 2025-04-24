@@ -38,18 +38,6 @@ func NewBookingController(
 	}
 }
 
-// HandleBookVehicle godoc
-// @Summary      Create a booking
-// @Description  Books a vehicle for a given customer and period
-// @Tags         bookings
-// @Security     BearerAuth
-// @Accept       json
-// @Produce      plain
-// @Param        booking body dto.CreateBookingRequestDTO true "Booking request"
-// @Success      204 {string} string "No Content"
-// @Failure      400 {string} string "Bad request"
-// @Failure      500 {string} string "Internal server error"
-// @Router       /bookings [post]
 func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
 	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {

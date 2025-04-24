@@ -1,14 +1,86 @@
 openapi: 3.0.0
 info:
-  title: Your API Title
-  description: Description of your API
+  title: Vehicle Booking System API
+  description: API for booking vehicles and managing reservations
   version: "1.0"
-  contact: {}
+  contact:
+    name: Ion Dodon
+    url: https://github.com/iondodon/go-vbs
 
 servers:
-  - url: http://localhost:8080/
+  - url: http://localhost:8000/
+    description: Local development server
 
 paths:
+  /login:
+    get:
+      summary: Login to the system
+      description: Returns access and refresh tokens for authentication
+      tags:
+        - authentication
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "500":
+          description: Internal server error
+
+  /refresh:
+    get:
+      summary: Refresh authentication tokens
+      description: Uses a refresh token to obtain a new access token
+      tags:
+        - authentication
+      requestBody:
+        description: Refresh token
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "200":
+          description: Tokens refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Invalid refresh token
+        "500":
+          description: Internal server error
+
+  /vehicles/{uuid}:
+    get:
+      summary: Get vehicle by UUID
+      description: Retrieves vehicle details by its UUID
+      tags:
+        - vehicles
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the vehicle to retrieve
+      responses:
+        "200":
+          description: Vehicle details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vehicle"
+        "400":
+          description: Invalid UUID format
+        "404":
+          description: Vehicle not found
+        "500":
+          description: Internal server error
+
   /bookings:
     post:
       summary: Create a booking
@@ -24,11 +96,7 @@ paths:
               $ref: "#/components/schemas/CreateBookingRequestDTO"
       responses:
         "204":
-          description: No Content
-          content:
-            text/plain:
-              schema:
-                type: string
+          description: Booking created successfully
         "400":
           description: Bad request
           content:
@@ -43,30 +111,126 @@ paths:
                 type: string
       security:
         - BearerAuth: []
+    get:
+      summary: Get all bookings
+      description: Retrieves all bookings in the system
+      tags:
+        - bookings
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
 
 components:
   securitySchemes:
     BearerAuth:
-      type: apiKey
-      name: Authorization
-      in: header
-      description: Type "Bearer" followed by a space and your JWT token.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the login endpoint
 
   schemas:
     CreateBookingRequestDTO:
       type: object
+      required:
+        - vehicle_uuid
+        - customer_uuid
+        - date_period
       properties:
         customer_uuid:
           type: string
+          format: uuid
+          description: UUID of the customer making the booking
         date_period:
           $ref: "#/components/schemas/DatePeriodDTO"
         vehicle_uuid:
           type: string
+          format: uuid
+          description: UUID of the vehicle to book
 
     DatePeriodDTO:
       type: object
+      required:
+        - from_date
+        - to_date
       properties:
         from_date:
           type: string
+          format: date-time
+          description: Start date of the booking period
         to_date:
           type: string
+          format: date-time
+          description: End date of the booking period
+
+    LoginResponse:
+      type: object
+      properties:
+        TokensPair:
+          type: object
+          properties:
+            access_token:
+              type: string
+              description: JWT access token for authorization
+            refresh_token:
+              type: string
+              description: JWT refresh token for obtaining new access tokens
+
+    RefreshRequest:
+      type: object
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+          description: JWT refresh token obtained from login
+
+    Vehicle:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        color:
+          type: string
+        vin:
+          type: string
+        price_per_day:
+          type: number
+
+    Booking:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        vehicle_uuid:
+          type: string
+          format: uuid
+        customer_uuid:
+          type: string
+          format: uuid
+        from_date:
+          type: string
+          format: date-time
+        to_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
