@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Your API Title
+  description: Description of your API
+  version: "1.0"
+  contact: {}
+
+servers:
+  - url: http://localhost:8080/
+
+paths:
+  /bookings:
+    post:
+      summary: Create a booking
+      description: Books a vehicle for a given customer and period
+      tags:
+        - bookings
+      requestBody:
+        description: Booking request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingRequestDTO"
+      responses:
+        "204":
+          description: No Content
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+        - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Type "Bearer" followed by a space and your JWT token.
+
+  schemas:
+    CreateBookingRequestDTO:
+      type: object
+      properties:
+        customer_uuid:
+          type: string
+        date_period:
+          $ref: "#/components/schemas/DatePeriodDTO"
+        vehicle_uuid:
+          type: string
+
+    DatePeriodDTO:
+      type: object
+      properties:
+        from_date:
+          type: string
+        to_date:
+          type: string
