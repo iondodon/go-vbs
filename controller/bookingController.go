@@ -16,6 +16,7 @@ type BookingController interface {
 	HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error
 }
 
+//gobok:builder
 type bookingController struct {
 	infoLog, errorLog  *log.Logger
 	db                 *sql.DB
