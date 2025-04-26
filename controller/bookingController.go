@@ -11,35 +11,15 @@ import (
 	bookingUCs "github.com/iondodon/go-vbs/usecase/booking"
 )
 
-type BookingController interface {
-	HandleBookVehicle(w http.ResponseWriter, r *http.Request) error
-	HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error
-}
-
 //gobok:builder
-type bookingController struct {
+type BookingController struct {
 	infoLog, errorLog  *log.Logger
 	db                 *sql.DB
 	bookVehicleUseCase bookingUCs.BookVehicle
 	getAllBookings     bookingUCs.GetAllBookings
 }
 
-func NewBookingController(
-	infoLog, errorLog *log.Logger,
-	db *sql.DB,
-	bookVehicleUseCase bookingUCs.BookVehicle,
-	getAllBookings bookingUCs.GetAllBookings,
-) BookingController {
-	return &bookingController{
-		infoLog:            infoLog,
-		errorLog:           errorLog,
-		db:                 db,
-		bookVehicleUseCase: bookVehicleUseCase,
-		getAllBookings:     getAllBookings,
-	}
-}
-
-func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
+func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
 	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
@@ -71,7 +51,7 @@ func (c *bookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Req
 	return nil
 }
 
-func (c *bookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
+func (c *BookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
 	bookings, err := c.getAllBookings.Execute(r.Context())
 	if err != nil {
 		return err

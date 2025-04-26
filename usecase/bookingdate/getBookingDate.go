@@ -11,19 +11,12 @@ import (
 	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
 )
 
-type GetBookingDates interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
-}
-
-type getBookingDates struct {
+//gobok:builder
+type GetBookingDates struct {
 	bdRepo bdRepoPkg.BookingDateRepository
 }
 
-func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) GetBookingDates {
-	return &getBookingDates{bdRepo: bdRepo}
-}
-
-func (uc *getBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (uc *GetBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err

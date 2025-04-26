@@ -10,20 +10,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type TokenController interface {
-	Login(w http.ResponseWriter, r *http.Request) error
-	Refresh(w http.ResponseWriter, r *http.Request) error
-}
-
-type tokenController struct {
+//gobok:builder
+type TokenController struct {
 	infoLog, errorLog *log.Logger
-}
-
-func NewTokenController(infoLog, errorLog *log.Logger) TokenController {
-	return &tokenController{
-		infoLog:  infoLog,
-		errorLog: errorLog,
-	}
 }
 
 type MyCustomClaims struct {
@@ -44,7 +33,7 @@ type refreshRequest struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-func (c *tokenController) Login(w http.ResponseWriter, r *http.Request) error {
+func (c *TokenController) Login(w http.ResponseWriter, r *http.Request) error {
 	tokenPairs, err := newTokenPairs()
 	if err != nil {
 		return err
@@ -69,7 +58,7 @@ func (c *tokenController) Login(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (c *tokenController) Refresh(w http.ResponseWriter, r *http.Request) error {
+func (c *TokenController) Refresh(w http.ResponseWriter, r *http.Request) error {
 	var refreshRequest refreshRequest
 	err := json.NewDecoder(r.Body).Decode(&refreshRequest)
 	if err != nil {

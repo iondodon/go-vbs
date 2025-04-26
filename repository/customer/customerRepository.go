@@ -8,19 +8,12 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type CustomerRepository interface {
-	FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error)
-}
-
-type customerRepository struct {
+//gobok:builder
+type CustomerRepository struct {
 	queries *repository.Queries
 }
 
-func NewCustomerRepository(queries *repository.Queries) CustomerRepository {
-	return &customerRepository{queries: queries}
-}
-
-func (repo *customerRepository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
+func (repo *CustomerRepository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
 	var customer domain.Customer
 
 	customerRow, err := repo.queries.GetCustomerByUUID(ctx, cUUID)

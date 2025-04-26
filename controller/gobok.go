@@ -5,40 +5,91 @@ package controller
 import (
 	"database/sql"
 	bookingUCs "github.com/iondodon/go-vbs/usecase/booking"
+	vehUCs "github.com/iondodon/go-vbs/usecase/vehicle"
 	"log"
 )
 
-type bookingControllerBuilder struct {
-	instance bookingController
+type BookingControllerBuilder struct {
+	instance *BookingController
 }
 
-func NewbookingControllerBuilder() *bookingControllerBuilder {
-	return &bookingControllerBuilder{
-		instance: bookingController{},
+func NewBookingControllerBuilder() *BookingControllerBuilder {
+	return &BookingControllerBuilder{
+		instance: &BookingController{},
 	}
 }
 
-func (b *bookingControllerBuilder) SetinfoLog(v *log.Logger) *bookingControllerBuilder {
+func (b *BookingControllerBuilder) InfoLog(v *log.Logger) *BookingControllerBuilder {
 	b.instance.infoLog = v
 	return b
 }
-func (b *bookingControllerBuilder) SeterrorLog(v *log.Logger) *bookingControllerBuilder {
+func (b *BookingControllerBuilder) ErrorLog(v *log.Logger) *BookingControllerBuilder {
 	b.instance.errorLog = v
 	return b
 }
-func (b *bookingControllerBuilder) Setdb(v *sql.DB) *bookingControllerBuilder {
+func (b *BookingControllerBuilder) Db(v *sql.DB) *BookingControllerBuilder {
 	b.instance.db = v
 	return b
 }
-func (b *bookingControllerBuilder) SetbookVehicleUseCase(v bookingUCs.BookVehicle) *bookingControllerBuilder {
+func (b *BookingControllerBuilder) BookVehicleUseCase(v bookingUCs.BookVehicle) *BookingControllerBuilder {
 	b.instance.bookVehicleUseCase = v
 	return b
 }
-func (b *bookingControllerBuilder) SetgetAllBookings(v bookingUCs.GetAllBookings) *bookingControllerBuilder {
+func (b *BookingControllerBuilder) GetAllBookings(v bookingUCs.GetAllBookings) *BookingControllerBuilder {
 	b.instance.getAllBookings = v
 	return b
 }
 
-func (b *bookingControllerBuilder) Build() *bookingController {
-	return &b.instance
+func (b *BookingControllerBuilder) Build() *BookingController {
+	return b.instance
+}
+
+type TokenControllerBuilder struct {
+	instance *TokenController
+}
+
+func NewTokenControllerBuilder() *TokenControllerBuilder {
+	return &TokenControllerBuilder{
+		instance: &TokenController{},
+	}
+}
+
+func (b *TokenControllerBuilder) InfoLog(v *log.Logger) *TokenControllerBuilder {
+	b.instance.infoLog = v
+	return b
+}
+func (b *TokenControllerBuilder) ErrorLog(v *log.Logger) *TokenControllerBuilder {
+	b.instance.errorLog = v
+	return b
+}
+
+func (b *TokenControllerBuilder) Build() *TokenController {
+	return b.instance
+}
+
+type VehicleControllerBuilder struct {
+	instance *VehicleController
+}
+
+func NewVehicleControllerBuilder() *VehicleControllerBuilder {
+	return &VehicleControllerBuilder{
+		instance: &VehicleController{},
+	}
+}
+
+func (b *VehicleControllerBuilder) InfoLog(v *log.Logger) *VehicleControllerBuilder {
+	b.instance.infoLog = v
+	return b
+}
+func (b *VehicleControllerBuilder) ErrorLog(v *log.Logger) *VehicleControllerBuilder {
+	b.instance.errorLog = v
+	return b
+}
+func (b *VehicleControllerBuilder) GetVehicleUseCase(v vehUCs.GetVehicle) *VehicleControllerBuilder {
+	b.instance.getVehicleUseCase = v
+	return b
+}
+
+func (b *VehicleControllerBuilder) Build() *VehicleController {
+	return b.instance
 }

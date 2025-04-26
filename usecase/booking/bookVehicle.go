@@ -19,11 +19,8 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type BookVehicle interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
-}
-
-type bookVehicle struct {
+//gobok:builder
+type BookVehicle struct {
 	infoLog, errorLog  *log.Logger
 	vehRepo            vehRepo.VehicleRepository
 	custRepo           custRepo.CustomerRepository
@@ -32,26 +29,7 @@ type bookVehicle struct {
 	getBookingDates    bdUCs.GetBookingDates
 }
 
-func NewBookVehicle(
-	infoLog, errorLog *log.Logger,
-	vrp vehRepo.VehicleRepository,
-	crp custRepo.CustomerRepository,
-	brp bookingRepo.BookingRepository,
-	isAvailableForHireUS vehUCs.IsAvailableForHire,
-	getBookingDatesUseCase bdUCs.GetBookingDates,
-) BookVehicle {
-	return &bookVehicle{
-		infoLog:            infoLog,
-		errorLog:           errorLog,
-		vehRepo:            vrp,
-		custRepo:           crp,
-		bookingRepo:        brp,
-		isAvailableForHire: isAvailableForHireUS,
-		getBookingDates:    getBookingDatesUseCase,
-	}
-}
-
-func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *BookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err

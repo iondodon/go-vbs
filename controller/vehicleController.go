@@ -10,27 +10,13 @@ import (
 	uuidLib "github.com/google/uuid"
 )
 
-type VehicleController interface {
-	HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error
-}
-
-type vehicleController struct {
+//gobok:builder
+type VehicleController struct {
 	infoLog, errorLog *log.Logger
 	getVehicleUseCase vehUCs.GetVehicle
 }
 
-func NewVehicleController(
-	infoLog, errorLog *log.Logger,
-	getVehicleUseCase vehUCs.GetVehicle,
-) VehicleController {
-	return &vehicleController{
-		infoLog:           infoLog,
-		errorLog:          errorLog,
-		getVehicleUseCase: getVehicleUseCase,
-	}
-}
-
-func (vc *vehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
+func (vc *VehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
 	uuid := r.PathValue("uuid")
 
 	vUUID, err := uuidLib.Parse(uuid)

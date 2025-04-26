@@ -9,20 +9,12 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type BookingDateRepository interface {
-	FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error)
-	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
-}
-
-type bookingDateRepository struct {
+//gobok:builder
+type BookingDateRepository struct {
 	queries *repository.Queries
 }
 
-func NewBookingDateRepository(queries *repository.Queries) BookingDateRepository {
-	return &bookingDateRepository{queries: queries}
-}
-
-func (repo *bookingDateRepository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
+func (repo *BookingDateRepository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
 	var bookingDates []*domain.BookingDate
 
 	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
@@ -45,7 +37,7 @@ func (repo *bookingDateRepository) FindAllInPeriodInclusive(ctx context.Context,
 	return bookingDates, nil
 }
 
-func (repo *bookingDateRepository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
+func (repo *BookingDateRepository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
 	if err := repo.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
 		return err
 	}
