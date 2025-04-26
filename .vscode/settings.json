@@ -1,0 +1,5 @@
+{
+    "files.exclude": {
+      "**/gobok.go": true
+    }
+}
