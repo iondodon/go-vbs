@@ -12,6 +12,7 @@ import (
 )
 
 //gobok:builder
+//gobok:constructor:name=CreateBookingController
 type BookingController struct {
 	infoLog, errorLog  *log.Logger
 	db                 *sql.DB

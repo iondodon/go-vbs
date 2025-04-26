@@ -44,6 +44,16 @@ func (b *BookingControllerBuilder) Build() *BookingController {
 	return b.instance
 }
 
+func CreateBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingUCs.BookVehicle, getAllBookings bookingUCs.GetAllBookings) BookingController {
+	return BookingController{
+		infoLog:            infoLog,
+		errorLog:           errorLog,
+		db:                 db,
+		bookVehicleUseCase: bookVehicleUseCase,
+		getAllBookings:     getAllBookings,
+	}
+}
+
 type TokenControllerBuilder struct {
 	instance *TokenController
 }
