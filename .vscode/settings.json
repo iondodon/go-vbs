@@ -1,5 +1,7 @@
 {
     "files.exclude": {
-      "**/gobok.go": true
+      "**/gobok.go": true,
+      "**/**_mock.go": true,
+      "**/**.sql.go": true
     }
 }
