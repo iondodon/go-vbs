@@ -9,12 +9,16 @@ import (
 	"github.com/google/uuid"
 )
 
-//gobok:builder
-type GetVehicle struct {
+type GetVehicle interface {
+	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
+}
+
+//gobok:constructor
+type getVehicle struct {
 	vehicleRepository vehRepo.VehicleRepository
 }
 
-func (gvuc *GetVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
+func (gvuc *getVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
 	vehicle, err := gvuc.vehicleRepository.FindByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err

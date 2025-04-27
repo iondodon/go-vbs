@@ -41,57 +41,34 @@ func main() {
 
 	queries := repository.New(db)
 
-	vehicleRepository := vehRepo.NewVehicleRepositoryBuilder().
-		Queries(queries).
-		Build()
-	customerRepository := custRepo.NewCustomerRepositoryBuilder().
-		Queries(queries).
-		Build()
-	bookingRepository := bookingRepoPkg.NewBookingRepositoryBuilder().
-		Queries(queries).
-		Build()
-	bookingDateRepository := bdRepoPkg.NewBookingDateRepositoryBuilder().
-		Queries(queries).
-		Build()
+	vehicleRepository := vehRepo.NewVehicleRepository(queries)
+	customerRepository := custRepo.NewCustomerRepository(queries)
+	bookingRepository := bookingRepoPkg.NewBookingRepository(queries)
+	bookingDateRepository := bdRepoPkg.NewBookingDateRepository(queries)
 
-	getVehicle := vehicleUCPKG.NewGetVehicleBuilder().
-		VehicleRepository(*vehicleRepository).
-		Build()
-	isAvaiForHire := vehicleUCPKG.NewIsAvailableForHireBuilder().
-		VehRepo(*vehicleRepository).
-		Build()
-	getBookingDates := bookingDateUCPkg.NewGetBookingDatesBuilder().
-		BdRepo(*bookingDateRepository).
-		Build()
-	bookVehicle := bookVehUCPkg.NewBookVehicleBuilder().
-		InfoLog(infoLog).
-		ErrorLog(errorLog).
-		VehRepo(*vehicleRepository).
-		CustRepo(*customerRepository).
-		BookingRepo(*bookingRepository).
-		IsAvailableForHire(*isAvaiForHire).
-		GetBookingDates(*getBookingDates).
-		Build()
-	getAllBookins := bookVehUCPkg.NewGetAllBookingsBuilder().
-		BookingRepo(*bookingRepository).
-		Build()
+	getVehicle := vehicleUCPKG.NewGetVehicle(&vehicleRepository)
+	isAvaiForHire := vehicleUCPKG.NewIsAvailableForHire(&vehicleRepository)
+	getBookingDates := bookingDateUCPkg.NewGetBookingDates(&bookingDateRepository)
+	bookVehicle := bookVehUCPkg.NewBookVehicle(
+		infoLog,
+		errorLog,
+		&vehicleRepository,
+		&customerRepository,
+		&bookingRepository,
+		&isAvaiForHire,
+		&getBookingDates,
+	)
+	getAllBookins := bookVehUCPkg.NewGetAllBookings(&bookingRepository)
 
-	tokenController := controller.NewTokenControllerBuilder().
-		InfoLog(infoLog).
-		ErrorLog(errorLog).
-		Build()
-	vehicleController := controller.NewVehicleControllerBuilder().
-		InfoLog(infoLog).
-		ErrorLog(errorLog).
-		GetVehicleUseCase(*getVehicle).
-		Build()
-	bookingController := controller.NewBookingControllerBuilder().
-		InfoLog(infoLog).
-		ErrorLog(errorLog).
-		Db(db).
-		BookVehicleUseCase(*bookVehicle).
-		GetAllBookings(*getAllBookins).
-		Build()
+	tokenController := controller.NewTokenController(infoLog, errorLog)
+	vehicleController := controller.NewVehicleController(infoLog, errorLog, &getVehicle)
+	bookingController := controller.NewBookingController(
+		infoLog,
+		errorLog,
+		db,
+		&bookVehicle,
+		&getAllBookins,
+	)
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(tokenController.Login))

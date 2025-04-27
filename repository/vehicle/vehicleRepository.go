@@ -12,12 +12,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-//gobok:builder
-type VehicleRepository struct {
+type VehicleRepository interface {
+	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
+	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
+}
+
+//gobok:constructor
+type vehicleRepository struct {
 	queries *repository.Queries
 }
 
-func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+func (repo *vehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
 	vehicleRow, err := repo.queries.GetVehicleByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
@@ -68,7 +73,7 @@ func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUI
 	return &vehicle, nil
 }
 
-func (repo *VehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (repo *vehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
 	res, err := repo.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,

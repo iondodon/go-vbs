@@ -12,64 +12,20 @@ import (
 	"log"
 )
 
-type BookVehicleBuilder struct {
-	instance *BookVehicle
-}
-
-func NewBookVehicleBuilder() *BookVehicleBuilder {
-	return &BookVehicleBuilder{
-		instance: &BookVehicle{},
+func NewBookVehicle(infoLog *log.Logger, errorLog *log.Logger, vehRepo vehRepo.VehicleRepository, custRepo custRepo.CustomerRepository, bookingRepo bookingRepo.BookingRepository, isAvailableForHire vehUCs.IsAvailableForHire, getBookingDates bdUCs.GetBookingDates) bookVehicle {
+	return bookVehicle{
+		infoLog:            infoLog,
+		errorLog:           errorLog,
+		vehRepo:            vehRepo,
+		custRepo:           custRepo,
+		bookingRepo:        bookingRepo,
+		isAvailableForHire: isAvailableForHire,
+		getBookingDates:    getBookingDates,
 	}
 }
 
-func (b *BookVehicleBuilder) InfoLog(v *log.Logger) *BookVehicleBuilder {
-	b.instance.infoLog = v
-	return b
-}
-func (b *BookVehicleBuilder) ErrorLog(v *log.Logger) *BookVehicleBuilder {
-	b.instance.errorLog = v
-	return b
-}
-func (b *BookVehicleBuilder) VehRepo(v vehRepo.VehicleRepository) *BookVehicleBuilder {
-	b.instance.vehRepo = v
-	return b
-}
-func (b *BookVehicleBuilder) CustRepo(v custRepo.CustomerRepository) *BookVehicleBuilder {
-	b.instance.custRepo = v
-	return b
-}
-func (b *BookVehicleBuilder) BookingRepo(v bookingRepo.BookingRepository) *BookVehicleBuilder {
-	b.instance.bookingRepo = v
-	return b
-}
-func (b *BookVehicleBuilder) IsAvailableForHire(v vehUCs.IsAvailableForHire) *BookVehicleBuilder {
-	b.instance.isAvailableForHire = v
-	return b
-}
-func (b *BookVehicleBuilder) GetBookingDates(v bdUCs.GetBookingDates) *BookVehicleBuilder {
-	b.instance.getBookingDates = v
-	return b
-}
-
-func (b *BookVehicleBuilder) Build() *BookVehicle {
-	return b.instance
-}
-
-type GetAllBookingsBuilder struct {
-	instance *GetAllBookings
-}
-
-func NewGetAllBookingsBuilder() *GetAllBookingsBuilder {
-	return &GetAllBookingsBuilder{
-		instance: &GetAllBookings{},
+func NewGetAllBookings(bookingRepo bookingRepos.BookingRepository) getAllBookings {
+	return getAllBookings{
+		bookingRepo: bookingRepo,
 	}
-}
-
-func (b *GetAllBookingsBuilder) BookingRepo(v bookingRepos.BookingRepository) *GetAllBookingsBuilder {
-	b.instance.bookingRepo = v
-	return b
-}
-
-func (b *GetAllBookingsBuilder) Build() *GetAllBookings {
-	return b.instance
 }

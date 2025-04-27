@@ -6,21 +6,8 @@ import (
 	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
 )
 
-type GetBookingDatesBuilder struct {
-	instance *GetBookingDates
-}
-
-func NewGetBookingDatesBuilder() *GetBookingDatesBuilder {
-	return &GetBookingDatesBuilder{
-		instance: &GetBookingDates{},
+func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) getBookingDates {
+	return getBookingDates{
+		bdRepo: bdRepo,
 	}
-}
-
-func (b *GetBookingDatesBuilder) BdRepo(v bdRepoPkg.BookingDateRepository) *GetBookingDatesBuilder {
-	b.instance.bdRepo = v
-	return b
-}
-
-func (b *GetBookingDatesBuilder) Build() *GetBookingDates {
-	return b.instance
 }

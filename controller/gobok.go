@@ -9,43 +9,8 @@ import (
 	"log"
 )
 
-type BookingControllerBuilder struct {
-	instance *BookingController
-}
-
-func NewBookingControllerBuilder() *BookingControllerBuilder {
-	return &BookingControllerBuilder{
-		instance: &BookingController{},
-	}
-}
-
-func (b *BookingControllerBuilder) InfoLog(v *log.Logger) *BookingControllerBuilder {
-	b.instance.infoLog = v
-	return b
-}
-func (b *BookingControllerBuilder) ErrorLog(v *log.Logger) *BookingControllerBuilder {
-	b.instance.errorLog = v
-	return b
-}
-func (b *BookingControllerBuilder) Db(v *sql.DB) *BookingControllerBuilder {
-	b.instance.db = v
-	return b
-}
-func (b *BookingControllerBuilder) BookVehicleUseCase(v bookingUCs.BookVehicle) *BookingControllerBuilder {
-	b.instance.bookVehicleUseCase = v
-	return b
-}
-func (b *BookingControllerBuilder) GetAllBookings(v bookingUCs.GetAllBookings) *BookingControllerBuilder {
-	b.instance.getAllBookings = v
-	return b
-}
-
-func (b *BookingControllerBuilder) Build() *BookingController {
-	return b.instance
-}
-
-func CreateBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingUCs.BookVehicle, getAllBookings bookingUCs.GetAllBookings) BookingController {
-	return BookingController{
+func NewBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingUCs.BookVehicle, getAllBookings bookingUCs.GetAllBookings) bookingController {
+	return bookingController{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		db:                 db,
@@ -54,52 +19,17 @@ func CreateBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.
 	}
 }
 
-type TokenControllerBuilder struct {
-	instance *TokenController
-}
-
-func NewTokenControllerBuilder() *TokenControllerBuilder {
-	return &TokenControllerBuilder{
-		instance: &TokenController{},
+func NewTokenController(infoLog *log.Logger, errorLog *log.Logger) tokenController {
+	return tokenController{
+		infoLog:  infoLog,
+		errorLog: errorLog,
 	}
 }
 
-func (b *TokenControllerBuilder) InfoLog(v *log.Logger) *TokenControllerBuilder {
-	b.instance.infoLog = v
-	return b
-}
-func (b *TokenControllerBuilder) ErrorLog(v *log.Logger) *TokenControllerBuilder {
-	b.instance.errorLog = v
-	return b
-}
-
-func (b *TokenControllerBuilder) Build() *TokenController {
-	return b.instance
-}
-
-type VehicleControllerBuilder struct {
-	instance *VehicleController
-}
-
-func NewVehicleControllerBuilder() *VehicleControllerBuilder {
-	return &VehicleControllerBuilder{
-		instance: &VehicleController{},
+func NewVehicleController(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehUCs.GetVehicle) vehicleController {
+	return vehicleController{
+		infoLog:           infoLog,
+		errorLog:          errorLog,
+		getVehicleUseCase: getVehicleUseCase,
 	}
-}
-
-func (b *VehicleControllerBuilder) InfoLog(v *log.Logger) *VehicleControllerBuilder {
-	b.instance.infoLog = v
-	return b
-}
-func (b *VehicleControllerBuilder) ErrorLog(v *log.Logger) *VehicleControllerBuilder {
-	b.instance.errorLog = v
-	return b
-}
-func (b *VehicleControllerBuilder) GetVehicleUseCase(v vehUCs.GetVehicle) *VehicleControllerBuilder {
-	b.instance.getVehicleUseCase = v
-	return b
-}
-
-func (b *VehicleControllerBuilder) Build() *VehicleController {
-	return b.instance
 }

@@ -19,8 +19,12 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-//gobok:builder
-type BookVehicle struct {
+type BookVehicle interface {
+	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
+}
+
+//gobok:constructor
+type bookVehicle struct {
 	infoLog, errorLog  *log.Logger
 	vehRepo            vehRepo.VehicleRepository
 	custRepo           custRepo.CustomerRepository
@@ -29,7 +33,7 @@ type BookVehicle struct {
 	getBookingDates    bdUCs.GetBookingDates
 }
 
-func (uc *BookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err

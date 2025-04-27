@@ -6,21 +6,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type VehicleRepositoryBuilder struct {
-	instance *VehicleRepository
-}
-
-func NewVehicleRepositoryBuilder() *VehicleRepositoryBuilder {
-	return &VehicleRepositoryBuilder{
-		instance: &VehicleRepository{},
+func NewVehicleRepository(queries *repository.Queries) vehicleRepository {
+	return vehicleRepository{
+		queries: queries,
 	}
-}
-
-func (b *VehicleRepositoryBuilder) Queries(v *repository.Queries) *VehicleRepositoryBuilder {
-	b.instance.queries = v
-	return b
-}
-
-func (b *VehicleRepositoryBuilder) Build() *VehicleRepository {
-	return b.instance
 }

@@ -6,21 +6,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type BookingDateRepositoryBuilder struct {
-	instance *BookingDateRepository
-}
-
-func NewBookingDateRepositoryBuilder() *BookingDateRepositoryBuilder {
-	return &BookingDateRepositoryBuilder{
-		instance: &BookingDateRepository{},
+func NewBookingDateRepository(queries *repository.Queries) bookingDateRepository {
+	return bookingDateRepository{
+		queries: queries,
 	}
-}
-
-func (b *BookingDateRepositoryBuilder) Queries(v *repository.Queries) *BookingDateRepositoryBuilder {
-	b.instance.queries = v
-	return b
-}
-
-func (b *BookingDateRepositoryBuilder) Build() *BookingDateRepository {
-	return b.instance
 }

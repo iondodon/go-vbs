@@ -7,40 +7,14 @@ import (
 	vehRepoPkg "github.com/iondodon/go-vbs/repository/vehicle"
 )
 
-type GetVehicleBuilder struct {
-	instance *GetVehicle
-}
-
-func NewGetVehicleBuilder() *GetVehicleBuilder {
-	return &GetVehicleBuilder{
-		instance: &GetVehicle{},
+func NewGetVehicle(vehicleRepository vehRepo.VehicleRepository) getVehicle {
+	return getVehicle{
+		vehicleRepository: vehicleRepository,
 	}
 }
 
-func (b *GetVehicleBuilder) VehicleRepository(v vehRepo.VehicleRepository) *GetVehicleBuilder {
-	b.instance.vehicleRepository = v
-	return b
-}
-
-func (b *GetVehicleBuilder) Build() *GetVehicle {
-	return b.instance
-}
-
-type IsAvailableForHireBuilder struct {
-	instance *IsAvailableForHire
-}
-
-func NewIsAvailableForHireBuilder() *IsAvailableForHireBuilder {
-	return &IsAvailableForHireBuilder{
-		instance: &IsAvailableForHire{},
+func NewIsAvailableForHire(vehRepo vehRepoPkg.VehicleRepository) isAvailableForHire {
+	return isAvailableForHire{
+		vehRepo: vehRepo,
 	}
-}
-
-func (b *IsAvailableForHireBuilder) VehRepo(v vehRepoPkg.VehicleRepository) *IsAvailableForHireBuilder {
-	b.instance.vehRepo = v
-	return b
-}
-
-func (b *IsAvailableForHireBuilder) Build() *IsAvailableForHire {
-	return b.instance
 }

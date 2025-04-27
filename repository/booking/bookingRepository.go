@@ -10,12 +10,17 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-//gobok:builder
-type BookingRepository struct {
+type BookingRepository interface {
+	Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error
+	GetAll(ctx context.Context) ([]domain.Booking, error)
+}
+
+//gobok:constructor
+type bookingRepository struct {
 	queries *repository.Queries
 }
 
-func (repo *BookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
+func (repo *bookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
 	if err := repo.queries.WithTx(tx).InsertNewBooking(ctx, repository.InsertNewBookingParams{
 		Uuid:       b.UUID,
 		VehicleID:  b.Vehicle.ID,
@@ -27,7 +32,7 @@ func (repo *BookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.B
 	return nil
 }
 
-func (repo *BookingRepository) GetAll(ctx context.Context) ([]domain.Booking, error) {
+func (repo *bookingRepository) GetAll(ctx context.Context) ([]domain.Booking, error) {
 	bookingsRows, err := repo.queries.SelectAllBookings(ctx)
 	if err != nil {
 		return nil, err
