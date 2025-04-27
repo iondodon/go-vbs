@@ -6,8 +6,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-func NewVehicleRepository(queries *repository.Queries) vehicleRepository {
-	return vehicleRepository{
+func NewVehicleRepository(queries *repository.Queries) VehicleRepository {
+	return VehicleRepository{
 		queries: queries,
 	}
 }

@@ -19,21 +19,19 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type BookVehicle interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
-}
-
 //gobok:constructor
-type bookVehicle struct {
-	infoLog, errorLog  *log.Logger
-	vehRepo            vehRepo.VehicleRepository
-	custRepo           custRepo.CustomerRepository
-	bookingRepo        bookingRepo.BookingRepository
-	isAvailableForHire vehUCs.IsAvailableForHire
-	getBookingDates    bdUCs.GetBookingDates
+//ctxboot:component
+type BookVehicle struct {
+	infoLog            *log.Logger                   `ctxboot:"inject"`
+	errorLog           *log.Logger                   `ctxboot:"inject"`
+	vehRepo            vehRepo.VehicleRepository     `ctxboot:"inject"`
+	custRepo           custRepo.CustomerRepository   `ctxboot:"inject"`
+	bookingRepo        bookingRepo.BookingRepository `ctxboot:"inject"`
+	isAvailableForHire vehUCs.IsAvailableForHire     `ctxboot:"inject"`
+	getBookingDates    bdUCs.GetBookingDates         `ctxboot:"inject"`
 }
 
-func (uc *bookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *BookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err

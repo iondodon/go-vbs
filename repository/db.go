@@ -20,6 +20,7 @@ func New(db DBTX) *Queries {
 	return &Queries{db: db}
 }
 
+//ctxboot:component
 type Queries struct {
 	db DBTX
 }

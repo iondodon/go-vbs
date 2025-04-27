@@ -6,8 +6,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-func NewCustomerRepository(queries *repository.Queries) customerRepository {
-	return customerRepository{
+func NewCustomerRepository(queries *repository.Queries) CustomerRepository {
+	return CustomerRepository{
 		queries: queries,
 	}
 }

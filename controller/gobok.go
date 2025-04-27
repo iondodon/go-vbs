@@ -9,8 +9,8 @@ import (
 	"log"
 )
 
-func NewBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingUCs.BookVehicle, getAllBookings bookingUCs.GetAllBookings) bookingController {
-	return bookingController{
+func NewBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingUCs.BookVehicle, getAllBookings bookingUCs.GetAllBookings) BookingController {
+	return BookingController{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		db:                 db,
@@ -19,15 +19,15 @@ func NewBookingController(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB,
 	}
 }
 
-func NewTokenController(infoLog *log.Logger, errorLog *log.Logger) tokenController {
-	return tokenController{
+func NewTokenController(infoLog *log.Logger, errorLog *log.Logger) TokenController {
+	return TokenController{
 		infoLog:  infoLog,
 		errorLog: errorLog,
 	}
 }
 
-func NewVehicleController(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehUCs.GetVehicle) vehicleController {
-	return vehicleController{
+func NewVehicleController(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehUCs.GetVehicle) VehicleController {
+	return VehicleController{
 		infoLog:           infoLog,
 		errorLog:          errorLog,
 		getVehicleUseCase: getVehicleUseCase,

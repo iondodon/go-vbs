@@ -7,19 +7,14 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"reflect"
 	"time"
 
+	"github.com/iondodon/ctxboot"
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
 	"github.com/iondodon/go-vbs/repository"
-	bookingRepoPkg "github.com/iondodon/go-vbs/repository/booking"
-	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
-	custRepo "github.com/iondodon/go-vbs/repository/customer"
-	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
-	bookVehUCPkg "github.com/iondodon/go-vbs/usecase/booking"
-	bookingDateUCPkg "github.com/iondodon/go-vbs/usecase/bookingdate"
-	vehicleUCPKG "github.com/iondodon/go-vbs/usecase/vehicle"
 )
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
@@ -39,36 +34,34 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	// add infoLog and errorLog to ctxboot
+	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), infoLog)
+	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), errorLog)
+
 	queries := repository.New(db)
 
-	vehicleRepository := vehRepo.NewVehicleRepository(queries)
-	customerRepository := custRepo.NewCustomerRepository(queries)
-	bookingRepository := bookingRepoPkg.NewBookingRepository(queries)
-	bookingDateRepository := bdRepoPkg.NewBookingDateRepository(queries)
+	ctxboot.Boot().SetComponent(reflect.TypeOf(&repository.Queries{}), queries)
 
-	getVehicle := vehicleUCPKG.NewGetVehicle(&vehicleRepository)
-	isAvaiForHire := vehicleUCPKG.NewIsAvailableForHire(&vehicleRepository)
-	getBookingDates := bookingDateUCPkg.NewGetBookingDates(&bookingDateRepository)
-	bookVehicle := bookVehUCPkg.NewBookVehicle(
-		infoLog,
-		errorLog,
-		&vehicleRepository,
-		&customerRepository,
-		&bookingRepository,
-		&isAvaiForHire,
-		&getBookingDates,
-	)
-	getAllBookins := bookVehUCPkg.NewGetAllBookings(&bookingRepository)
+	// Initialize all components after registration
+	if err := ctxboot.Boot().InitializeComponents(); err != nil {
+		log.Fatalf("Failed to initialize components: %v", err)
+	}
 
-	tokenController := controller.NewTokenController(infoLog, errorLog)
-	vehicleController := controller.NewVehicleController(infoLog, errorLog, &getVehicle)
-	bookingController := controller.NewBookingController(
-		infoLog,
-		errorLog,
-		db,
-		&bookVehicle,
-		&getAllBookins,
-	)
+	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.TokenController{}))
+	if err != nil {
+		panic(err)
+	}
+	tokenController := tokenControllerInterface.(*controller.TokenController)
+	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.VehicleController{}))
+	if err != nil {
+		panic(err)
+	}
+	vehicleController := vehicleControllerInterface.(*controller.VehicleController)
+	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.BookingController{}))
+	if err != nil {
+		panic(err)
+	}
+	bookingController := bookingControllerInterface.(*controller.BookingController)
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(tokenController.Login))

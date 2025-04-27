@@ -7,14 +7,14 @@ import (
 	vehRepoPkg "github.com/iondodon/go-vbs/repository/vehicle"
 )
 
-func NewGetVehicle(vehicleRepository vehRepo.VehicleRepository) getVehicle {
-	return getVehicle{
+func NewGetVehicle(vehicleRepository vehRepo.VehicleRepository) GetVehicle {
+	return GetVehicle{
 		vehicleRepository: vehicleRepository,
 	}
 }
 
-func NewIsAvailableForHire(vehRepo vehRepoPkg.VehicleRepository) isAvailableForHire {
-	return isAvailableForHire{
+func NewIsAvailableForHire(vehRepo vehRepoPkg.VehicleRepository) IsAvailableForHire {
+	return IsAvailableForHire{
 		vehRepo: vehRepo,
 	}
 }

@@ -6,8 +6,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-func NewBookingDateRepository(queries *repository.Queries) bookingDateRepository {
-	return bookingDateRepository{
+func NewBookingDateRepository(queries *repository.Queries) BookingDateRepository {
+	return BookingDateRepository{
 		queries: queries,
 	}
 }

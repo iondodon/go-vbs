@@ -12,8 +12,8 @@ import (
 	"log"
 )
 
-func NewBookVehicle(infoLog *log.Logger, errorLog *log.Logger, vehRepo vehRepo.VehicleRepository, custRepo custRepo.CustomerRepository, bookingRepo bookingRepo.BookingRepository, isAvailableForHire vehUCs.IsAvailableForHire, getBookingDates bdUCs.GetBookingDates) bookVehicle {
-	return bookVehicle{
+func NewBookVehicle(infoLog *log.Logger, errorLog *log.Logger, vehRepo vehRepo.VehicleRepository, custRepo custRepo.CustomerRepository, bookingRepo bookingRepo.BookingRepository, isAvailableForHire vehUCs.IsAvailableForHire, getBookingDates bdUCs.GetBookingDates) BookVehicle {
+	return BookVehicle{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		vehRepo:            vehRepo,
@@ -24,8 +24,8 @@ func NewBookVehicle(infoLog *log.Logger, errorLog *log.Logger, vehRepo vehRepo.V
 	}
 }
 
-func NewGetAllBookings(bookingRepo bookingRepos.BookingRepository) getAllBookings {
-	return getAllBookings{
+func NewGetAllBookings(bookingRepo bookingRepos.BookingRepository) GetAllBookings {
+	return GetAllBookings{
 		bookingRepo: bookingRepo,
 	}
 }

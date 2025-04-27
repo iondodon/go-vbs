@@ -6,8 +6,8 @@ import (
 	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
 )
 
-func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) getBookingDates {
-	return getBookingDates{
+func NewGetBookingDates(bdRepo bdRepoPkg.BookingDateRepository) GetBookingDates {
+	return GetBookingDates{
 		bdRepo: bdRepo,
 	}
 }
