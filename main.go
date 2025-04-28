@@ -20,8 +20,6 @@ import (
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 
 func main() {
-	cc := ctxboot.Boot()
-
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -45,7 +43,7 @@ func main() {
 	ctxboot.Boot().SetComponent(reflect.TypeOf(&repository.Queries{}), queries)
 
 	// Initialize all components after registration
-	err = LoadContext(cc)
+	err = LoadContext(ctxboot.Boot())
 	if err != nil {
 		panic(err)
 	}
