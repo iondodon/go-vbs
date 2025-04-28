@@ -8,6 +8,10 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
+type CustomerRepositoryInterface interface {
+	FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error)
+}
+
 //gobok:constructor
 //ctxboot:component
 type CustomerRepository struct {

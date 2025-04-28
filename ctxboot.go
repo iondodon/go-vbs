@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"log"
 	
-	controller9 "github.com/iondodon/go-vbs/controller"
+	controller10 "github.com/iondodon/go-vbs/controller"
 	
 	repository "github.com/iondodon/go-vbs/repository"
 	
@@ -31,19 +31,19 @@ import (
 func LoadContext(cc *ctxboot.ComponentContext) error {
 	// Register components in dependency order
 	
-	// Register controller9.BookingController
-	if err := cc.SetComponent(reflect.TypeOf((*controller9.BookingController)(nil)), &controller9.BookingController{}); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "controller9.BookingController", err)
+	// Register controller10.BookingController
+	if err := cc.SetComponent(reflect.TypeOf((*controller10.BookingController)(nil)), &controller10.BookingController{}); err != nil {
+		log.Fatalf("Failed to register component %s: %v", "controller10.BookingController", err)
 	}
 	
-	// Register controller9.TokenController
-	if err := cc.SetComponent(reflect.TypeOf((*controller9.TokenController)(nil)), &controller9.TokenController{}); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "controller9.TokenController", err)
+	// Register controller10.TokenController
+	if err := cc.SetComponent(reflect.TypeOf((*controller10.TokenController)(nil)), &controller10.TokenController{}); err != nil {
+		log.Fatalf("Failed to register component %s: %v", "controller10.TokenController", err)
 	}
 	
-	// Register controller9.VehicleController
-	if err := cc.SetComponent(reflect.TypeOf((*controller9.VehicleController)(nil)), &controller9.VehicleController{}); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "controller9.VehicleController", err)
+	// Register controller10.VehicleController
+	if err := cc.SetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)), &controller10.VehicleController{}); err != nil {
+		log.Fatalf("Failed to register component %s: %v", "controller10.VehicleController", err)
 	}
 	
 	// Register booking2.BookingRepository

@@ -38,6 +38,14 @@ github.com/iondodon/ctxboot v0.0.0-20250428041102-3cc574515ace h1:aenY24/UTO3By0
 github.com/iondodon/ctxboot v0.0.0-20250428041102-3cc574515ace/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
 github.com/iondodon/ctxboot v0.0.0-20250428041238-a918c7204fa9 h1:52dB7vwneHyO5lUnZ4KPKmhGLYdzroz2hEbXvKhsjkQ=
 github.com/iondodon/ctxboot v0.0.0-20250428041238-a918c7204fa9/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
+github.com/iondodon/ctxboot v0.1.1-0.20250428075710-1499bfeec561 h1:YieR5sB8WsWoUDFXXBNpum8jQLV/wL4qlegabHLgruQ=
+github.com/iondodon/ctxboot v0.1.1-0.20250428075710-1499bfeec561/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
+github.com/iondodon/ctxboot v0.1.1-0.20250428081215-52d0e0fb44a1 h1:L2YBEwk7yE9HAfszXMb7ufg7fMbDKpVcqkyWY+D+EN8=
+github.com/iondodon/ctxboot v0.1.1-0.20250428081215-52d0e0fb44a1/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
+github.com/iondodon/ctxboot v0.1.1-0.20250428081727-6cb14d8e9588 h1:axCYp6uatPnbJ4zPdRVqd51ltBq7p0uU/RAiyfWf7w8=
+github.com/iondodon/ctxboot v0.1.1-0.20250428081727-6cb14d8e9588/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
+github.com/iondodon/ctxboot v0.1.1-0.20250428082115-1bdd01dd7a5f h1:YldhVwSljl3JSy6iDD28IH3i38ecExTw0oAqVaLYS0c=
+github.com/iondodon/ctxboot v0.1.1-0.20250428082115-1bdd01dd7a5f/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
 github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/kisielk/sqlstruct v0.0.0-20201105191214-5f3e10d3ab46/go.mod h1:yyMNCyc/Ib3bDTKd379tNMpB/7/H5TjM2Y9QJ5THLbE=

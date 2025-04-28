@@ -10,6 +10,11 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type TokenControllerInterface interface {
+	Login(w http.ResponseWriter, r *http.Request) error
+	Refresh(w http.ResponseWriter, r *http.Request) error
+}
+
 //gobok:constructor
 //ctxboot:component
 type TokenController struct {

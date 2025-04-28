@@ -11,14 +11,19 @@ import (
 	bookingUCs "github.com/iondodon/go-vbs/usecase/booking"
 )
 
+type BookingControllerInterface interface {
+	HandleBookVehicle(w http.ResponseWriter, r *http.Request) error
+	HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error
+}
+
 //gobok:constructor
 //ctxboot:component
 type BookingController struct {
-	infoLog            *log.Logger               `ctxboot:"inject"`
-	errorLog           *log.Logger               `ctxboot:"inject"`
-	db                 *sql.DB                   `ctxboot:"inject"`
-	bookVehicleUseCase bookingUCs.BookVehicle    `ctxboot:"inject"`
-	getAllBookings     bookingUCs.GetAllBookings `ctxboot:"inject"`
+	infoLog            *log.Logger                        `ctxboot:"inject"`
+	errorLog           *log.Logger                        `ctxboot:"inject"`
+	db                 *sql.DB                            `ctxboot:"inject"`
+	bookVehicleUseCase bookingUCs.BookVehicleInterface    `ctxboot:"inject"`
+	getAllBookings     bookingUCs.GetAllBookingsInterface `ctxboot:"inject"`
 }
 
 func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {

@@ -10,6 +10,11 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
+type BookingRepositoryInterface interface {
+	Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error
+	GetAll(ctx context.Context) ([]domain.Booking, error)
+}
+
 //gobok:constructor
 //ctxboot:component
 type BookingRepository struct {

@@ -9,10 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type GetVehicleInterface interface {
+	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
+}
+
 //gobok:constructor
 //ctxboot:component
 type GetVehicle struct {
-	vehicleRepository vehRepo.VehicleRepository `ctxboot:"inject"`
+	vehicleRepository vehRepo.VehicleRepositoryInterface `ctxboot:"inject"`
 }
 
 func (gvuc *GetVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -47,21 +48,26 @@ func main() {
 		panic(err)
 	}
 
-	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.TokenController{}))
+	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	tokenController := tokenControllerInterface.(*controller.TokenController)
-	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.VehicleController{}))
+	tokenController := tokenControllerInterface.(controller.TokenControllerInterface)
+
+	fmt.Printf("%T\n", tokenControllerInterface)
+	fmt.Printf("%T\n", tokenController)
+
+	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	vehicleController := vehicleControllerInterface.(*controller.VehicleController)
-	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf(&controller.BookingController{}))
+	vehicleController := vehicleControllerInterface.(controller.VehicleControllerInterface)
+
+	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	bookingController := bookingControllerInterface.(*controller.BookingController)
+	bookingController := bookingControllerInterface.(controller.BookingControllerInterface)
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(tokenController.Login))

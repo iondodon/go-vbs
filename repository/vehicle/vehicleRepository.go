@@ -12,6 +12,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type VehicleRepositoryInterface interface {
+	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
+	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
+}
+
 //gobok:constructor
 //ctxboot:component
 type VehicleRepository struct {
