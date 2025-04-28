@@ -48,22 +48,22 @@ func main() {
 		panic(err)
 	}
 
-	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenControllerInterface)(nil)).Elem())
+	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenController)(nil)))
 	if err != nil {
 		panic(err)
 	}
 	tokenController := tokenControllerInterface.(controller.TokenControllerInterface)
 
-	fmt.Printf("%T\n", tokenControllerInterface)
-	fmt.Printf("%T\n", tokenController)
-
-	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
+	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleController)(nil)))
 	if err != nil {
 		panic(err)
 	}
 	vehicleController := vehicleControllerInterface.(controller.VehicleControllerInterface)
 
-	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingControllerInterface)(nil)).Elem())
+	fmt.Printf("Concrete type: %T\n", vehicleControllerInterface)
+	fmt.Printf("Interface type: %v\n", reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
+
+	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingController)(nil)))
 	if err != nil {
 		panic(err)
 	}
