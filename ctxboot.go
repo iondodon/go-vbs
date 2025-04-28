@@ -27,9 +27,8 @@ import (
 	
 )
 
-func init() {
-	cc := ctxboot.Boot()
-	
+// LoadContext registers and initializes all components
+func LoadContext(cc *ctxboot.ComponentContext) error {
 	// Register components in dependency order
 	
 	// Register controller9.BookingController
@@ -97,4 +96,7 @@ func init() {
 		log.Fatalf("Failed to register component %s: %v", "vehicle4.IsAvailableForHire", err)
 	}
 	
+	
+	// Initialize all components after registration
+	return cc.InitializeComponents()
 }
