@@ -34,12 +34,11 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// add infoLog and errorLog to ctxboot
+	// register some more components to ctxboot
 	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), infoLog)
 	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), errorLog)
-
+	ctxboot.Boot().SetComponent(reflect.TypeOf(&sql.DB{}), db)
 	queries := repository.New(db)
-
 	ctxboot.Boot().SetComponent(reflect.TypeOf(&repository.Queries{}), queries)
 
 	// Initialize all components after registration

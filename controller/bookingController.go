@@ -14,9 +14,9 @@ import (
 //gobok:constructor
 //ctxboot:component
 type BookingController struct {
-	infoLog            *log.Logger `ctxboot:"inject"`
-	errorLog           *log.Logger `ctxboot:"inject"`
-	db                 *sql.DB
+	infoLog            *log.Logger               `ctxboot:"inject"`
+	errorLog           *log.Logger               `ctxboot:"inject"`
+	db                 *sql.DB                   `ctxboot:"inject"`
 	bookVehicleUseCase bookingUCs.BookVehicle    `ctxboot:"inject"`
 	getAllBookings     bookingUCs.GetAllBookings `ctxboot:"inject"`
 }
