@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -48,33 +47,30 @@ func main() {
 		panic(err)
 	}
 
-	tokenControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenController)(nil)))
+	tokenController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	tokenController := tokenControllerInterface.(controller.TokenControllerInterface)
+	tokenControllerInterface := tokenController.(controller.TokenControllerInterface)
 
-	vehicleControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleController)(nil)))
+	vehicleController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	vehicleController := vehicleControllerInterface.(controller.VehicleControllerInterface)
+	vehicleControllerInterface := vehicleController.(controller.VehicleControllerInterface)
 
-	fmt.Printf("Concrete type: %T\n", vehicleControllerInterface)
-	fmt.Printf("Interface type: %v\n", reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
-
-	bookingControllerInterface, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingController)(nil)))
+	bookingController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingControllerInterface)(nil)).Elem())
 	if err != nil {
 		panic(err)
 	}
-	bookingController := bookingControllerInterface.(controller.BookingControllerInterface)
+	bookingControllerInterface := bookingController.(controller.BookingControllerInterface)
 
 	router := http.NewServeMux()
-	router.Handle("GET /login", controller.Handler(tokenController.Login))
-	router.Handle("GET /refresh", controller.Handler(tokenController.Refresh))
-	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleController.HandleGetVehicleByUUID))
-	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
-	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))
+	router.Handle("GET /login", controller.Handler(tokenControllerInterface.Login))
+	router.Handle("GET /refresh", controller.Handler(tokenControllerInterface.Refresh))
+	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleControllerInterface.HandleGetVehicleByUUID))
+	router.Handle("POST /bookings", controller.Handler(bookingControllerInterface.HandleBookVehicle))
+	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingControllerInterface.HandleGetAllBookings)))
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {
