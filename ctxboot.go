@@ -27,8 +27,15 @@ import (
 	
 )
 
-// LoadContext registers and initializes all components
-func LoadContext(cc *ctxboot.ComponentContext) error {
+// Context embeds ComponentContext and adds getter methods
+type Context struct {
+	*ctxboot.ComponentContext
+}
+
+// LoadContext registers and initializes all components and returns a Context
+func LoadContext() (*Context, error) {
+	cc := &Context{ctxboot.Boot()}
+	
 	// Register components in dependency order
 	
 	// Register controller10.BookingController
@@ -98,5 +105,129 @@ func LoadContext(cc *ctxboot.ComponentContext) error {
 	
 	
 	// Initialize all components after registration
-	return cc.InitializeComponents()
+	if err := cc.InitializeComponents(); err != nil {
+		return nil, err
+	}
+	
+	return cc, nil
 }
+
+// Component getter methods
+
+// GetBookingController returns the BookingController component
+func (cc *Context) GetBookingController() (*controller10.BookingController, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*controller10.BookingController)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*controller10.BookingController), nil
+}
+
+// GetTokenController returns the TokenController component
+func (cc *Context) GetTokenController() (*controller10.TokenController, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*controller10.TokenController)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*controller10.TokenController), nil
+}
+
+// GetVehicleController returns the VehicleController component
+func (cc *Context) GetVehicleController() (*controller10.VehicleController, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*controller10.VehicleController), nil
+}
+
+// GetBookingRepository returns the BookingRepository component
+func (cc *Context) GetBookingRepository() (*booking2.BookingRepository, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*booking2.BookingRepository)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*booking2.BookingRepository), nil
+}
+
+// GetBookingDateRepository returns the BookingDateRepository component
+func (cc *Context) GetBookingDateRepository() (*bookingdate2.BookingDateRepository, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*bookingdate2.BookingDateRepository)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*bookingdate2.BookingDateRepository), nil
+}
+
+// GetCustomerRepository returns the CustomerRepository component
+func (cc *Context) GetCustomerRepository() (*customer2.CustomerRepository, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*customer2.CustomerRepository)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*customer2.CustomerRepository), nil
+}
+
+// GetQueries returns the Queries component
+func (cc *Context) GetQueries() (*repository.Queries, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*repository.Queries)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*repository.Queries), nil
+}
+
+// GetVehicleRepository returns the VehicleRepository component
+func (cc *Context) GetVehicleRepository() (*vehicle2.VehicleRepository, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*vehicle2.VehicleRepository)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*vehicle2.VehicleRepository), nil
+}
+
+// GetBookVehicle returns the BookVehicle component
+func (cc *Context) GetBookVehicle() (*booking6.BookVehicle, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*booking6.BookVehicle)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*booking6.BookVehicle), nil
+}
+
+// GetGetAllBookings returns the GetAllBookings component
+func (cc *Context) GetGetAllBookings() (*booking6.GetAllBookings, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*booking6.GetAllBookings)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*booking6.GetAllBookings), nil
+}
+
+// GetGetBookingDates returns the GetBookingDates component
+func (cc *Context) GetGetBookingDates() (*bookingdate3.GetBookingDates, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*bookingdate3.GetBookingDates)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*bookingdate3.GetBookingDates), nil
+}
+
+// GetGetVehicle returns the GetVehicle component
+func (cc *Context) GetGetVehicle() (*vehicle4.GetVehicle, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*vehicle4.GetVehicle)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*vehicle4.GetVehicle), nil
+}
+
+// GetIsAvailableForHire returns the IsAvailableForHire component
+func (cc *Context) GetIsAvailableForHire() (*vehicle4.IsAvailableForHire, error) {
+	component, err := cc.GetComponent(reflect.TypeOf((*vehicle4.IsAvailableForHire)(nil)))
+	if err != nil {
+		return nil, err
+	}
+	return component.(*vehicle4.IsAvailableForHire), nil
+}
+

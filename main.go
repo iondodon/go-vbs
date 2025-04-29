@@ -42,35 +42,35 @@ func main() {
 	ctxboot.Boot().SetComponent(reflect.TypeOf(&repository.Queries{}), queries)
 
 	// Initialize all components after registration
-	err = LoadContext(ctxboot.Boot())
+	cc, err := LoadContext()
 	if err != nil {
 		panic(err)
 	}
 
-	tokenController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.TokenControllerInterface)(nil)).Elem())
+	var tokenController controller.TokenControllerInterface
+	tokenController, err = cc.GetTokenController()
 	if err != nil {
 		panic(err)
 	}
-	tokenControllerInterface := tokenController.(controller.TokenControllerInterface)
 
-	vehicleController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.VehicleControllerInterface)(nil)).Elem())
+	var vehicleController controller.VehicleControllerInterface
+	vehicleController, err = cc.GetVehicleController()
 	if err != nil {
 		panic(err)
 	}
-	vehicleControllerInterface := vehicleController.(controller.VehicleControllerInterface)
 
-	bookingController, err := ctxboot.Boot().GetComponent(reflect.TypeOf((*controller.BookingControllerInterface)(nil)).Elem())
+	var bookingController controller.BookingControllerInterface
+	bookingController, err = cc.GetBookingController()
 	if err != nil {
 		panic(err)
 	}
-	bookingControllerInterface := bookingController.(controller.BookingControllerInterface)
 
 	router := http.NewServeMux()
-	router.Handle("GET /login", controller.Handler(tokenControllerInterface.Login))
-	router.Handle("GET /refresh", controller.Handler(tokenControllerInterface.Refresh))
-	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleControllerInterface.HandleGetVehicleByUUID))
-	router.Handle("POST /bookings", controller.Handler(bookingControllerInterface.HandleBookVehicle))
-	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingControllerInterface.HandleGetAllBookings)))
+	router.Handle("GET /login", controller.Handler(tokenController.Login))
+	router.Handle("GET /refresh", controller.Handler(tokenController.Refresh))
+	router.Handle("GET /vehicles/{uuid}", controller.Handler(vehicleController.HandleGetVehicleByUUID))
+	router.Handle("POST /bookings", controller.Handler(bookingController.HandleBookVehicle))
+	router.Handle("GET /bookings", middleware.JWT(controller.Handler(bookingController.HandleGetAllBookings)))
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {
