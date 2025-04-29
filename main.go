@@ -54,12 +54,7 @@ func main() {
 		log.Fatalf("Failed to register component %s: %v", "queries", err)
 	}
 
-	err = cc.RegisterScanedComponenets()
-	if err != nil {
-		log.Fatalf("Failed to register components: %v", err)
-	}
-
-	err = cc.InjectComponents()
+	err = cc.InitializeComponents()
 	if err != nil {
 		log.Fatalf("Failed to inject components: %v", err)
 	}

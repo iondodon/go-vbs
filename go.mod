@@ -6,7 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
-	github.com/iondodon/ctxboot v0.1.1-0.20250429174922-56e21e9e7ca9
+	github.com/iondodon/ctxboot v0.1.1-0.20250429180701-0ea351aea342
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/stretchr/testify v1.10.0
 )
