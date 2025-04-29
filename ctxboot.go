@@ -28,90 +28,90 @@ import (
 	
 )
 
-// Context embeds ComponentContext and adds getter methods
-type Context struct {
-	*ctxboot.ComponentContext
+// ComponentContext embeds CtxbootComponentContext and adds getter methods
+type ComponentContext struct {
+	*ctxboot.CtxbootComponentContext
 }
 
 // RegisterComponent registers a component instance and automatically deduces its type
-func (cc *Context) RegisterComponent(instance interface{}) error {
+func (c *ComponentContext) RegisterComponent(instance interface{}) error {
 	if instance == nil {
 		return fmt.Errorf("cannot register nil component")
 	}
-	return cc.SetComponent(reflect.TypeOf(instance), instance)
+	return c.SetComponent(reflect.TypeOf(instance), instance)
 }
 
 // InjectComponents initializes all registered components and their dependencies
-func (cc *Context) InjectComponents() error {
-	return cc.InitializeComponents()
+func (c *ComponentContext) InjectComponents() error {
+	return c.InitializeComponents()
 }
 
 // RegisterScanedComponenets registers all components
-func (cc *Context) RegisterScanedComponenets() error {
+func (c *ComponentContext) RegisterScanedComponenets() error {
 	// Register components in dependency order
 	
 	// Register controller10.BookingController
-	if err := cc.SetComponent(reflect.TypeOf((*controller10.BookingController)(nil)), &controller10.BookingController{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*controller10.BookingController)(nil)), &controller10.BookingController{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "controller10.BookingController", err)
 	}
 	
 	// Register controller10.TokenController
-	if err := cc.SetComponent(reflect.TypeOf((*controller10.TokenController)(nil)), &controller10.TokenController{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*controller10.TokenController)(nil)), &controller10.TokenController{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "controller10.TokenController", err)
 	}
 	
 	// Register controller10.VehicleController
-	if err := cc.SetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)), &controller10.VehicleController{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)), &controller10.VehicleController{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "controller10.VehicleController", err)
 	}
 	
 	// Register booking2.BookingRepository
-	if err := cc.SetComponent(reflect.TypeOf((*booking2.BookingRepository)(nil)), &booking2.BookingRepository{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*booking2.BookingRepository)(nil)), &booking2.BookingRepository{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "booking2.BookingRepository", err)
 	}
 	
 	// Register bookingdate2.BookingDateRepository
-	if err := cc.SetComponent(reflect.TypeOf((*bookingdate2.BookingDateRepository)(nil)), &bookingdate2.BookingDateRepository{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*bookingdate2.BookingDateRepository)(nil)), &bookingdate2.BookingDateRepository{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "bookingdate2.BookingDateRepository", err)
 	}
 	
 	// Register customer2.CustomerRepository
-	if err := cc.SetComponent(reflect.TypeOf((*customer2.CustomerRepository)(nil)), &customer2.CustomerRepository{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*customer2.CustomerRepository)(nil)), &customer2.CustomerRepository{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "customer2.CustomerRepository", err)
 	}
 	
 	// Register repository.Queries
-	if err := cc.SetComponent(reflect.TypeOf((*repository.Queries)(nil)), &repository.Queries{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*repository.Queries)(nil)), &repository.Queries{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "repository.Queries", err)
 	}
 	
 	// Register vehicle2.VehicleRepository
-	if err := cc.SetComponent(reflect.TypeOf((*vehicle2.VehicleRepository)(nil)), &vehicle2.VehicleRepository{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*vehicle2.VehicleRepository)(nil)), &vehicle2.VehicleRepository{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "vehicle2.VehicleRepository", err)
 	}
 	
 	// Register booking6.BookVehicle
-	if err := cc.SetComponent(reflect.TypeOf((*booking6.BookVehicle)(nil)), &booking6.BookVehicle{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*booking6.BookVehicle)(nil)), &booking6.BookVehicle{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "booking6.BookVehicle", err)
 	}
 	
 	// Register booking6.GetAllBookings
-	if err := cc.SetComponent(reflect.TypeOf((*booking6.GetAllBookings)(nil)), &booking6.GetAllBookings{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*booking6.GetAllBookings)(nil)), &booking6.GetAllBookings{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "booking6.GetAllBookings", err)
 	}
 	
 	// Register bookingdate3.GetBookingDates
-	if err := cc.SetComponent(reflect.TypeOf((*bookingdate3.GetBookingDates)(nil)), &bookingdate3.GetBookingDates{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*bookingdate3.GetBookingDates)(nil)), &bookingdate3.GetBookingDates{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "bookingdate3.GetBookingDates", err)
 	}
 	
 	// Register vehicle4.GetVehicle
-	if err := cc.SetComponent(reflect.TypeOf((*vehicle4.GetVehicle)(nil)), &vehicle4.GetVehicle{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*vehicle4.GetVehicle)(nil)), &vehicle4.GetVehicle{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "vehicle4.GetVehicle", err)
 	}
 	
 	// Register vehicle4.IsAvailableForHire
-	if err := cc.SetComponent(reflect.TypeOf((*vehicle4.IsAvailableForHire)(nil)), &vehicle4.IsAvailableForHire{}); err != nil {
+	if err := c.SetComponent(reflect.TypeOf((*vehicle4.IsAvailableForHire)(nil)), &vehicle4.IsAvailableForHire{}); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "vehicle4.IsAvailableForHire", err)
 	}
 	
@@ -119,16 +119,16 @@ func (cc *Context) RegisterScanedComponenets() error {
 	return nil
 }
 
-// NewContext creates a new context
-func NewContext() *Context {
-	return &Context{ctxboot.Boot()}
+// NewComponentContext creates a new component context instance
+func NewComponentContext() *ComponentContext {
+	return &ComponentContext{ctxboot.NewCtxbootComponentContext()}
 }
 
 // Component getter methods
 
 // GetBookingController returns the BookingController component
-func (cc *Context) GetBookingController() (*controller10.BookingController, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*controller10.BookingController)(nil)))
+func (c *ComponentContext) GetBookingController() (*controller10.BookingController, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*controller10.BookingController)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -136,8 +136,8 @@ func (cc *Context) GetBookingController() (*controller10.BookingController, erro
 }
 
 // GetTokenController returns the TokenController component
-func (cc *Context) GetTokenController() (*controller10.TokenController, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*controller10.TokenController)(nil)))
+func (c *ComponentContext) GetTokenController() (*controller10.TokenController, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*controller10.TokenController)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +145,8 @@ func (cc *Context) GetTokenController() (*controller10.TokenController, error) {
 }
 
 // GetVehicleController returns the VehicleController component
-func (cc *Context) GetVehicleController() (*controller10.VehicleController, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)))
+func (c *ComponentContext) GetVehicleController() (*controller10.VehicleController, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*controller10.VehicleController)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -154,8 +154,8 @@ func (cc *Context) GetVehicleController() (*controller10.VehicleController, erro
 }
 
 // GetBookingRepository returns the BookingRepository component
-func (cc *Context) GetBookingRepository() (*booking2.BookingRepository, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*booking2.BookingRepository)(nil)))
+func (c *ComponentContext) GetBookingRepository() (*booking2.BookingRepository, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*booking2.BookingRepository)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -163,8 +163,8 @@ func (cc *Context) GetBookingRepository() (*booking2.BookingRepository, error) {
 }
 
 // GetBookingDateRepository returns the BookingDateRepository component
-func (cc *Context) GetBookingDateRepository() (*bookingdate2.BookingDateRepository, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*bookingdate2.BookingDateRepository)(nil)))
+func (c *ComponentContext) GetBookingDateRepository() (*bookingdate2.BookingDateRepository, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*bookingdate2.BookingDateRepository)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (cc *Context) GetBookingDateRepository() (*bookingdate2.BookingDateReposito
 }
 
 // GetCustomerRepository returns the CustomerRepository component
-func (cc *Context) GetCustomerRepository() (*customer2.CustomerRepository, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*customer2.CustomerRepository)(nil)))
+func (c *ComponentContext) GetCustomerRepository() (*customer2.CustomerRepository, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*customer2.CustomerRepository)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -181,8 +181,8 @@ func (cc *Context) GetCustomerRepository() (*customer2.CustomerRepository, error
 }
 
 // GetQueries returns the Queries component
-func (cc *Context) GetQueries() (*repository.Queries, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*repository.Queries)(nil)))
+func (c *ComponentContext) GetQueries() (*repository.Queries, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*repository.Queries)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -190,8 +190,8 @@ func (cc *Context) GetQueries() (*repository.Queries, error) {
 }
 
 // GetVehicleRepository returns the VehicleRepository component
-func (cc *Context) GetVehicleRepository() (*vehicle2.VehicleRepository, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*vehicle2.VehicleRepository)(nil)))
+func (c *ComponentContext) GetVehicleRepository() (*vehicle2.VehicleRepository, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*vehicle2.VehicleRepository)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -199,8 +199,8 @@ func (cc *Context) GetVehicleRepository() (*vehicle2.VehicleRepository, error) {
 }
 
 // GetBookVehicle returns the BookVehicle component
-func (cc *Context) GetBookVehicle() (*booking6.BookVehicle, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*booking6.BookVehicle)(nil)))
+func (c *ComponentContext) GetBookVehicle() (*booking6.BookVehicle, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*booking6.BookVehicle)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -208,8 +208,8 @@ func (cc *Context) GetBookVehicle() (*booking6.BookVehicle, error) {
 }
 
 // GetGetAllBookings returns the GetAllBookings component
-func (cc *Context) GetGetAllBookings() (*booking6.GetAllBookings, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*booking6.GetAllBookings)(nil)))
+func (c *ComponentContext) GetGetAllBookings() (*booking6.GetAllBookings, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*booking6.GetAllBookings)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -217,8 +217,8 @@ func (cc *Context) GetGetAllBookings() (*booking6.GetAllBookings, error) {
 }
 
 // GetGetBookingDates returns the GetBookingDates component
-func (cc *Context) GetGetBookingDates() (*bookingdate3.GetBookingDates, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*bookingdate3.GetBookingDates)(nil)))
+func (c *ComponentContext) GetGetBookingDates() (*bookingdate3.GetBookingDates, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*bookingdate3.GetBookingDates)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -226,8 +226,8 @@ func (cc *Context) GetGetBookingDates() (*bookingdate3.GetBookingDates, error) {
 }
 
 // GetGetVehicle returns the GetVehicle component
-func (cc *Context) GetGetVehicle() (*vehicle4.GetVehicle, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*vehicle4.GetVehicle)(nil)))
+func (c *ComponentContext) GetGetVehicle() (*vehicle4.GetVehicle, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*vehicle4.GetVehicle)(nil)))
 	if err != nil {
 		return nil, err
 	}
@@ -235,8 +235,8 @@ func (cc *Context) GetGetVehicle() (*vehicle4.GetVehicle, error) {
 }
 
 // GetIsAvailableForHire returns the IsAvailableForHire component
-func (cc *Context) GetIsAvailableForHire() (*vehicle4.IsAvailableForHire, error) {
-	component, err := cc.GetComponent(reflect.TypeOf((*vehicle4.IsAvailableForHire)(nil)))
+func (c *ComponentContext) GetIsAvailableForHire() (*vehicle4.IsAvailableForHire, error) {
+	component, err := c.GetComponent(reflect.TypeOf((*vehicle4.IsAvailableForHire)(nil)))
 	if err != nil {
 		return nil, err
 	}

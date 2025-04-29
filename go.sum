@@ -54,6 +54,8 @@ github.com/iondodon/ctxboot v0.1.1-0.20250429125804-7be946d89eed h1:ZYV9Isjt28NI
 github.com/iondodon/ctxboot v0.1.1-0.20250429125804-7be946d89eed/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
 github.com/iondodon/ctxboot v0.1.1-0.20250429135458-e45ea9834401 h1:6NK7kTCLYrD96i6aL7+lGNMDjcVPNFf+2ZmkGQ/YYsw=
 github.com/iondodon/ctxboot v0.1.1-0.20250429135458-e45ea9834401/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
+github.com/iondodon/ctxboot v0.1.1-0.20250429174922-56e21e9e7ca9 h1:2qlqmTHP+d++BxiRXlJIlsQcCC8UX6kZ0r5BckX/nxM=
+github.com/iondodon/ctxboot v0.1.1-0.20250429174922-56e21e9e7ca9/go.mod h1:oHaa8KTW1F8sxQ/FbWjmMa6ATjhn+iRcCUSAOfEMQiA=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
 github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/kisielk/sqlstruct v0.0.0-20201105191214-5f3e10d3ab46/go.mod h1:yyMNCyc/Ib3bDTKd379tNMpB/7/H5TjM2Y9QJ5THLbE=

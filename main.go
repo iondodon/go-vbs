@@ -35,7 +35,7 @@ func main() {
 	queries := repository.New(db)
 
 	// Initialize all components after registration
-	cc := NewContext()
+	cc := NewComponentContext()
 
 	err = cc.RegisterComponent(infoLog)
 	if err != nil {
