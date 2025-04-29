@@ -7,10 +7,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"reflect"
 	"time"
 
-	"github.com/iondodon/ctxboot"
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
@@ -34,17 +32,36 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// register some more components to ctxboot
-	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), infoLog)
-	ctxboot.Boot().SetComponent(reflect.TypeOf(&log.Logger{}), errorLog)
-	ctxboot.Boot().SetComponent(reflect.TypeOf(&sql.DB{}), db)
 	queries := repository.New(db)
-	ctxboot.Boot().SetComponent(reflect.TypeOf(&repository.Queries{}), queries)
 
 	// Initialize all components after registration
-	cc, err := LoadContext()
+	cc := NewContext()
+
+	err = cc.RegisterComponent(infoLog)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to register component %s: %v", "infoLog", err)
+	}
+	err = cc.RegisterComponent(errorLog)
+	if err != nil {
+		log.Fatalf("Failed to register component %s: %v", "errorLog", err)
+	}
+	err = cc.RegisterComponent(db)
+	if err != nil {
+		log.Fatalf("Failed to register component %s: %v", "db", err)
+	}
+	err = cc.RegisterComponent(queries)
+	if err != nil {
+		log.Fatalf("Failed to register component %s: %v", "queries", err)
+	}
+
+	err = cc.RegisterScanedComponenets()
+	if err != nil {
+		log.Fatalf("Failed to register components: %v", err)
+	}
+
+	err = cc.InjectComponents()
+	if err != nil {
+		log.Fatalf("Failed to inject components: %v", err)
 	}
 
 	var tokenController controller.TokenControllerInterface

@@ -6,6 +6,7 @@ import (
 	"github.com/iondodon/ctxboot"
 	"reflect"
 	"log"
+	"fmt"
 	
 	controller10 "github.com/iondodon/go-vbs/controller"
 	
@@ -32,10 +33,21 @@ type Context struct {
 	*ctxboot.ComponentContext
 }
 
-// LoadContext registers and initializes all components and returns a Context
-func LoadContext() (*Context, error) {
-	cc := &Context{ctxboot.Boot()}
-	
+// RegisterComponent registers a component instance and automatically deduces its type
+func (cc *Context) RegisterComponent(instance interface{}) error {
+	if instance == nil {
+		return fmt.Errorf("cannot register nil component")
+	}
+	return cc.SetComponent(reflect.TypeOf(instance), instance)
+}
+
+// InjectComponents initializes all registered components and their dependencies
+func (cc *Context) InjectComponents() error {
+	return cc.InitializeComponents()
+}
+
+// RegisterScanedComponenets registers all components
+func (cc *Context) RegisterScanedComponenets() error {
 	// Register components in dependency order
 	
 	// Register controller10.BookingController
@@ -104,12 +116,12 @@ func LoadContext() (*Context, error) {
 	}
 	
 	
-	// Initialize all components after registration
-	if err := cc.InitializeComponents(); err != nil {
-		return nil, err
-	}
-	
-	return cc, nil
+	return nil
+}
+
+// NewContext creates a new context
+func NewContext() *Context {
+	return &Context{ctxboot.Boot()}
 }
 
 // Component getter methods
