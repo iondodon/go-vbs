@@ -12,7 +12,6 @@ import (
 	"github.com/iondodon/go-vbs/controller"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
-	"github.com/iondodon/go-vbs/repository"
 )
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
@@ -32,30 +31,19 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	queries := repository.New(db)
-
 	// Initialize all components after registration
 	cc := NewComponentContext()
 
-	err = cc.RegisterComponent(infoLog)
-	if err != nil {
+	if err = cc.RegisterComponent(infoLog); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "infoLog", err)
 	}
-	err = cc.RegisterComponent(errorLog)
-	if err != nil {
+	if err = cc.RegisterComponent(errorLog); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "errorLog", err)
 	}
-	err = cc.RegisterComponent(db)
-	if err != nil {
+	if err = cc.RegisterComponent(db); err != nil {
 		log.Fatalf("Failed to register component %s: %v", "db", err)
 	}
-	err = cc.RegisterComponent(queries)
-	if err != nil {
-		log.Fatalf("Failed to register component %s: %v", "queries", err)
-	}
-
-	err = cc.InitializeComponents()
-	if err != nil {
+	if err = cc.InitializeComponents(); err != nil {
 		log.Fatalf("Failed to inject components: %v", err)
 	}
 

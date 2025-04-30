@@ -22,7 +22,7 @@ func New(db DBTX) *Queries {
 
 //ctxboot:component
 type Queries struct {
-	db DBTX
+	db DBTX `ctxboot:"inject"`
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
