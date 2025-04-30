@@ -1,7 +1,10 @@
 {
     "files.exclude": {
       // "**/gobok.go": true,
-      "**/**_mock.go": true,
-      "**/**.sql.go": true
-    }
+      // "**/**_mock.go": true,
+      // "**/**.sql.go": true
+    },
+    "explorer.fileNesting.patterns": {
+      "*.go": "${capture}_test.go, ${capture}_mock.go"
+    },
 }
