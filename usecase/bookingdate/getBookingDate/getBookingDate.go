@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/repository/bookingDateRepository"
+	"github.com/iondodon/go-vbs/usecase"
 )
 
 type GetBookingDatesInterface interface {
@@ -16,10 +16,10 @@ type GetBookingDatesInterface interface {
 }
 
 type GetBookingDates struct {
-	bdRepo bookingDateRepository.BookingDateRepositoryInterface
+	bdRepo usecase.BookingDateRepositoryInterface
 }
 
-func New(bookingDateRepo bookingDateRepository.BookingDateRepositoryInterface) GetBookingDatesInterface {
+func New(bookingDateRepo usecase.BookingDateRepositoryInterface) GetBookingDatesInterface {
 	return &GetBookingDates{
 		bdRepo: bookingDateRepo,
 	}

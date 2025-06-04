@@ -13,6 +13,7 @@ import (
 	"github.com/iondodon/go-vbs/repository/bookingRepository"
 	"github.com/iondodon/go-vbs/repository/customerRepository"
 	"github.com/iondodon/go-vbs/repository/vehicleRepository"
+	"github.com/iondodon/go-vbs/usecase"
 	"github.com/iondodon/go-vbs/usecase/booking/bookVehicle"
 	"github.com/iondodon/go-vbs/usecase/booking/getAllBookings"
 	"github.com/iondodon/go-vbs/usecase/bookingdate/getBookingDate"
@@ -33,10 +34,10 @@ func BootstrapApplication(db *sql.DB) *Dependencies {
 	// Create repository layer
 	queries := repository.New(db)
 
-	vehicleRepo := vehicleRepository.New(queries)
-	customerRepo := customerRepository.New(queries)
-	bookingRepo := bookingRepository.New(queries)
-	bookingDateRepo := bookingDateRepository.New(queries)
+	var vehicleRepo usecase.VehicleRepositoryInterface = vehicleRepository.New(queries)
+	var customerRepo usecase.CustomerRepositoryInterface = customerRepository.New(queries)
+	var bookingRepo usecase.BookingRepositoryInterface = bookingRepository.New(queries)
+	var bookingDateRepo usecase.BookingDateRepositoryInterface = bookingDateRepository.New(queries)
 
 	// Create use case layer
 	getVehicleUC := getVehicle.New(vehicleRepo)

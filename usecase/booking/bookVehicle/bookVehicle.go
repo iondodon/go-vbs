@@ -8,9 +8,7 @@ import (
 
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/repository/bookingRepository"
-	"github.com/iondodon/go-vbs/repository/customerRepository"
-	"github.com/iondodon/go-vbs/repository/vehicleRepository"
+	"github.com/iondodon/go-vbs/usecase"
 	"github.com/iondodon/go-vbs/usecase/bookingdate/getBookingDate"
 	"github.com/iondodon/go-vbs/usecase/vehicle/isVehicleAvailable"
 
@@ -26,9 +24,9 @@ type BookVehicleInterface interface {
 type BookVehicle struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
-	vehRepo            vehicleRepository.VehicleRepositoryInterface
-	custRepo           customerRepository.CustomerRepositoryInterface
-	bookingRepo        bookingRepository.BookingRepositoryInterface
+	vehRepo            usecase.VehicleRepositoryInterface
+	custRepo           usecase.CustomerRepositoryInterface
+	bookingRepo        usecase.BookingRepositoryInterface
 	isAvailableForHire isVehicleAvailable.IsAvailableForHireInterface
 	getBookingDates    getBookingDate.GetBookingDatesInterface
 }
@@ -36,9 +34,9 @@ type BookVehicle struct {
 func New(
 	infoLog *log.Logger,
 	errorLog *log.Logger,
-	vehRepo vehicleRepository.VehicleRepositoryInterface,
-	custRepo customerRepository.CustomerRepositoryInterface,
-	bookingRepo bookingRepository.BookingRepositoryInterface,
+	vehRepo usecase.VehicleRepositoryInterface,
+	custRepo usecase.CustomerRepositoryInterface,
+	bookingRepo usecase.BookingRepositoryInterface,
 	isAvailableForHire isVehicleAvailable.IsAvailableForHireInterface,
 	getBookingDates getBookingDate.GetBookingDatesInterface,
 ) BookVehicleInterface {

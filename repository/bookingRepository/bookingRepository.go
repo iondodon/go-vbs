@@ -8,18 +8,14 @@ import (
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/usecase"
 )
-
-type BookingRepositoryInterface interface {
-	Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error
-	GetAll(ctx context.Context) ([]domain.Booking, error)
-}
 
 type BookingRepository struct {
 	queries *repository.Queries
 }
 
-func New(queries *repository.Queries) BookingRepositoryInterface {
+func New(queries *repository.Queries) usecase.BookingRepositoryInterface {
 	return &BookingRepository{
 		queries: queries,
 	}

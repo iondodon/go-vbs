@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/repository/vehicleRepository"
+	"github.com/iondodon/go-vbs/usecase"
 )
 
 type IsAvailableForHireInterface interface {
@@ -13,10 +13,10 @@ type IsAvailableForHireInterface interface {
 }
 
 type IsAvailableForHire struct {
-	vehRepo vehicleRepository.VehicleRepositoryInterface
+	vehRepo usecase.VehicleRepositoryInterface
 }
 
-func New(vehicleRepo vehicleRepository.VehicleRepositoryInterface) IsAvailableForHireInterface {
+func New(vehicleRepo usecase.VehicleRepositoryInterface) IsAvailableForHireInterface {
 	return &IsAvailableForHire{
 		vehRepo: vehicleRepo,
 	}

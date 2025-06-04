@@ -7,21 +7,17 @@ import (
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
 	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/usecase"
 
 	uuidLib "github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type VehicleRepositoryInterface interface {
-	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
-	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
-}
-
 type VehicleRepository struct {
 	queries *repository.Queries
 }
 
-func New(queries *repository.Queries) VehicleRepositoryInterface {
+func New(queries *repository.Queries) usecase.VehicleRepositoryInterface {
 	return &VehicleRepository{
 		queries: queries,
 	}

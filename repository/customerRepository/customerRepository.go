@@ -6,17 +6,14 @@ import (
 	uuidlib "github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/usecase"
 )
-
-type CustomerRepositoryInterface interface {
-	FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error)
-}
 
 type CustomerRepository struct {
 	queries *repository.Queries
 }
 
-func New(queries *repository.Queries) CustomerRepositoryInterface {
+func New(queries *repository.Queries) usecase.CustomerRepositoryInterface {
 	return &CustomerRepository{
 		queries: queries,
 	}

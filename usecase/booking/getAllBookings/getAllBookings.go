@@ -4,8 +4,7 @@ import (
 	"context"
 
 	"github.com/iondodon/go-vbs/domain"
-
-	"github.com/iondodon/go-vbs/repository/bookingRepository"
+	"github.com/iondodon/go-vbs/usecase"
 )
 
 type GetAllBookingsInterface interface {
@@ -13,10 +12,10 @@ type GetAllBookingsInterface interface {
 }
 
 type GetAllBookings struct {
-	bookingRepo bookingRepository.BookingRepositoryInterface
+	bookingRepo usecase.BookingRepositoryInterface
 }
 
-func New(bookingRepo bookingRepository.BookingRepositoryInterface) GetAllBookingsInterface {
+func New(bookingRepo usecase.BookingRepositoryInterface) GetAllBookingsInterface {
 	return &GetAllBookings{
 		bookingRepo: bookingRepo,
 	}

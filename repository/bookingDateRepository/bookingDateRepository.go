@@ -7,18 +7,14 @@ import (
 
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/usecase"
 )
-
-type BookingDateRepositoryInterface interface {
-	FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error)
-	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
-}
 
 type BookingDateRepository struct {
 	queries *repository.Queries
 }
 
-func New(queries *repository.Queries) BookingDateRepositoryInterface {
+func New(queries *repository.Queries) usecase.BookingDateRepositoryInterface {
 	return &BookingDateRepository{
 		queries: queries,
 	}
