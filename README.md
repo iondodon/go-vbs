@@ -8,6 +8,167 @@ This is [VBS](https://github.com/iondodon/vbs) (originally implemented in Java) 
 - sqlc
 - mockery
 - swagger-ui - dist/ from [https://github.com/swagger-api/swagger-ui/releases](https://github.com/swagger-api/swagger-ui/releases)
+- **Google Wire** - Dependency injection code generation
+
+## Dependency Injection with Google Wire
+
+This project uses [Google Wire](https://github.com/google/wire) for compile-time dependency injection. Wire generates code that wires up all dependencies automatically, eliminating the need for manual dependency construction.
+
+### Wire Setup
+
+**Installation:**
+
+```bash
+# Install the Wire command-line tool
+go install github.com/google/wire/cmd/wire@latest
+
+# Or use the Makefile
+make install-wire
+```
+
+**Files:**
+
+- `wire.go` - Contains provider functions and Wire configuration (build tag: `wireinject`)
+- `wire_gen.go` - Generated code by Wire (build tag: `!wireinject`)
+- `Makefile` - Includes Wire commands for convenience
+
+### Provider Functions
+
+Each component has a dedicated provider function in `wire.go`:
+
+```go
+// Logger providers with wrapper types to avoid conflicts
+func ProvideInfoLogger() InfoLogger
+func ProvideErrorLogger() ErrorLogger
+
+// Repository layer providers
+func ProvideQueries(db *sql.DB) *repository.Queries
+func ProvideVehicleRepository(queries *repository.Queries) vehicleBusiness.VehicleRepository
+
+// Business layer providers
+func ProvideGetVehicleUseCase(vehicleRepo vehicleBusiness.VehicleRepository) vehicleBusiness.GetVehicleUseCase
+func ProvideBookVehicleUseCase(...) business.BookVehicleUseCase
+
+// Controller providers
+func ProvideVehicleController(...) *vehicleController.Controller
+```
+
+### Provider Sets
+
+Related providers are grouped into sets for better organization:
+
+```go
+var RepositorySet = wire.NewSet(
+    ProvideQueries,
+    ProvideVehicleRepository,
+    ProvideCustomerRepository,
+    ProvideBookingRepository,
+    ProvideBookingDateRepository,
+)
+
+var VehicleSet = wire.NewSet(
+    ProvideGetVehicleUseCase,
+    ProvideAvailabilityUseCase,
+    ProvideVehicleController,
+)
+
+var ApplicationSet = wire.NewSet(
+    LoggerSet,
+    RepositorySet,
+    VehicleSet,
+    BookingSet,
+    AuthSet,
+)
+```
+
+### Injector Functions
+
+Wire generates these functions for dependency injection:
+
+```go
+func InitializeAuthController(db *sql.DB) (*authController.Controller, error)
+func InitializeVehicleController(db *sql.DB) (*vehicleController.Controller, error)
+func InitializeBookingController(db *sql.DB) (*bookingController.Controller, error)
+```
+
+### Usage in main.go
+
+```go
+func main() {
+    // ... database setup ...
+
+    // Initialize controllers using Wire
+    authController, err := InitializeAuthController(db)
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+
+    vehicleController, err := InitializeVehicleController(db)
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+
+    bookingController, err := InitializeBookingController(db)
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+
+    // Use controllers in HTTP routes...
+}
+```
+
+### Development Workflow
+
+**Regenerating Wire code:**
+
+```bash
+# Using Wire directly
+wire
+
+# Using Makefile
+make wire
+
+# Build (includes wire generation)
+make build
+```
+
+**When to regenerate:**
+
+- After adding new dependencies
+- After modifying provider functions
+- After changing provider sets
+
+### Logger Handling
+
+Wire requires unique types for dependency injection. Since multiple components need loggers, we use wrapper types:
+
+```go
+type InfoLogger struct {
+    *log.Logger
+}
+
+type ErrorLogger struct {
+    *log.Logger
+}
+```
+
+This allows Wire to distinguish between different logger types while maintaining the same underlying `*log.Logger` interface.
+
+### Cross-Domain Dependencies
+
+Wire elegantly handles cross-domain dependencies through interfaces:
+
+```go
+// Booking domain needs vehicle functionality
+func ProvideBookVehicleUseCase(
+    vehicleRepo vehicleBusiness.VehicleRepository,  // From vehicle domain
+    customerRepo customerBusiness.CustomerRepository, // From customer domain
+    vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase, // From vehicle domain
+    // ... other dependencies
+) business.BookVehicleUseCase
+```
+
+Wire automatically resolves these dependencies from the appropriate domain providers.
 
 ## API Testing
 
