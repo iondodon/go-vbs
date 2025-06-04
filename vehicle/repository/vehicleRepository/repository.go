@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	uuidLib "github.com/google/uuid"
-	bookingController "github.com/iondodon/go-vbs/booking/controller"
+	"github.com/iondodon/go-vbs/booking/controller"
 	"github.com/iondodon/go-vbs/repository"
 	"github.com/iondodon/go-vbs/vehicle/business"
 	"github.com/iondodon/go-vbs/vehicle/domain"
@@ -54,7 +54,7 @@ func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domai
 	return &vehicle, nil
 }
 
-func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period bookingController.DatePeriodDTO) (bool, error) {
+func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period controller.DatePeriodDTO) (bool, error) {
 	res, err := r.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,

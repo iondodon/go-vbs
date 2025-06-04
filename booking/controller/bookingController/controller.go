@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/iondodon/go-vbs/booking/business"
-	bookingController "github.com/iondodon/go-vbs/booking/controller"
+	"github.com/iondodon/go-vbs/booking/controller"
 )
 
 type Controller struct {
@@ -35,7 +35,7 @@ func (c *Controller) HandleBookVehicle(w http.ResponseWriter, r *http.Request) e
 		return err
 	}
 
-	var cbr bookingController.CreateBookingRequestDTO
+	var cbr controller.CreateBookingRequestDTO
 	if err = json.Unmarshal(reqBody, &cbr); err != nil {
 		return err
 	}
