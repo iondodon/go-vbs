@@ -10,16 +10,25 @@
 @customerUuid = b1ffcda0-ad1c-5fg9-cc7e-7cc0ce391b22
 
 ### 1. Login - Get access token
+# @name login
 GET {{baseUrl}}/login
 Content-Type: application/json
 
+### Extract tokens from login response
+@accessToken = {{login.response.body.TokensPair.access_token}}
+@refreshToken = {{login.response.body.TokensPair.refresh_token}}
+
 ### 2. Refresh token
-GET {{baseUrl}}/refresh
+# @name refresh
+POST {{baseUrl}}/refresh
 Content-Type: application/json
 
 {
-  "refresh_token": "your_refresh_token_here"
+  "refresh_token": "{{refreshToken}}"
 }
+
+### Extract new access token from refresh response
+@newAccessToken = {{refresh.response.body.TokensPair.access_token}}
 
 ### 3. Get vehicle by UUID
 GET {{baseUrl}}/vehicles/{{vehicleUuid}}
@@ -38,12 +47,17 @@ Content-Type: application/json
   }
 }
 
-### 5. Get all bookings (requires JWT)
+### 5. Get all bookings (requires JWT) - Using token from login
 GET {{baseUrl}}/bookings
 Content-Type: application/json
-Authorization: Bearer your_jwt_token_here
+Authorization: Bearer {{accessToken}}
 
-### 6. Example with real dates - Create booking for next week
+### 6. Get all bookings (requires JWT) - Using refreshed token
+GET {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer {{newAccessToken}}
+
+### 7. Example with real dates - Create booking for next week
 POST {{baseUrl}}/bookings
 Content-Type: application/json
 
@@ -56,9 +70,19 @@ Content-Type: application/json
   }
 }
 
+### 8. Manual token example (if you have a token from elsewhere)
+GET {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your_manual_token_here
+
 ###
-# Swagger UI (Development only)
-# http://localhost:8000/docs
-# 
+# Testing Workflow:
+# 1. Run "Login" request first to get tokens
+# 2. The access token will be automatically extracted
+# 3. Use "Get all bookings" requests to test authenticated endpoints
+# 4. Use "Refresh token" to get new tokens when needed
+# 5. The refresh token will be automatically used from login response
+#
+# Swagger UI (Development only): http://localhost:8000/docs
 # Note: Set GO_ENV=development to enable Swagger UI
 ### 
