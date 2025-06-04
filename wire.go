@@ -33,6 +33,12 @@ type Controllers struct {
 	Booking *bookingController.Controller
 }
 
+// Application struct to hold all application dependencies
+type Application struct {
+	Controllers *Controllers
+	Database    *sql.DB
+}
+
 // Logger wrapper types to distinguish between different loggers
 type InfoLogger struct {
 	*log.Logger
@@ -49,6 +55,11 @@ func ProvideInfoLogger() InfoLogger {
 
 func ProvideErrorLogger() ErrorLogger {
 	return ErrorLogger{log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)}
+}
+
+// Database provider
+func ProvideDatabase() (*sql.DB, error) {
+	return repository.NewInMemDBConn()
 }
 
 // Repository providers
@@ -143,9 +154,21 @@ func ProvideControllers(
 	}
 }
 
+// Application provider
+func ProvideApplication(controllers *Controllers, db *sql.DB) *Application {
+	return &Application{
+		Controllers: controllers,
+		Database:    db,
+	}
+}
+
 // Provider sets
-var RepositorySet = wire.NewSet(
+var DatabaseSet = wire.NewSet(
+	ProvideDatabase,
 	ProvideQueries,
+)
+
+var RepositorySet = wire.NewSet(
 	ProvideVehicleRepository,
 	ProvideCustomerRepository,
 	ProvideBookingRepository,
@@ -176,15 +199,17 @@ var LoggerSet = wire.NewSet(
 // Main provider set that combines all others
 var ApplicationSet = wire.NewSet(
 	LoggerSet,
+	DatabaseSet,
 	RepositorySet,
 	VehicleSet,
 	BookingSet,
 	AuthSet,
 	ProvideControllers,
+	ProvideApplication,
 )
 
-// Wire injector function for Controllers
-func InitializeControllers(db *sql.DB) (*Controllers, error) {
+// Wire injector function for Application
+func InitializeApplication() (*Application, error) {
 	wire.Build(ApplicationSet)
-	return &Controllers{}, nil
+	return &Application{}, nil
 }

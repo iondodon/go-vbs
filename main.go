@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -11,42 +9,33 @@ import (
 
 	"github.com/iondodon/go-vbs/handler"
 	"github.com/iondodon/go-vbs/middleware"
-	"github.com/iondodon/go-vbs/repository"
 )
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 
 func main() {
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	db, err := repository.NewInMemDBConn()
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			errorLog.Fatal(err)
+	// Initialize all dependencies using Wire
+	app, err := InitializeApplication()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if err := app.Database.Close(); err != nil {
+			// Use panic since we don't have access to errorLog here
+			panic(err)
 		}
-	}(db)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-
-	// Initialize all controllers using Wire
-	controllers, err := InitializeControllers(db)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
+	}()
 
 	router := http.NewServeMux()
-	router.Handle("GET /login", handler.Handler(controllers.Auth.Login))
-	router.Handle("GET /refresh", handler.Handler(controllers.Auth.Refresh))
-	router.Handle("GET /vehicles/{uuid}", handler.Handler(controllers.Vehicle.HandleGetVehicleByUUID))
-	router.Handle("POST /bookings", handler.Handler(controllers.Booking.HandleBookVehicle))
-	router.Handle("GET /bookings", middleware.JWT(handler.Handler(controllers.Booking.HandleGetAllBookings)))
+	router.Handle("GET /login", handler.Handler(app.Controllers.Auth.Login))
+	router.Handle("GET /refresh", handler.Handler(app.Controllers.Auth.Refresh))
+	router.Handle("GET /vehicles/{uuid}", handler.Handler(app.Controllers.Vehicle.HandleGetVehicleByUUID))
+	router.Handle("POST /bookings", handler.Handler(app.Controllers.Booking.HandleBookVehicle))
+	router.Handle("GET /bookings", middleware.JWT(handler.Handler(app.Controllers.Booking.HandleGetAllBookings)))
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {
-		infoLog.Println("Running in development mode - Swagger UI enabled")
+		println("Running in development mode - Swagger UI enabled")
 		router.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir("./swagger-ui"))))
 		router.Handle("/docs/openapi.yaml", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != "/docs/openapi.yaml" {
@@ -55,7 +44,7 @@ func main() {
 			}
 			http.ServeFile(w, r, "openapi.yaml")
 		}))
-		infoLog.Println("Swagger UI available at http://localhost:8000/docs")
+		println("Swagger UI available at http://localhost:8000/docs")
 	}
 
 	srv := &http.Server{
@@ -63,13 +52,12 @@ func main() {
 		Handler:      router,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
-		ErrorLog:     errorLog,
 	}
 
 	go func() {
-		infoLog.Println("Server started")
+		println("Server started")
 		if err := srv.ListenAndServe(); err != nil {
-			errorLog.Print(err)
+			panic(err)
 		}
 	}()
 
@@ -87,10 +75,10 @@ func main() {
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
 	if err := srv.Shutdown(ctx); err != nil {
-		errorLog.Println(err)
+		panic(err)
 	}
 
-	infoLog.Println("Shutting down...")
+	println("Shutting down...")
 
 	os.Exit(0)
 }

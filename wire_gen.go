@@ -30,11 +30,15 @@ import (
 
 // Injectors from wire.go:
 
-// Wire injector function for Controllers
-func InitializeControllers(db *sql.DB) (*Controllers, error) {
+// Wire injector function for Application
+func InitializeApplication() (*Application, error) {
 	infoLogger := ProvideInfoLogger()
 	errorLogger := ProvideErrorLogger()
 	controller := ProvideAuthController(infoLogger, errorLogger)
+	db, err := ProvideDatabase()
+	if err != nil {
+		return nil, err
+	}
 	queries := ProvideQueries(db)
 	vehicleRepository := ProvideVehicleRepository(queries)
 	getVehicleUseCase := ProvideGetVehicleUseCase(vehicleRepository)
@@ -47,7 +51,8 @@ func InitializeControllers(db *sql.DB) (*Controllers, error) {
 	getAllBookingsUseCase := ProvideGetAllBookingsUseCase(bookingRepository)
 	bookingControllerController := ProvideBookingController(infoLogger, errorLogger, db, bookVehicleUseCase, getAllBookingsUseCase)
 	controllers := ProvideControllers(controller, vehicleControllerController, bookingControllerController)
-	return controllers, nil
+	application := ProvideApplication(controllers, db)
+	return application, nil
 }
 
 // wire.go:
@@ -57,6 +62,12 @@ type Controllers struct {
 	Auth    *authController.Controller
 	Vehicle *vehicleController.Controller
 	Booking *bookingController.Controller
+}
+
+// Application struct to hold all application dependencies
+type Application struct {
+	Controllers *Controllers
+	Database    *sql.DB
 }
 
 // Logger wrapper types to distinguish between different loggers
@@ -75,6 +86,11 @@ func ProvideInfoLogger() InfoLogger {
 
 func ProvideErrorLogger() ErrorLogger {
 	return ErrorLogger{log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)}
+}
+
+// Database provider
+func ProvideDatabase() (*sql.DB, error) {
+	return repository.NewInMemDBConn()
 }
 
 // Repository providers
@@ -169,9 +185,21 @@ func ProvideControllers(
 	}
 }
 
+// Application provider
+func ProvideApplication(controllers *Controllers, db *sql.DB) *Application {
+	return &Application{
+		Controllers: controllers,
+		Database:    db,
+	}
+}
+
 // Provider sets
-var RepositorySet = wire.NewSet(
+var DatabaseSet = wire.NewSet(
+	ProvideDatabase,
 	ProvideQueries,
+)
+
+var RepositorySet = wire.NewSet(
 	ProvideVehicleRepository,
 	ProvideCustomerRepository,
 	ProvideBookingRepository,
@@ -202,9 +230,11 @@ var LoggerSet = wire.NewSet(
 // Main provider set that combines all others
 var ApplicationSet = wire.NewSet(
 	LoggerSet,
+	DatabaseSet,
 	RepositorySet,
 	VehicleSet,
 	BookingSet,
 	AuthSet,
 	ProvideControllers,
+	ProvideApplication,
 )
