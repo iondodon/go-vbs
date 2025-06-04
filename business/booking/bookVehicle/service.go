@@ -17,10 +17,6 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type UseCase interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
-}
-
 type Service struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger

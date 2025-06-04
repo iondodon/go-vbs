@@ -7,10 +7,6 @@ import (
 	"github.com/iondodon/go-vbs/domain"
 )
 
-type UseCase interface {
-	Execute(ctx context.Context) ([]domain.Booking, error)
-}
-
 type Service struct {
 	bookingRepo business.BookingRepository
 }

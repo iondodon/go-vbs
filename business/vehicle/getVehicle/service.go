@@ -9,10 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type UseCase interface {
-	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
-}
-
 type Service struct {
 	vehicleRepository business.VehicleRepository
 }

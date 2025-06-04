@@ -170,14 +170,17 @@ business/
 ├── repository_interfaces.go          # Repository interfaces (layer boundary)
 ├── vehicle/
 │   ├── getVehicle/
-│   │   └── service.go                # UseCase interface + Service struct
+│   │   ├── usecase.go                # UseCase interface
+│   │   └── service.go                # Service struct implementation
 │   └── isVehicleAvailable/
 │       └── service.go                # Service struct (no interface for internal use)
 └── booking/
     ├── bookVehicle/
-    │   └── service.go                # UseCase interface + Service struct
+    │   ├── usecase.go                # UseCase interface
+    │   └── service.go                # Service struct implementation
     └── getAllBookings/
-        └── service.go                # UseCase interface + Service struct
+        ├── usecase.go                # UseCase interface
+        └── service.go                # Service struct implementation
 
 repository/
 ├── vehicleRepository/
