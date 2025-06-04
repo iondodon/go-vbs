@@ -1,4 +1,4 @@
-package booking
+package bookingRepository
 
 import (
 	"context"
@@ -10,15 +10,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type BookingRepositoryInterface interface {
-	Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error
-	GetAll(ctx context.Context) ([]domain.Booking, error)
-}
-
-//gobok:constructor
-//ctxboot:component
 type BookingRepository struct {
-	queries *repository.Queries `ctxboot:"inject"`
+	queries *repository.Queries
 }
 
 func (repo *BookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {

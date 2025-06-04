@@ -1,22 +1,16 @@
-package vehicle
+package getVehicle
 
 import (
 	"context"
 
 	"github.com/iondodon/go-vbs/domain"
-	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
+	"github.com/iondodon/go-vbs/repository/vehicleRepository"
 
 	"github.com/google/uuid"
 )
 
-type GetVehicleInterface interface {
-	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
-}
-
-//gobok:constructor
-//ctxboot:component
 type GetVehicle struct {
-	vehicleRepository vehRepo.VehicleRepositoryInterface `ctxboot:"inject"`
+	vehicleRepository vehicleRepository.VehicleRepository
 }
 
 func (gvuc *GetVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {

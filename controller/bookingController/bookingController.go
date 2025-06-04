@@ -1,4 +1,4 @@
-package controller
+package bookingController
 
 import (
 	"database/sql"
@@ -8,22 +8,16 @@ import (
 	"net/http"
 
 	"github.com/iondodon/go-vbs/dto"
-	bookingUCs "github.com/iondodon/go-vbs/usecase/booking"
+	"github.com/iondodon/go-vbs/usecase/booking/bookVehicle"
+	"github.com/iondodon/go-vbs/usecase/booking/getAllBookings"
 )
 
-type BookingControllerInterface interface {
-	HandleBookVehicle(w http.ResponseWriter, r *http.Request) error
-	HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error
-}
-
-//gobok:constructor
-//ctxboot:component
 type BookingController struct {
-	infoLog            *log.Logger                        `ctxboot:"inject"`
-	errorLog           *log.Logger                        `ctxboot:"inject"`
-	db                 *sql.DB                            `ctxboot:"inject"`
-	bookVehicleUseCase bookingUCs.BookVehicleInterface    `ctxboot:"inject"`
-	getAllBookings     bookingUCs.GetAllBookingsInterface `ctxboot:"inject"`
+	infoLog            *log.Logger
+	errorLog           *log.Logger
+	db                 *sql.DB
+	bookVehicleUseCase bookVehicle.BookVehicle
+	getAllBookings     getAllBookings.GetAllBookings
 }
 
 func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {

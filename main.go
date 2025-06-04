@@ -10,6 +10,9 @@ import (
 	"time"
 
 	"github.com/iondodon/go-vbs/controller"
+	"github.com/iondodon/go-vbs/controller/bookingController"
+	"github.com/iondodon/go-vbs/controller/tokenController"
+	"github.com/iondodon/go-vbs/controller/vehicleController"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
 )
@@ -31,39 +34,9 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// Initialize all components after registration
-	cc := NewComponentContext()
-
-	if err = cc.RegisterComponent(infoLog); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "infoLog", err)
-	}
-	if err = cc.RegisterComponent(errorLog); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "errorLog", err)
-	}
-	if err = cc.RegisterComponent(db); err != nil {
-		log.Fatalf("Failed to register component %s: %v", "db", err)
-	}
-	if err = cc.InitializeComponents(); err != nil {
-		log.Fatalf("Failed to inject components: %v", err)
-	}
-
-	var tokenController controller.TokenControllerInterface
-	tokenController, err = cc.GetTokenController()
-	if err != nil {
-		panic(err)
-	}
-
-	var vehicleController controller.VehicleControllerInterface
-	vehicleController, err = cc.GetVehicleController()
-	if err != nil {
-		panic(err)
-	}
-
-	var bookingController controller.BookingControllerInterface
-	bookingController, err = cc.GetBookingController()
-	if err != nil {
-		panic(err)
-	}
+	var tokenController tokenController.TokenController
+	var vehicleController vehicleController.VehicleController
+	var bookingController bookingController.BookingController
 
 	router := http.NewServeMux()
 	router.Handle("GET /login", controller.Handler(tokenController.Login))

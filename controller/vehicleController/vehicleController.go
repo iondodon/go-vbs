@@ -1,25 +1,19 @@
-package controller
+package vehicleController
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 
-	vehUCs "github.com/iondodon/go-vbs/usecase/vehicle"
+	"github.com/iondodon/go-vbs/usecase/vehicle/getVehicle"
 
 	uuidLib "github.com/google/uuid"
 )
 
-type VehicleControllerInterface interface {
-	HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error
-}
-
-//gobok:constructor
-//ctxboot:component
 type VehicleController struct {
-	infoLog           *log.Logger                `ctxboot:"inject"`
-	errorLog          *log.Logger                `ctxboot:"inject"`
-	getVehicleUseCase vehUCs.GetVehicleInterface `ctxboot:"inject"`
+	infoLog           *log.Logger
+	errorLog          *log.Logger
+	getVehicleUseCase getVehicle.GetVehicle
 }
 
 func (vc *VehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {

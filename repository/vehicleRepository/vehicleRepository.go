@@ -1,4 +1,4 @@
-package vehicle
+package vehicleRepository
 
 import (
 	"context"
@@ -12,15 +12,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type VehicleRepositoryInterface interface {
-	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
-	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
-}
-
-//gobok:constructor
-//ctxboot:component
 type VehicleRepository struct {
-	queries *repository.Queries `ctxboot:"inject"`
+	queries *repository.Queries
 }
 
 func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {

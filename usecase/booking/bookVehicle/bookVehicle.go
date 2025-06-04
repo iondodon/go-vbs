@@ -1,4 +1,4 @@
-package booking
+package bookVehicle
 
 import (
 	"context"
@@ -8,31 +8,25 @@ import (
 
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	bookingRepo "github.com/iondodon/go-vbs/repository/booking"
-	custRepo "github.com/iondodon/go-vbs/repository/customer"
-	vehRepo "github.com/iondodon/go-vbs/repository/vehicle"
-	bdUCs "github.com/iondodon/go-vbs/usecase/bookingdate"
-	vehUCs "github.com/iondodon/go-vbs/usecase/vehicle"
+	"github.com/iondodon/go-vbs/repository/bookingRepository"
+	"github.com/iondodon/go-vbs/repository/customerRepository"
+	"github.com/iondodon/go-vbs/repository/vehicleRepository"
+	"github.com/iondodon/go-vbs/usecase/bookingdate/getBookingDate"
+	"github.com/iondodon/go-vbs/usecase/vehicle/isVehicleAvailable"
 
 	"github.com/google/uuid"
 )
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type BookVehicleInterface interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
-}
-
-//gobok:constructor
-//ctxboot:component
 type BookVehicle struct {
-	infoLog            *log.Logger                            `ctxboot:"inject"`
-	errorLog           *log.Logger                            `ctxboot:"inject"`
-	vehRepo            vehRepo.VehicleRepositoryInterface     `ctxboot:"inject"`
-	custRepo           custRepo.CustomerRepositoryInterface   `ctxboot:"inject"`
-	bookingRepo        bookingRepo.BookingRepositoryInterface `ctxboot:"inject"`
-	isAvailableForHire vehUCs.IsAvailableForHireInterface     `ctxboot:"inject"`
-	getBookingDates    bdUCs.GetBookingDatesInterface         `ctxboot:"inject"`
+	infoLog            *log.Logger
+	errorLog           *log.Logger
+	vehRepo            vehicleRepository.VehicleRepository
+	custRepo           customerRepository.CustomerRepository
+	bookingRepo        bookingRepository.BookingRepository
+	isAvailableForHire isVehicleAvailable.IsAvailableForHire
+	getBookingDates    getBookingDate.GetBookingDates
 }
 
 func (uc *BookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {

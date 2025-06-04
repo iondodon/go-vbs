@@ -1,4 +1,4 @@
-package bookingdate
+package getBookingDate
 
 import (
 	"context"
@@ -8,17 +8,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	bdRepoPkg "github.com/iondodon/go-vbs/repository/bookingdate"
+	"github.com/iondodon/go-vbs/repository/bookingDateRepository"
 )
 
-type GetBookingDatesInterface interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
-}
-
-//gobok:constructor
-//ctxboot:component
 type GetBookingDates struct {
-	bdRepo bdRepoPkg.BookingDateRepositoryInterface `ctxboot:"inject"`
+	bdRepo bookingDateRepository.BookingDateRepository
 }
 
 func (uc *GetBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {

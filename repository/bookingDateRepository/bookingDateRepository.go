@@ -1,4 +1,4 @@
-package bookingdate
+package bookingDateRepository
 
 import (
 	"context"
@@ -9,15 +9,8 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
-type BookingDateRepositoryInterface interface {
-	FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error)
-	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
-}
-
-//gobok:constructor
-//ctxboot:component
 type BookingDateRepository struct {
-	queries *repository.Queries `ctxboot:"inject"`
+	queries *repository.Queries
 }
 
 func (repo *BookingDateRepository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {

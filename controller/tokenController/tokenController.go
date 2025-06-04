@@ -1,4 +1,4 @@
-package controller
+package tokenController
 
 import (
 	"encoding/json"
@@ -10,16 +10,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type TokenControllerInterface interface {
-	Login(w http.ResponseWriter, r *http.Request) error
-	Refresh(w http.ResponseWriter, r *http.Request) error
-}
-
-//gobok:constructor
-//ctxboot:component
 type TokenController struct {
-	infoLog  *log.Logger `ctxboot:"inject"`
-	errorLog *log.Logger `ctxboot:"inject"`
+	infoLog  *log.Logger
+	errorLog *log.Logger
 }
 
 type MyCustomClaims struct {

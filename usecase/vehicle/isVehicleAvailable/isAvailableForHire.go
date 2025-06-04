@@ -1,21 +1,15 @@
-package vehicle
+package isVehicleAvailable
 
 import (
 	"context"
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/dto"
-	vehRepoPkg "github.com/iondodon/go-vbs/repository/vehicle"
+	"github.com/iondodon/go-vbs/repository/vehicleRepository"
 )
 
-type IsAvailableForHireInterface interface {
-	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
-}
-
-//gobok:constructor
-//ctxboot:component
 type IsAvailableForHire struct {
-	vehRepo vehRepoPkg.VehicleRepositoryInterface `ctxboot:"inject"`
+	vehRepo vehicleRepository.VehicleRepository
 }
 
 func (us *IsAvailableForHire) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
