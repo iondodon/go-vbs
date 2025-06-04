@@ -10,8 +10,19 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
+type BookingRepositoryInterface interface {
+	Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error
+	GetAll(ctx context.Context) ([]domain.Booking, error)
+}
+
 type BookingRepository struct {
 	queries *repository.Queries
+}
+
+func New(queries *repository.Queries) BookingRepositoryInterface {
+	return &BookingRepository{
+		queries: queries,
+	}
 }
 
 func (repo *BookingRepository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {

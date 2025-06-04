@@ -8,8 +8,18 @@ import (
 	"github.com/iondodon/go-vbs/repository"
 )
 
+type CustomerRepositoryInterface interface {
+	FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error)
+}
+
 type CustomerRepository struct {
 	queries *repository.Queries
+}
+
+func New(queries *repository.Queries) CustomerRepositoryInterface {
+	return &CustomerRepository{
+		queries: queries,
+	}
 }
 
 func (repo *CustomerRepository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {

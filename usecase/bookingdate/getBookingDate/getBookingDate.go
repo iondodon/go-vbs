@@ -11,8 +11,18 @@ import (
 	"github.com/iondodon/go-vbs/repository/bookingDateRepository"
 )
 
+type GetBookingDatesInterface interface {
+	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
+}
+
 type GetBookingDates struct {
-	bdRepo bookingDateRepository.BookingDateRepository
+	bdRepo bookingDateRepository.BookingDateRepositoryInterface
+}
+
+func New(bookingDateRepo bookingDateRepository.BookingDateRepositoryInterface) GetBookingDatesInterface {
+	return &GetBookingDates{
+		bdRepo: bookingDateRepo,
+	}
 }
 
 func (uc *GetBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {

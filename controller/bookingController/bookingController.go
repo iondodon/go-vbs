@@ -16,8 +16,18 @@ type BookingController struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
 	db                 *sql.DB
-	bookVehicleUseCase bookVehicle.BookVehicle
-	getAllBookings     getAllBookings.GetAllBookings
+	bookVehicleUseCase bookVehicle.BookVehicleInterface
+	getAllBookings     getAllBookings.GetAllBookingsInterface
+}
+
+func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookVehicle.BookVehicleInterface, getAllBookings getAllBookings.GetAllBookingsInterface) *BookingController {
+	return &BookingController{
+		infoLog:            infoLog,
+		errorLog:           errorLog,
+		db:                 db,
+		bookVehicleUseCase: bookVehicleUseCase,
+		getAllBookings:     getAllBookings,
+	}
 }
 
 func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {

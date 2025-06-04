@@ -12,8 +12,19 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type VehicleRepositoryInterface interface {
+	FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error)
+	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error)
+}
+
 type VehicleRepository struct {
 	queries *repository.Queries
+}
+
+func New(queries *repository.Queries) VehicleRepositoryInterface {
+	return &VehicleRepository{
+		queries: queries,
+	}
 }
 
 func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {

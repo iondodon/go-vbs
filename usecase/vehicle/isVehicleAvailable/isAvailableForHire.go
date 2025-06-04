@@ -8,8 +8,18 @@ import (
 	"github.com/iondodon/go-vbs/repository/vehicleRepository"
 )
 
+type IsAvailableForHireInterface interface {
+	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
+}
+
 type IsAvailableForHire struct {
-	vehRepo vehicleRepository.VehicleRepository
+	vehRepo vehicleRepository.VehicleRepositoryInterface
+}
+
+func New(vehicleRepo vehicleRepository.VehicleRepositoryInterface) IsAvailableForHireInterface {
+	return &IsAvailableForHire{
+		vehRepo: vehicleRepo,
+	}
 }
 
 func (us *IsAvailableForHire) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {

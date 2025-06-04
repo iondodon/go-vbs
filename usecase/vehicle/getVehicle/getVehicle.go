@@ -9,8 +9,18 @@ import (
 	"github.com/google/uuid"
 )
 
+type GetVehicleInterface interface {
+	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
+}
+
 type GetVehicle struct {
-	vehicleRepository vehicleRepository.VehicleRepository
+	vehicleRepository vehicleRepository.VehicleRepositoryInterface
+}
+
+func New(vehicleRepo vehicleRepository.VehicleRepositoryInterface) GetVehicleInterface {
+	return &GetVehicle{
+		vehicleRepository: vehicleRepo,
+	}
 }
 
 func (gvuc *GetVehicle) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {

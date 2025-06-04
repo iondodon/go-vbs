@@ -15,6 +15,13 @@ type TokenController struct {
 	errorLog *log.Logger
 }
 
+func New(infoLog *log.Logger, errorLog *log.Logger) *TokenController {
+	return &TokenController{
+		infoLog:  infoLog,
+		errorLog: errorLog,
+	}
+}
+
 type MyCustomClaims struct {
 	Foo string `json:"foo"`
 	jwt.RegisteredClaims

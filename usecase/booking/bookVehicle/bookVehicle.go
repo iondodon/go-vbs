@@ -19,14 +19,38 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
+type BookVehicleInterface interface {
+	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
+}
+
 type BookVehicle struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
-	vehRepo            vehicleRepository.VehicleRepository
-	custRepo           customerRepository.CustomerRepository
-	bookingRepo        bookingRepository.BookingRepository
-	isAvailableForHire isVehicleAvailable.IsAvailableForHire
-	getBookingDates    getBookingDate.GetBookingDates
+	vehRepo            vehicleRepository.VehicleRepositoryInterface
+	custRepo           customerRepository.CustomerRepositoryInterface
+	bookingRepo        bookingRepository.BookingRepositoryInterface
+	isAvailableForHire isVehicleAvailable.IsAvailableForHireInterface
+	getBookingDates    getBookingDate.GetBookingDatesInterface
+}
+
+func New(
+	infoLog *log.Logger,
+	errorLog *log.Logger,
+	vehRepo vehicleRepository.VehicleRepositoryInterface,
+	custRepo customerRepository.CustomerRepositoryInterface,
+	bookingRepo bookingRepository.BookingRepositoryInterface,
+	isAvailableForHire isVehicleAvailable.IsAvailableForHireInterface,
+	getBookingDates getBookingDate.GetBookingDatesInterface,
+) BookVehicleInterface {
+	return &BookVehicle{
+		infoLog:            infoLog,
+		errorLog:           errorLog,
+		vehRepo:            vehRepo,
+		custRepo:           custRepo,
+		bookingRepo:        bookingRepo,
+		isAvailableForHire: isAvailableForHire,
+		getBookingDates:    getBookingDates,
+	}
 }
 
 func (uc *BookVehicle) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {

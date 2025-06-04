@@ -13,7 +13,15 @@ import (
 type VehicleController struct {
 	infoLog           *log.Logger
 	errorLog          *log.Logger
-	getVehicleUseCase getVehicle.GetVehicle
+	getVehicleUseCase getVehicle.GetVehicleInterface
+}
+
+func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle.GetVehicleInterface) *VehicleController {
+	return &VehicleController{
+		infoLog:           infoLog,
+		errorLog:          errorLog,
+		getVehicleUseCase: getVehicleUseCase,
+	}
 }
 
 func (vc *VehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
