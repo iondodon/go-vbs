@@ -6,16 +6,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/iondodon/go-vbs/business"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/usecase"
 )
 
 type Service struct {
-	bdRepo usecase.BookingDateRepository
+	bdRepo business.BookingDateRepository
 }
 
-func New(bookingDateRepo usecase.BookingDateRepository) *Service {
+func New(bookingDateRepo business.BookingDateRepository) *Service {
 	return &Service{
 		bdRepo: bookingDateRepo,
 	}

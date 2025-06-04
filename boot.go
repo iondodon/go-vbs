@@ -5,6 +5,12 @@ import (
 	"log"
 	"os"
 
+	"github.com/iondodon/go-vbs/business"
+	"github.com/iondodon/go-vbs/business/booking/bookVehicle"
+	"github.com/iondodon/go-vbs/business/booking/getAllBookings"
+	"github.com/iondodon/go-vbs/business/bookingdate/getBookingDate"
+	"github.com/iondodon/go-vbs/business/vehicle/getVehicle"
+	"github.com/iondodon/go-vbs/business/vehicle/isVehicleAvailable"
 	"github.com/iondodon/go-vbs/controller/bookingController"
 	"github.com/iondodon/go-vbs/controller/tokenController"
 	"github.com/iondodon/go-vbs/controller/vehicleController"
@@ -13,12 +19,6 @@ import (
 	"github.com/iondodon/go-vbs/repository/bookingRepository"
 	"github.com/iondodon/go-vbs/repository/customerRepository"
 	"github.com/iondodon/go-vbs/repository/vehicleRepository"
-	"github.com/iondodon/go-vbs/usecase"
-	"github.com/iondodon/go-vbs/usecase/booking/bookVehicle"
-	"github.com/iondodon/go-vbs/usecase/booking/getAllBookings"
-	"github.com/iondodon/go-vbs/usecase/bookingdate/getBookingDate"
-	"github.com/iondodon/go-vbs/usecase/vehicle/getVehicle"
-	"github.com/iondodon/go-vbs/usecase/vehicle/isVehicleAvailable"
 )
 
 type Dependencies struct {
@@ -34,10 +34,10 @@ func BootstrapApplication(db *sql.DB) *Dependencies {
 	// Create repository layer
 	queries := repository.New(db)
 
-	var vehicleRepo usecase.VehicleRepository = vehicleRepository.New(queries)
-	var customerRepo usecase.CustomerRepository = customerRepository.New(queries)
-	var bookingRepo usecase.BookingRepository = bookingRepository.New(queries)
-	var bookingDateRepo usecase.BookingDateRepository = bookingDateRepository.New(queries)
+	var vehicleRepo business.VehicleRepository = vehicleRepository.New(queries)
+	var customerRepo business.CustomerRepository = customerRepository.New(queries)
+	var bookingRepo business.BookingRepository = bookingRepository.New(queries)
+	var bookingDateRepo business.BookingDateRepository = bookingDateRepository.New(queries)
 
 	// Create use case layer
 	var getVehicleUC getVehicle.UseCase = getVehicle.New(vehicleRepo)

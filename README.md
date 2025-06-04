@@ -42,14 +42,14 @@ This project follows specific architectural patterns and naming conventions to m
 
 **Interfaces are used ONLY for layer boundaries, not for internal dependencies within the same layer.**
 
-- ✅ **Use interfaces for**: Repository → UseCase dependencies (infrastructure boundary)
-- ✅ **Use interfaces for**: UseCase → Controller dependencies (infrastructure boundary)
-- ❌ **Do NOT use interfaces for**: UseCase → UseCase dependencies (internal dependencies)
-- ❌ **Do NOT use interfaces for**: Repositry → Repository dependencies (internal dependencies)
+- ✅ **Use interfaces for**: Repository → Business dependencies (infrastructure boundary)
+- ✅ **Use interfaces for**: Business → Controller dependencies (infrastructure boundary)
+- ❌ **Do NOT use interfaces for**: Business → Business dependencies (internal dependencies)
+- ❌ **Do NOT use interfaces for**: Repository → Repository dependencies (internal dependencies)
 
 ### 2. Naming Conventions
 
-#### UseCase Layer
+#### Business Layer
 
 - **Interface name**: `UseCase`
 - **Struct name**: `Service`
@@ -88,11 +88,11 @@ This project follows specific architectural patterns and naming conventions to m
 - Constructors return `*Service` or `*Repository` (concrete types)
 - Callers use explicit interface assignment when needed
 
-#### UseCase Constructors
+#### Business Constructors
 
 ```go
 // Constructor returns concrete type
-func New(repo usecase.VehicleRepository) *Service {
+func New(repo business.VehicleRepository) *Service {
     return &Service{repo: repo}
 }
 
@@ -109,7 +109,7 @@ func New(queries *repository.Queries) *Repository {
 }
 
 // Usage with explicit interface assignment
-var vehicleRepo usecase.VehicleRepository = vehicleRepository.New(queries)
+var vehicleRepo business.VehicleRepository = vehicleRepository.New(queries)
 ```
 
 ### 4. Dependency Injection Patterns
@@ -117,11 +117,11 @@ var vehicleRepo usecase.VehicleRepository = vehicleRepository.New(queries)
 #### Infrastructure Boundaries (Use Interfaces)
 
 ```go
-// Repository to UseCase (infrastructure boundary)
-var vehicleRepo usecase.VehicleRepository = vehicleRepository.New(queries)
+// Repository to Business (infrastructure boundary)
+var vehicleRepo business.VehicleRepository = vehicleRepository.New(queries)
 getVehicleUC := getVehicle.New(vehicleRepo)
 
-// UseCase to Controller (infrastructure boundary)
+// Business to Controller (infrastructure boundary)
 var bookVehicleUC bookVehicle.UseCase = bookVehicle.New(...)
 controller := bookingController.New(..., bookVehicleUC)
 ```
@@ -129,7 +129,7 @@ controller := bookingController.New(..., bookVehicleUC)
 #### Internal Dependencies (Use Concrete Types)
 
 ```go
-// UseCase to UseCase dependencies (internal)
+// Business to Business dependencies (internal)
 isAvailableUC := isVehicleAvailable.New(vehicleRepo)  // concrete type
 getBookingDatesUC := getBookingDate.New(bookingDateRepo)  // concrete type
 
@@ -148,7 +148,7 @@ bookVehicleUC := bookVehicle.New(
 ```
 Controllers (Infrastructure)
     ↓ (interfaces)
-UseCases (Business Logic)
+Business Logic
     ↓ (interfaces)
 Repositories (Infrastructure)
     ↓
@@ -166,18 +166,18 @@ External Data Sources
 ### 7. File Organization
 
 ```
-usecase/
+business/
 ├── repository_interfaces.go          # Repository interfaces (layer boundary)
 ├── vehicle/
 │   ├── getVehicle/
-│   │   └── usecase.go                # UseCase interface + Service struct
+│   │   └── service.go                # UseCase interface + Service struct
 │   └── isVehicleAvailable/
-│       └── usecase.go                # Service struct (no interface for internal use)
+│       └── service.go                # Service struct (no interface for internal use)
 └── booking/
     ├── bookVehicle/
-    │   └── usecase.go                # UseCase interface + Service struct
+    │   └── service.go                # UseCase interface + Service struct
     └── getAllBookings/
-        └── usecase.go                # UseCase interface + Service struct
+        └── service.go                # UseCase interface + Service struct
 
 repository/
 ├── vehicleRepository/

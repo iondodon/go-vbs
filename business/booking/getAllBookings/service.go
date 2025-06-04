@@ -3,8 +3,8 @@ package getAllBookings
 import (
 	"context"
 
+	"github.com/iondodon/go-vbs/business"
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/usecase"
 )
 
 type UseCase interface {
@@ -12,10 +12,10 @@ type UseCase interface {
 }
 
 type Service struct {
-	bookingRepo usecase.BookingRepository
+	bookingRepo business.BookingRepository
 }
 
-func New(bookingRepo usecase.BookingRepository) *Service {
+func New(bookingRepo business.BookingRepository) *Service {
 	return &Service{
 		bookingRepo: bookingRepo,
 	}

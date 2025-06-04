@@ -4,15 +4,15 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/iondodon/go-vbs/business"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/usecase"
 )
 
 type Service struct {
-	vehRepo usecase.VehicleRepository
+	vehRepo business.VehicleRepository
 }
 
-func New(vehicleRepo usecase.VehicleRepository) *Service {
+func New(vehicleRepo business.VehicleRepository) *Service {
 	return &Service{
 		vehRepo: vehicleRepo,
 	}

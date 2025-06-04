@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/iondodon/go-vbs/business/booking/bookVehicle"
+	"github.com/iondodon/go-vbs/business/booking/getAllBookings"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/usecase/booking/bookVehicle"
-	"github.com/iondodon/go-vbs/usecase/booking/getAllBookings"
 )
 
 type Controller struct {

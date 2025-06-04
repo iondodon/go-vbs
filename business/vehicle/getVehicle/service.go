@@ -3,8 +3,8 @@ package getVehicle
 import (
 	"context"
 
+	"github.com/iondodon/go-vbs/business"
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/usecase"
 
 	"github.com/google/uuid"
 )
@@ -14,10 +14,10 @@ type UseCase interface {
 }
 
 type Service struct {
-	vehicleRepository usecase.VehicleRepository
+	vehicleRepository business.VehicleRepository
 }
 
-func New(vehicleRepo usecase.VehicleRepository) *Service {
+func New(vehicleRepo business.VehicleRepository) *Service {
 	return &Service{
 		vehicleRepository: vehicleRepo,
 	}

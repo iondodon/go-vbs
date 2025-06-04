@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iondodon/go-vbs/usecase/vehicle/getVehicle"
+	"github.com/iondodon/go-vbs/business/vehicle/getVehicle"
 
 	uuidLib "github.com/google/uuid"
 )

@@ -1,8 +1,8 @@
-// Package usecase defines the business logic layer interfaces.
+// Package business defines the business logic layer interfaces.
 // This file contains repository interfaces that define what the business logic
 // needs from the infrastructure layer. Following the Dependency Inversion Principle,
 // the business logic defines these contracts and the infrastructure implements them.
-package usecase
+package business
 
 import (
 	"context"

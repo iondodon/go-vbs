@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/iondodon/go-vbs/business"
+	"github.com/iondodon/go-vbs/business/bookingdate/getBookingDate"
+	"github.com/iondodon/go-vbs/business/vehicle/isVehicleAvailable"
 	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/dto"
-	"github.com/iondodon/go-vbs/usecase"
-	"github.com/iondodon/go-vbs/usecase/bookingdate/getBookingDate"
-	"github.com/iondodon/go-vbs/usecase/vehicle/isVehicleAvailable"
 
 	"github.com/google/uuid"
 )
@@ -24,9 +24,9 @@ type UseCase interface {
 type Service struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
-	vehRepo            usecase.VehicleRepository
-	custRepo           usecase.CustomerRepository
-	bookingRepo        usecase.BookingRepository
+	vehRepo            business.VehicleRepository
+	custRepo           business.CustomerRepository
+	bookingRepo        business.BookingRepository
 	isAvailableForHire *isVehicleAvailable.Service
 	getBookingDates    *getBookingDate.Service
 }
@@ -34,9 +34,9 @@ type Service struct {
 func New(
 	infoLog *log.Logger,
 	errorLog *log.Logger,
-	vehRepo usecase.VehicleRepository,
-	custRepo usecase.CustomerRepository,
-	bookingRepo usecase.BookingRepository,
+	vehRepo business.VehicleRepository,
+	custRepo business.CustomerRepository,
+	bookingRepo business.BookingRepository,
 	isAvailableForHire *isVehicleAvailable.Service,
 	getBookingDates *getBookingDate.Service,
 ) *Service {
