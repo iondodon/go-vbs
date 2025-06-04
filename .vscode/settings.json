@@ -7,4 +7,15 @@
     "explorer.fileNesting.patterns": {
       "*.go": "${capture}_test.go, ${capture}_mock.go"
     },
+    // REST Client settings
+    "rest-client.enableTelemetry": false,
+    "rest-client.showResponseInDifferentTab": true,
+    "rest-client.environmentVariables": {
+      "$shared": {
+        "baseUrl": "http://localhost:8000"
+      }
+    },
+    "rest-client.defaultHeaders": {
+      "Content-Type": "application/json"
+    }
 }

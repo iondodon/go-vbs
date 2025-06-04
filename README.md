@@ -17,10 +17,11 @@ This project includes a `requests.http` file for testing the API endpoints using
 
 **Setup:**
 
-1. Install the REST Client extension in VSCode
-2. Open the `requests.http` file
-3. Start the application (`go run .`)
-4. Click "Send Request" above any endpoint to test it
+1. Open the project in VSCode
+2. Install the recommended REST Client extension (VSCode will prompt you automatically)
+3. Open the `requests.http` file
+4. Start the application (`go run .`)
+5. Click "Send Request" above any endpoint to test it
 
 **Available endpoints:**
 
@@ -29,6 +30,12 @@ This project includes a `requests.http` file for testing the API endpoints using
 - `GET /vehicles/{uuid}` - Get vehicle by UUID
 - `POST /bookings` - Create a booking
 - `GET /bookings` - Get all bookings (requires JWT)
+
+**VSCode Configuration:**
+
+- Extension recommendation in `.vscode/extensions.json`
+- REST Client settings configured in `.vscode/settings.json`
+- Environment variables pre-configured for localhost development
 
 ### Swagger UI (Development)
 
