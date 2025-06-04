@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	uuidLib "github.com/google/uuid"
+	bookingIn "github.com/iondodon/go-vbs/booking/in"
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/dto"
 	"github.com/iondodon/go-vbs/repository"
 	"github.com/iondodon/go-vbs/vehicle/business"
 
-	uuidLib "github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -77,7 +77,7 @@ func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domai
 	return &vehicle, nil
 }
 
-func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period bookingIn.DatePeriodDTO) (bool, error) {
 	res, err := r.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,

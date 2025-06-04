@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/booking/business"
+	bookingIn "github.com/iondodon/go-vbs/booking/in"
 	"github.com/iondodon/go-vbs/domain"
-	"github.com/iondodon/go-vbs/dto"
 )
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
@@ -46,7 +46,7 @@ func New(
 	}
 }
 
-func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period bookingIn.DatePeriodDTO) error {
 	isAvailable, err := s.availabilityService.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicl
 	return nil
 }
 
-func (s *Service) getBookingDatesForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (s *Service) getBookingDatesForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period bookingIn.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := s.bookingDateRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err

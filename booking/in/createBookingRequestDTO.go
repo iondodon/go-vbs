@@ -1,6 +1,8 @@
-package dto
+package in
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type CreateBookingRequestDTO struct {
 	VehicleUUID  uuid.UUID     `json:"vehicle_uuid"`

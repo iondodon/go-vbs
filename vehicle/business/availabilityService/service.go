@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/iondodon/go-vbs/dto"
+	bookingIn "github.com/iondodon/go-vbs/booking/in"
 	"github.com/iondodon/go-vbs/vehicle/business"
 )
 
@@ -20,7 +20,7 @@ func New(vehicleRepo business.VehicleRepository) *Service {
 	}
 }
 
-func (s *Service) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (s *Service) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period bookingIn.DatePeriodDTO) (bool, error) {
 	hasBookedDates, err := s.vehicleRepository.VehicleHasBookedDatesOnPeriod(ctx, vUUID, period)
 
 	if err != nil {
