@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/vehicle/business"
+	"github.com/iondodon/go-vbs/vehicle/domain"
 )
 
 // Service handles getting vehicle by UUID

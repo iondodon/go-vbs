@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/iondodon/go-vbs/booking/business"
+	"github.com/iondodon/go-vbs/booking/domain"
 	bookingIn "github.com/iondodon/go-vbs/booking/in"
-	"github.com/iondodon/go-vbs/domain"
 )
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"

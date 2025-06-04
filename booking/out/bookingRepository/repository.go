@@ -5,10 +5,14 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/google/uuid"
+	uuidLib "github.com/google/uuid"
 	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/booking/domain"
+	customerDomain "github.com/iondodon/go-vbs/customer/domain"
 	"github.com/iondodon/go-vbs/repository"
+	vehicleDomain "github.com/iondodon/go-vbs/vehicle/domain"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Repository implements BookingRepository interface
@@ -48,16 +52,16 @@ func (r *Repository) GetAll(ctx context.Context) ([]domain.Booking, error) {
 		booking := domain.Booking{}
 		booking.ID = booking_row.ID.(int64)
 		uuidStr := booking_row.Uuid.(string)
-		parsedUUID, err := uuid.Parse(uuidStr)
+		parsedUUID, err := uuidLib.Parse(uuidStr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse UUID: %w", err)
 		}
 		booking.UUID = parsedUUID
 
-		booking.Vehicle = &domain.Vehicle{}
+		booking.Vehicle = &vehicleDomain.Vehicle{}
 		booking.Vehicle.ID = booking_row.VehicleID
 
-		booking.Customer = &domain.Customer{}
+		booking.Customer = &customerDomain.Customer{}
 		booking.Customer.ID = booking_row.CustomerID
 
 		bookings = append(bookings, booking)

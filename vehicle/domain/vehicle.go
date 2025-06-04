@@ -17,5 +17,4 @@ type Vehicle struct {
 	Model              string           `json:"model"`
 	FuelType           FuelType         `json:"fuel_type"`
 	VehicleCategory    *VehicleCategory `json:"vehicle_category"`
-	Bookings           []*Booking       `json:"-"`
 }

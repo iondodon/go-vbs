@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	bookingIn "github.com/iondodon/go-vbs/booking/in"
-	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/vehicle/domain"
 )
 
 // VehicleRepository defines what the vehicle business logic needs from data access

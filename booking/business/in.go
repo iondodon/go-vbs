@@ -5,8 +5,8 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/iondodon/go-vbs/booking/domain"
 	bookingIn "github.com/iondodon/go-vbs/booking/in"
-	"github.com/iondodon/go-vbs/domain"
 )
 
 // BookVehicleUseCase defines the interface for booking a vehicle

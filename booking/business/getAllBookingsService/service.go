@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/booking/domain"
 )
 
 // Service handles retrieving all bookings

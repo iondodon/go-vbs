@@ -5,7 +5,7 @@ import (
 
 	uuidlib "github.com/google/uuid"
 	"github.com/iondodon/go-vbs/customer/business"
-	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/customer/domain"
 	"github.com/iondodon/go-vbs/repository"
 )
 

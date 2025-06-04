@@ -6,9 +6,9 @@ import (
 
 	uuidLib "github.com/google/uuid"
 	bookingIn "github.com/iondodon/go-vbs/booking/in"
-	"github.com/iondodon/go-vbs/domain"
 	"github.com/iondodon/go-vbs/repository"
 	"github.com/iondodon/go-vbs/vehicle/business"
+	"github.com/iondodon/go-vbs/vehicle/domain"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -50,29 +50,6 @@ func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domai
 	vehCat.PricePerDay = float32(vehicleRow.PricePerDay)
 	vehCat.VehicleType = domain.VehicleType(vehicleRow.Category)
 	vehicle.VehicleCategory = &vehCat
-
-	vehicleBookingsRows, err := r.queries.SelectBookingsByVehicleID(ctx, vehicle.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	vehicle.Bookings = []*domain.Booking{}
-	for _, vehicleBookingRow := range vehicleBookingsRows {
-		var booking domain.Booking
-		var customer domain.Customer
-
-		booking.ID = vehicleBookingRow.ID.(int64)
-		uuidStr := vehicleBookingRow.Uuid.(string)
-		parsedUUID, err := uuidLib.Parse(uuidStr)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse UUID: %w", err)
-		}
-		booking.UUID = parsedUUID
-		booking.Vehicle = &vehicle
-		booking.Customer = &customer
-
-		vehicle.Bookings = append(vehicle.Bookings, &booking)
-	}
 
 	return &vehicle, nil
 }

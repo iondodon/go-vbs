@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/domain"
+	"github.com/iondodon/go-vbs/booking/domain"
 	"github.com/iondodon/go-vbs/repository"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Repository implements BookingDateRepository interface
