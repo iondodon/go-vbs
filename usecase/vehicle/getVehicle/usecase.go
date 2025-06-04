@@ -14,10 +14,10 @@ type UseCase interface {
 }
 
 type Service struct {
-	vehicleRepository usecase.VehicleRepositoryInterface
+	vehicleRepository usecase.VehicleRepository
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) UseCase {
+func New(vehicleRepo usecase.VehicleRepository) *Service {
 	return &Service{
 		vehicleRepository: vehicleRepo,
 	}

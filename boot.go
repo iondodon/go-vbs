@@ -34,17 +34,17 @@ func BootstrapApplication(db *sql.DB) *Dependencies {
 	// Create repository layer
 	queries := repository.New(db)
 
-	var vehicleRepo usecase.VehicleRepositoryInterface = vehicleRepository.New(queries)
-	var customerRepo usecase.CustomerRepositoryInterface = customerRepository.New(queries)
-	var bookingRepo usecase.BookingRepositoryInterface = bookingRepository.New(queries)
-	var bookingDateRepo usecase.BookingDateRepositoryInterface = bookingDateRepository.New(queries)
+	var vehicleRepo usecase.VehicleRepository = vehicleRepository.New(queries)
+	var customerRepo usecase.CustomerRepository = customerRepository.New(queries)
+	var bookingRepo usecase.BookingRepository = bookingRepository.New(queries)
+	var bookingDateRepo usecase.BookingDateRepository = bookingDateRepository.New(queries)
 
 	// Create use case layer
-	getVehicleUC := getVehicle.New(vehicleRepo)
+	var getVehicleUC getVehicle.UseCase = getVehicle.New(vehicleRepo)
 	isAvailableForHireUC := isVehicleAvailable.New(vehicleRepo)
 	getBookingDatesUC := getBookingDate.New(bookingDateRepo)
-	getAllBookingsUC := getAllBookings.New(bookingRepo)
-	bookVehicleUC := bookVehicle.New(
+	var getAllBookingsUC getAllBookings.UseCase = getAllBookings.New(bookingRepo)
+	var bookVehicleUC bookVehicle.UseCase = bookVehicle.New(
 		infoLog,
 		errorLog,
 		vehicleRepo,

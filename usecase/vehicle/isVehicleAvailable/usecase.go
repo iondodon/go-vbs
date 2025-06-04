@@ -9,10 +9,10 @@ import (
 )
 
 type Service struct {
-	vehRepo usecase.VehicleRepositoryInterface
+	vehRepo usecase.VehicleRepository
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) *Service {
+func New(vehicleRepo usecase.VehicleRepository) *Service {
 	return &Service{
 		vehRepo: vehicleRepo,
 	}

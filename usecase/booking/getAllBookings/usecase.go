@@ -12,10 +12,10 @@ type UseCase interface {
 }
 
 type Service struct {
-	bookingRepo usecase.BookingRepositoryInterface
+	bookingRepo usecase.BookingRepository
 }
 
-func New(bookingRepo usecase.BookingRepositoryInterface) UseCase {
+func New(bookingRepo usecase.BookingRepository) *Service {
 	return &Service{
 		bookingRepo: bookingRepo,
 	}

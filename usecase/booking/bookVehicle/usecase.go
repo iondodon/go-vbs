@@ -24,9 +24,9 @@ type UseCase interface {
 type Service struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
-	vehRepo            usecase.VehicleRepositoryInterface
-	custRepo           usecase.CustomerRepositoryInterface
-	bookingRepo        usecase.BookingRepositoryInterface
+	vehRepo            usecase.VehicleRepository
+	custRepo           usecase.CustomerRepository
+	bookingRepo        usecase.BookingRepository
 	isAvailableForHire *isVehicleAvailable.Service
 	getBookingDates    *getBookingDate.Service
 }
@@ -34,12 +34,12 @@ type Service struct {
 func New(
 	infoLog *log.Logger,
 	errorLog *log.Logger,
-	vehRepo usecase.VehicleRepositoryInterface,
-	custRepo usecase.CustomerRepositoryInterface,
-	bookingRepo usecase.BookingRepositoryInterface,
+	vehRepo usecase.VehicleRepository,
+	custRepo usecase.CustomerRepository,
+	bookingRepo usecase.BookingRepository,
 	isAvailableForHire *isVehicleAvailable.Service,
 	getBookingDates *getBookingDate.Service,
-) UseCase {
+) *Service {
 	return &Service{
 		infoLog:            infoLog,
 		errorLog:           errorLog,

@@ -12,10 +12,10 @@ import (
 )
 
 type Service struct {
-	bdRepo usecase.BookingDateRepositoryInterface
+	bdRepo usecase.BookingDateRepository
 }
 
-func New(bookingDateRepo usecase.BookingDateRepositoryInterface) *Service {
+func New(bookingDateRepo usecase.BookingDateRepository) *Service {
 	return &Service{
 		bdRepo: bookingDateRepo,
 	}
