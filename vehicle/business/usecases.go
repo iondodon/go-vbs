@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	bookingIn "github.com/iondodon/go-vbs/booking/in"
+	bookingController "github.com/iondodon/go-vbs/booking/controller"
 	"github.com/iondodon/go-vbs/vehicle/domain"
 )
 
@@ -15,5 +15,5 @@ type GetVehicleUseCase interface {
 
 // AvailabilityUseCase defines the interface for checking vehicle availability
 type AvailabilityUseCase interface {
-	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period bookingIn.DatePeriodDTO) (bool, error)
+	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period bookingController.DatePeriodDTO) (bool, error)
 }

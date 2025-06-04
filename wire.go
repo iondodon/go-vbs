@@ -9,21 +9,21 @@ import (
 	"os"
 
 	"github.com/google/wire"
-	authController "github.com/iondodon/go-vbs/auth/in/authController"
+	authController "github.com/iondodon/go-vbs/auth/controller/authController"
 	"github.com/iondodon/go-vbs/booking/business"
 	"github.com/iondodon/go-vbs/booking/business/bookVehicleService"
 	"github.com/iondodon/go-vbs/booking/business/getAllBookingsService"
-	bookingController "github.com/iondodon/go-vbs/booking/in/bookingController"
-	"github.com/iondodon/go-vbs/booking/out/bookingDateRepository"
-	"github.com/iondodon/go-vbs/booking/out/bookingRepository"
+	bookingController "github.com/iondodon/go-vbs/booking/controller/bookingController"
+	"github.com/iondodon/go-vbs/booking/repository/bookingDateRepository"
+	"github.com/iondodon/go-vbs/booking/repository/bookingRepository"
 	customerBusiness "github.com/iondodon/go-vbs/customer/business"
-	"github.com/iondodon/go-vbs/customer/out/customerRepository"
+	"github.com/iondodon/go-vbs/customer/repository/customerRepository"
 	"github.com/iondodon/go-vbs/repository"
 	vehicleBusiness "github.com/iondodon/go-vbs/vehicle/business"
 	"github.com/iondodon/go-vbs/vehicle/business/availabilityService"
 	"github.com/iondodon/go-vbs/vehicle/business/getVehicleService"
-	vehicleController "github.com/iondodon/go-vbs/vehicle/in/vehicleController"
-	"github.com/iondodon/go-vbs/vehicle/out/vehicleRepository"
+	vehicleController "github.com/iondodon/go-vbs/vehicle/controller/vehicleController"
+	"github.com/iondodon/go-vbs/vehicle/repository/vehicleRepository"
 )
 
 // Controllers struct to hold all controllers

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	bookingController "github.com/iondodon/go-vbs/booking/controller"
 	"github.com/iondodon/go-vbs/booking/domain"
-	bookingIn "github.com/iondodon/go-vbs/booking/in"
 	customerDomain "github.com/iondodon/go-vbs/customer/domain"
 	vehicleDomain "github.com/iondodon/go-vbs/vehicle/domain"
 )
@@ -27,13 +27,9 @@ type BookingDateRepository interface {
 // Cross-domain dependencies (defined here since booking consumes them)
 type VehicleRepository interface {
 	FindByUUID(ctx context.Context, vUUID uuid.UUID) (*vehicleDomain.Vehicle, error)
-	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period bookingIn.DatePeriodDTO) (bool, error)
+	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period bookingController.DatePeriodDTO) (bool, error)
 }
 
 type CustomerRepository interface {
 	FindByUUID(ctx context.Context, cUUID uuid.UUID) (*customerDomain.Customer, error)
-}
-
-type VehicleAvailabilityService interface {
-	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period bookingIn.DatePeriodDTO) (bool, error)
 }

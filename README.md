@@ -214,7 +214,7 @@ This project follows specific architectural patterns and naming conventions to m
 - ✅ **Self-contained**: Each domain can potentially be extracted as a separate module
 - ✅ **Clear boundaries**: Dependencies between domains are explicit and controlled
 - ✅ **Core Entities**: Each domain defines its core entities as structs within a `domain` sub-package (e.g., `vehicle/domain/Vehicle.go`, `booking/domain/Booking.go`). These represent the fundamental concepts of that domain.
-- ✅ **Data Transfer Objects (DTOs)**: DTOs are used for structured data exchange between layers, such as controller request payloads or service responses. An example is `booking/in/DatePeriodDTO.go`.
+- ✅ **Data Transfer Objects (DTOs)**: DTOs are used for structured data exchange between layers, such as controller request payloads or service responses. DTOs are located in the `controller/` directory (e.g., `booking/controller/DatePeriodDTO.go`).
 
 ### 2. Domain Structure with Individual Package Organization
 
@@ -223,27 +223,27 @@ Each domain package follows this enhanced structure where each struct has its ow
 ```go
 domain/
 ├── business/
-│   ├── in.go              # Input boundaries (UseCase interfaces)
-│   ├── out.go             # Output boundaries (Repository interfaces)
-│   ├── structName/        # Individual packages for each service
-│   │   └── service.go     # Service implementation (e.g., getVehicle.Service)
+│   ├── usecases.go           # Use case interfaces (what external systems can call)
+│   ├── repositories.go       # Repository interfaces (what business logic needs)
+│   ├── structName/           # Individual packages for each service
+│   │   └── service.go        # Service implementation (e.g., getVehicle.Service)
 │   └── anotherStruct/
-│       └── service.go     # Another service implementation
-├── in/                    # Input adapters (receive from outside world)
-│   └── structController/  # Individual controller packages
-│       └── controller.go  # Controller implementation (e.g., vehicleController.Controller)
-└── out/                   # Output adapters (send to outside world)
-    └── structRepository/  # Individual repository packages
-        └── repository.go  # Repository implementation (e.g., vehicleRepository.Repository)
+│       └── service.go        # Another service implementation
+├── controller/               # Input adapters (receive from outside world)
+│   └── structController/     # Individual controller packages
+│       └── controller.go     # Controller implementation (e.g., vehicleController.Controller)
+└── repository/               # Output adapters (send to outside world)
+    └── structRepository/     # Individual repository packages
+        └── repository.go     # Repository implementation (e.g., vehicleRepository.Repository)
 ```
 
 **✅ Clean Architecture Compliance:**
 
 - **Business layer** only sees domain entities and interfaces ✅
-- **Input adapters (in/)** depend on business interfaces ✅
-- **Output adapters (out/)** implement business interfaces ✅
-- **Business logic** CANNOT see any adapters (in/ or out/) ✅
-- **Dependencies flow inward** (in/out → business → domain) ✅
+- **Input adapters (controller/)** depend on business interfaces ✅
+- **Output adapters (repository/)** implement business interfaces ✅
+- **Business logic** CANNOT see any adapters (controller/ or repository/) ✅
+- **Dependencies flow inward** (controller/repository → business → domain) ✅
 
 ### 3. Package Naming Conventions
 
@@ -267,28 +267,30 @@ domain/
 
 Each domain defines clear boundaries using separate files:
 
-#### Input Boundaries (`in.go`)
+#### Use Case Interfaces (`usecases.go`)
 
-- **UseCase interfaces**: Define what external systems can call into the business logic
-- **Examples**: `BookVehicleUseCase`, `GetVehicleUseCase`, `AvailabilityUseCase`
+- **Use case interfaces**: Define what external systems can call into the business logic
+- **Cross-domain services**: Services from other domains that this domain uses
+- **Examples**: `BookVehicleUseCase`, `GetVehicleUseCase`, `VehicleAvailabilityService`
 
-#### Output Boundaries (`out.go`)
+#### Repository Interfaces (`repositories.go`)
 
-- **Repository interfaces**: Define what the business logic needs from external systems
-- **Cross-domain interfaces**: Define what the domain needs from other domains
-- **Examples**: `VehicleRepository`, `CustomerRepository`, `VehicleAvailabilityService`
+- **Repository interfaces**: Define what the business logic needs from data access
+- **Cross-domain repositories**: Data access interfaces from other domains
+- **Examples**: `VehicleRepository`, `CustomerRepository`, `BookingRepository`
 
 ### 6. Cross-Domain Dependencies
 
-Cross-domain dependencies are handled through interfaces defined in the consuming domain's `out.go`:
+Cross-domain dependencies are handled through interfaces defined in the consuming domain's interface files:
 
 ```go
-// In booking/business/out.go - booking domain needs vehicle functionality
+// In booking/business/repositories.go - booking domain needs data from other domains
 type VehicleRepository interface {
     FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
     VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
+// In booking/business/usecases.go - booking domain needs services from other domains
 type VehicleAvailabilityService interface {
     CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
 }
@@ -302,16 +304,16 @@ vehicle/
 │   ├── vehicle.go                  # Vehicle domain entity
 │   └── vehicleCategory.go          # VehicleCategory domain entity
 ├── business/
-│   ├── in.go                       # GetVehicleUseCase, AvailabilityUseCase interfaces
-│   ├── out.go                      # VehicleRepository interface
+│   ├── usecases.go                 # GetVehicleUseCase, AvailabilityUseCase interfaces
+│   ├── repositories.go             # VehicleRepository interface
 │   ├── getVehicleService/
 │   │   └── service.go             # getVehicleService.Service
 │   └── availabilityService/
 │       └── service.go             # availabilityService.Service
-├── in/
+├── controller/
 │   └── vehicleController/
 │       └── controller.go          # vehicleController.Controller
-└── out/
+└── repository/
     └── vehicleRepository/
         └── repository.go          # vehicleRepository.Repository
 
@@ -319,19 +321,19 @@ booking/
 ├── domain/
 │   ├── booking.go                  # Booking domain entity
 │   └── bookingDate.go             # BookingDate domain entity
-├── in/
-│   └── datePeriodDTO.go           # DatePeriodDTO for API requests
+├── controller/
+│   ├── bookingController/
+│   │   └── controller.go          # bookingController.Controller
+│   ├── datePeriodDTO.go           # DatePeriodDTO for API requests
+│   └── createBookingRequestDTO.go # CreateBookingRequestDTO for API requests
 ├── business/
-│   ├── in.go                       # BookVehicleUseCase, GetAllBookingsUseCase interfaces
-│   ├── out.go                      # Repository interfaces + cross-domain interfaces
+│   ├── usecases.go                 # BookVehicleUseCase, GetAllBookingsUseCase, VehicleAvailabilityService interfaces
+│   ├── repositories.go             # Repository interfaces + cross-domain repository interfaces
 │   ├── bookVehicleService/
 │   │   └── service.go             # bookVehicleService.Service
 │   └── getAllBookingsService/
 │       └── service.go             # getAllBookingsService.Service
-├── in/
-│   └── bookingController/
-│       └── controller.go          # bookingController.Controller
-└── out/
+└── repository/
     ├── bookingRepository/
     │   └── repository.go          # bookingRepository.Repository
     └── bookingDateRepository/
@@ -341,13 +343,13 @@ customer/
 ├── domain/
 │   └── customer.go                 # Customer domain entity
 ├── business/
-│   └── out.go                      # CustomerRepository interface
-└── out/
+│   └── repositories.go             # CustomerRepository interface
+└── repository/
     └── customerRepository/
         └── repository.go          # customerRepository.Repository
 
 auth/
-└── in/
+└── controller/
     └── authController/
         └── controller.go          # authController.Controller
 
@@ -367,20 +369,20 @@ repository/
 
 ### 8. Adapter Layers (Ports & Adapters)
 
-The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
+The `controller/` and `repository/` directories implement the **Ports & Adapters** pattern:
 
-#### Input Adapters (`in/`)
+#### Input Adapters (`controller/`)
 
 - **Purpose**: Receive input from the outside world and translate it to business operations
 - **Examples**: HTTP controllers, CLI handlers, gRPC servers, message queue consumers
-- **Dependencies**: Import and use business interfaces from `in.go`
+- **Dependencies**: Import and use business interfaces from `usecases.go`
 - **Current**: HTTP controllers that handle REST API requests
 
-#### Output Adapters (`out/`)
+#### Output Adapters (`repository/`)
 
 - **Purpose**: Send output to the outside world as requested by business logic
 - **Examples**: Database repositories, external API clients, file systems, message queues
-- **Dependencies**: Implement business interfaces from `out.go`
+- **Dependencies**: Implement business interfaces from `repositories.go`
 - **Current**: Database repositories using SQLC-generated queries
 
 **Benefits:**
@@ -390,7 +392,30 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 - 🧪 **Testability**: Mock adapters easily at domain boundaries
 - 📦 **Future Growth**: Add new adapter types (WebSocket, GraphQL, etc.)
 
-### 9. Benefits of Individual Package Organization
+### 9. Interface File Organization
+
+**Clear separation of interface types:**
+
+#### `usecases.go` - Service/Use Case Interfaces
+
+- **Business use cases**: What the domain can do for external consumers
+- **Cross-domain services**: Services from other domains that this domain uses
+- **Examples**: `BookVehicleUseCase`, `GetAllBookingsUseCase`, `VehicleAvailabilityService`
+
+#### `repositories.go` - Data Access Interfaces
+
+- **Repository interfaces**: What the domain needs for data persistence
+- **Cross-domain repositories**: Data access from other domains
+- **Examples**: `BookingRepository`, `VehicleRepository`, `CustomerRepository`
+
+**Benefits:**
+
+- 🎯 **Logical Grouping**: Services vs Data Access are clearly separated
+- 📁 **Easy Navigation**: Developers know exactly where to find interface types
+- 🔍 **Quick Discovery**: Interface type is obvious from filename
+- 📖 **Self-Documenting**: File names clearly indicate their purpose
+
+### 10. Benefits of Individual Package Organization
 
 - **Modularity**: Each struct is isolated in its own package for maximum modularity
 - **Clear Ownership**: Each package has a single responsibility and clear purpose
@@ -398,15 +423,6 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 - **Import Clarity**: Explicit imports make dependencies crystal clear
 - **Future Extraction**: Each package can easily become a separate module
 - **Testability**: Easy to test and mock individual components
-
-### 10. Benefits of Domain-Based Architecture
-
-- **Modularity**: Each domain is self-contained and can be extracted as a separate module
-- **Clear Ownership**: All code related to a domain is in one place
-- **Reduced Coupling**: Dependencies between domains are explicit and minimal
-- **Team Scalability**: Different teams can own different domains
-- **Microservices Ready**: Easy to extract domains into separate services
-- **Testability**: Easy to test entire domains in isolation
 
 ### 11. Dependency Injection
 
