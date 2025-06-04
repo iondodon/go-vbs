@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/iondodon/go-vbs/handler"
-	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
+	"github.com/iondodon/go-vbs/repository"
 )
 
 // a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
@@ -20,7 +20,7 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	db, err := integration.NewInMemDBConn()
+	db, err := repository.NewInMemDBConn()
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {

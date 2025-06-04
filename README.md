@@ -183,9 +183,13 @@ handler/
 
 repository/
 ├── db.go                         # Database connection utilities
+├── integration_db.go             # Database connection function (moved from integration)
 ├── models.go                     # Generated SQLC models
 ├── query.sql.go                  # Generated SQLC queries
-└── query.sql                     # SQL queries for SQLC
+├── query.sql                     # SQL queries for SQLC
+└── migrations/                   # Database migrations (moved from integration)
+    ├── 20250114092700_initialize_schema.sql
+    └── 20250114092854_add_mock_data.sql
 ```
 
 ### 8. Adapter Layers (Ports & Adapters)

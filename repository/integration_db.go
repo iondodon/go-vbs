@@ -1,4 +1,4 @@
-package integration
+package repository
 
 import (
 	"database/sql"
