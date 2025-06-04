@@ -60,8 +60,8 @@ Each domain package follows this enhanced structure where each struct has its ow
 ```go
 domain/
 ├── business/
-│   ├── interfaces.go      # Business interfaces (Repository, UseCase contracts)
-│   ├── service.go         # Backwards compatibility exports
+│   ├── in.go              # Input boundaries (UseCase interfaces)
+│   ├── out.go             # Output boundaries (Repository interfaces)
 │   ├── structName/        # Individual packages for each service
 │   │   └── service.go     # Service implementation (e.g., getVehicle.Service)
 │   └── anotherStruct/
@@ -86,7 +86,7 @@ domain/
 
 **Each struct gets its own package using camelCase naming:**
 
-- ✅ **Service packages**: `getVehicle`, `availability`, `bookVehicle`, `getAllBookings`
+- ✅ **Service packages**: `getVehicleService`, `availabilityService`, `bookVehicleService`, `getAllBookingsService`
 - ✅ **Repository packages**: `vehicleRepository`, `bookingRepository`, `customerRepository`
 - ✅ **Controller packages**: `vehicleController`, `bookingController`, `authController`
 - ✅ **Struct naming**: All structs are named `Service`, `Repository`, or `Controller` within their packages
@@ -100,14 +100,30 @@ domain/
 - ✅ **Use interfaces for**: Cross-domain dependencies (domain boundaries)
 - ❌ **Do NOT use interfaces for**: Internal domain dependencies (same domain)
 
-### 5. Cross-Domain Dependencies
+### 5. Interface Boundaries (Ports & Adapters)
 
-Cross-domain dependencies are handled through interfaces defined in the consuming domain:
+Each domain defines clear boundaries using separate files:
+
+#### Input Boundaries (`in.go`)
+
+- **UseCase interfaces**: Define what external systems can call into the business logic
+- **Examples**: `BookVehicleUseCase`, `GetVehicleUseCase`, `AvailabilityUseCase`
+
+#### Output Boundaries (`out.go`)
+
+- **Repository interfaces**: Define what the business logic needs from external systems
+- **Cross-domain interfaces**: Define what the domain needs from other domains
+- **Examples**: `VehicleRepository`, `CustomerRepository`, `VehicleAvailabilityService`
+
+### 6. Cross-Domain Dependencies
+
+Cross-domain dependencies are handled through interfaces defined in the consuming domain's `out.go`:
 
 ```go
-// In booking/business/interfaces.go - booking domain needs vehicle functionality
+// In booking/business/out.go - booking domain needs vehicle functionality
 type VehicleRepository interface {
     FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
+    VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
 type VehicleAvailabilityService interface {
@@ -115,17 +131,17 @@ type VehicleAvailabilityService interface {
 }
 ```
 
-### 6. Current Domain Structure
+### 7. Current Domain Structure
 
 ```
 vehicle/
 ├── business/
-│   ├── interfaces.go               # Repository and UseCase interfaces
-│   ├── service.go                  # Backwards compatibility
-│   ├── getVehicle/
-│   │   └── service.go             # getVehicle.Service
-│   └── availability/
-│       └── service.go             # availability.Service
+│   ├── in.go                       # GetVehicleUseCase, AvailabilityUseCase interfaces
+│   ├── out.go                      # VehicleRepository interface
+│   ├── getVehicleService/
+│   │   └── service.go             # getVehicleService.Service
+│   └── availabilityService/
+│       └── service.go             # availabilityService.Service
 ├── in/
 │   └── vehicleController/
 │       └── controller.go          # vehicleController.Controller
@@ -135,12 +151,12 @@ vehicle/
 
 booking/
 ├── business/
-│   ├── interfaces.go               # Repository and UseCase interfaces + cross-domain interfaces
-│   ├── service.go                  # Backwards compatibility
-│   ├── bookVehicle/
-│   │   └── service.go             # bookVehicle.Service
-│   └── getAllBookings/
-│       └── service.go             # getAllBookings.Service
+│   ├── in.go                       # BookVehicleUseCase, GetAllBookingsUseCase interfaces
+│   ├── out.go                      # Repository interfaces + cross-domain interfaces
+│   ├── bookVehicleService/
+│   │   └── service.go             # bookVehicleService.Service
+│   └── getAllBookingsService/
+│       └── service.go             # getAllBookingsService.Service
 ├── in/
 │   └── bookingController/
 │       └── controller.go          # bookingController.Controller
@@ -152,7 +168,7 @@ booking/
 
 customer/
 ├── business/
-│   └── interfaces.go               # Repository interface
+│   └── out.go                      # CustomerRepository interface
 └── out/
     └── customerRepository/
         └── repository.go          # customerRepository.Repository
@@ -172,7 +188,7 @@ repository/
 └── query.sql                     # SQL queries for SQLC
 ```
 
-### 7. Adapter Layers (Ports & Adapters)
+### 8. Adapter Layers (Ports & Adapters)
 
 The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 
@@ -180,14 +196,14 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 
 - **Purpose**: Receive input from the outside world and translate it to business operations
 - **Examples**: HTTP controllers, CLI handlers, gRPC servers, message queue consumers
-- **Dependencies**: Import and use business interfaces
+- **Dependencies**: Import and use business interfaces from `in.go`
 - **Current**: HTTP controllers that handle REST API requests
 
 #### Output Adapters (`out/`)
 
 - **Purpose**: Send output to the outside world as requested by business logic
 - **Examples**: Database repositories, external API clients, file systems, message queues
-- **Dependencies**: Implement business interfaces
+- **Dependencies**: Implement business interfaces from `out.go`
 - **Current**: Database repositories using SQLC-generated queries
 
 **Benefits:**
@@ -197,7 +213,7 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 - 🧪 **Testability**: Mock adapters easily at domain boundaries
 - 📦 **Future Growth**: Add new adapter types (WebSocket, GraphQL, etc.)
 
-### 8. Benefits of Individual Package Organization
+### 9. Benefits of Individual Package Organization
 
 - **Modularity**: Each struct is isolated in its own package for maximum modularity
 - **Clear Ownership**: Each package has a single responsibility and clear purpose
@@ -206,7 +222,7 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 - **Future Extraction**: Each package can easily become a separate module
 - **Testability**: Easy to test and mock individual components
 
-### 9. Benefits of Domain-Based Architecture
+### 10. Benefits of Domain-Based Architecture
 
 - **Modularity**: Each domain is self-contained and can be extracted as a separate module
 - **Clear Ownership**: All code related to a domain is in one place
@@ -215,38 +231,53 @@ The `in/` and `out/` directories implement the **Ports & Adapters** pattern:
 - **Microservices Ready**: Easy to extract domains into separate services
 - **Testability**: Easy to test entire domains in isolation
 
-### 10. Dependency Injection
+### 11. Dependency Injection
 
-Dependencies are bootstrapped in `boot.go` with clear cross-domain dependency injection using specific packages:
+Dependencies are bootstrapped in `boot.go` with clear cross-domain dependency injection:
 
 ```go
-// Create output adapters (repositories) - using specific packages
-vehicleRepo := vehicleRepository.NewRepository(queries)
-customerRepo := customerRepository.NewRepository(queries)
-bookingRepo := bookingRepository.NewRepository(queries)
-bookingDateRepo := bookingDateRepository.NewRepository(queries)
+func BootstrapApplication(db *sql.DB) *Dependencies {
+    infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+    errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-// Create business services - using specific packages
-getVehicleUC := getVehicle.NewService(vehicleRepo)
-vehicleAvailabilityService := availability.NewService(vehicleRepo)
+    // Create repository layer (out adapters)
+    queries := repository.New(db)
 
-// Cross-domain dependency injection
-bookVehicleUC := bookVehicle.NewService(
-    infoLog,
-    errorLog,
-    vehicleRepo,                // Cross-domain dependency (vehicle out → booking business)
-    customerRepo,               // Cross-domain dependency (customer out → booking business)
-    bookingRepo,                // Same-domain dependency (booking out → booking business)
-    bookingDateRepo,            // Same-domain dependency
-    vehicleAvailabilityService, // Cross-domain dependency (vehicle business → booking business)
-)
+    // Vehicle domain
+    var vehicleRepo vehicleBusiness.VehicleRepository = vehicleRepository.New(queries)
+    var getVehicleUC vehicleBusiness.GetVehicleUseCase = getVehicleService.New(vehicleRepo)
+    var vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase = availabilityService.New(vehicleRepo)
 
-getAllBookingsUC := getAllBookings.NewService(bookingRepo)
+    // Customer domain
+    var customerRepo customerBusiness.CustomerRepository = customerRepository.New(queries)
 
-// Create input adapters (controllers) - using specific packages
-authCtrl := authController.NewController(infoLog, errorLog)
-vehicleCtrl := vehicleController.NewController(infoLog, errorLog, getVehicleUC)
-bookingCtrl := bookingController.NewController(infoLog, errorLog, db, bookVehicleUC, getAllBookingsUC)
+    // Booking domain
+    var bookingRepo business.BookingRepository = bookingRepository.New(queries)
+    var bookingDateRepo business.BookingDateRepository = bookingDateRepository.New(queries)
+
+    var bookVehicleUC business.BookVehicleUseCase = bookVehicleService.New(
+        infoLog,
+        errorLog,
+        vehicleRepo,  // Cross-domain dependency (vehicle out implements booking business interface)
+        customerRepo, // Cross-domain dependency (customer out implements booking business interface)
+        bookingRepo,
+        bookingDateRepo,
+        vehicleAvailabilityService, // Cross-domain dependency
+    )
+
+    var getAllBookingsUC business.GetAllBookingsUseCase = getAllBookingsService.New(bookingRepo)
+
+    // Create controller layer (in adapters)
+    authCtrl := authController.New(infoLog, errorLog)
+    vehicleCtrl := vehicleController.New(infoLog, errorLog, getVehicleUC)
+    bookingCtrl := bookingController.New(infoLog, errorLog, db, bookVehicleUC, getAllBookingsUC)
+
+    return &Dependencies{
+        AuthController:    authCtrl,
+        VehicleController: vehicleCtrl,
+        BookingController: bookingCtrl,
+    }
+}
 ```
 
 This enhanced architecture provides maximum modularity and clear separation while maintaining clean architecture principles and enabling easy extraction of components into separate modules or microservices when needed.
