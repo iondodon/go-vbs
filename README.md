@@ -52,6 +52,8 @@ This project follows specific architectural patterns and naming conventions to m
 - ✅ **Domain packages**: Each domain (vehicle, booking, customer, auth) contains all its layers
 - ✅ **Self-contained**: Each domain can potentially be extracted as a separate module
 - ✅ **Clear boundaries**: Dependencies between domains are explicit and controlled
+- ✅ **Core Entities**: Each domain defines its core entities as structs within a `domain` sub-package (e.g., `vehicle/domain/Vehicle.go`, `booking/domain/Booking.go`). These represent the fundamental concepts of that domain.
+- ✅ **Data Transfer Objects (DTOs)**: DTOs are used for structured data exchange between layers, such as controller request payloads or service responses. An example is `booking/in/DatePeriodDTO.go`.
 
 ### 2. Domain Structure with Individual Package Organization
 
@@ -135,6 +137,9 @@ type VehicleAvailabilityService interface {
 
 ```
 vehicle/
+├── domain/
+│   ├── vehicle.go                  # Vehicle domain entity
+│   └── vehicleCategory.go          # VehicleCategory domain entity
 ├── business/
 │   ├── in.go                       # GetVehicleUseCase, AvailabilityUseCase interfaces
 │   ├── out.go                      # VehicleRepository interface
@@ -150,6 +155,11 @@ vehicle/
         └── repository.go          # vehicleRepository.Repository
 
 booking/
+├── domain/
+│   ├── booking.go                  # Booking domain entity
+│   └── bookingDate.go             # BookingDate domain entity
+├── in/
+│   └── datePeriodDTO.go           # DatePeriodDTO for API requests
 ├── business/
 │   ├── in.go                       # BookVehicleUseCase, GetAllBookingsUseCase interfaces
 │   ├── out.go                      # Repository interfaces + cross-domain interfaces
@@ -167,6 +177,8 @@ booking/
         └── repository.go          # bookingDateRepository.Repository
 
 customer/
+├── domain/
+│   └── customer.go                 # Customer domain entity
 ├── business/
 │   └── out.go                      # CustomerRepository interface
 └── out/
