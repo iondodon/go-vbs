@@ -9,6 +9,31 @@ This is [VBS](https://github.com/iondodon/vbs) (originally implemented in Java) 
 - mockery
 - swagger-ui - dist/ from [https://github.com/swagger-api/swagger-ui/releases](https://github.com/swagger-api/swagger-ui/releases)
 
+## API Testing
+
+### REST Client Extension
+
+This project includes a `requests.http` file for testing the API endpoints using the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) VSCode extension.
+
+**Setup:**
+
+1. Install the REST Client extension in VSCode
+2. Open the `requests.http` file
+3. Start the application (`go run .`)
+4. Click "Send Request" above any endpoint to test it
+
+**Available endpoints:**
+
+- `GET /login` - Get access token
+- `GET /refresh` - Refresh token
+- `GET /vehicles/{uuid}` - Get vehicle by UUID
+- `POST /bookings` - Create a booking
+- `GET /bookings` - Get all bookings (requires JWT)
+
+### Swagger UI (Development)
+
+Set `GO_ENV=development` to enable Swagger UI at `http://localhost:8000/docs`
+
 ## Architecture & Design Rules
 
 This project follows specific architectural patterns and naming conventions to maintain clean architecture principles and clear separation of concerns.

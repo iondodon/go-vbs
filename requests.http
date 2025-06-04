@@ -1,0 +1,64 @@
+###
+# go-vbs API Requests
+# Use with REST Client VSCode extension
+# Base URL: http://localhost:8000
+###
+
+### Variables
+@baseUrl = http://localhost:8000
+@vehicleUuid = a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+@customerUuid = b1ffcda0-ad1c-5fg9-cc7e-7cc0ce391b22
+
+### 1. Login - Get access token
+GET {{baseUrl}}/login
+Content-Type: application/json
+
+### 2. Refresh token
+GET {{baseUrl}}/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "your_refresh_token_here"
+}
+
+### 3. Get vehicle by UUID
+GET {{baseUrl}}/vehicles/{{vehicleUuid}}
+Content-Type: application/json
+
+### 4. Create a booking
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+
+{
+  "vehicle_uuid": "{{vehicleUuid}}",
+  "customer_uuid": "{{customerUuid}}",
+  "date_period": {
+    "from_date": "2024-01-15T00:00:00Z",
+    "to_date": "2024-01-20T00:00:00Z"
+  }
+}
+
+### 5. Get all bookings (requires JWT)
+GET {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer your_jwt_token_here
+
+### 6. Example with real dates - Create booking for next week
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+
+{
+  "vehicle_uuid": "{{vehicleUuid}}",
+  "customer_uuid": "{{customerUuid}}",
+  "date_period": {
+    "from_date": "2024-12-23T00:00:00Z",
+    "to_date": "2024-12-28T00:00:00Z"
+  }
+}
+
+###
+# Swagger UI (Development only)
+# http://localhost:8000/docs
+# 
+# Note: Set GO_ENV=development to enable Swagger UI
+### 
