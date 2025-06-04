@@ -31,28 +31,18 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// Initialize individual controllers using Wire
-	authController, err := InitializeAuthController(db)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-
-	vehicleController, err := InitializeVehicleController(db)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-
-	bookingController, err := InitializeBookingController(db)
+	// Initialize all controllers using Wire
+	controllers, err := InitializeControllers(db)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
 
 	router := http.NewServeMux()
-	router.Handle("GET /login", handler.Handler(authController.Login))
-	router.Handle("GET /refresh", handler.Handler(authController.Refresh))
-	router.Handle("GET /vehicles/{uuid}", handler.Handler(vehicleController.HandleGetVehicleByUUID))
-	router.Handle("POST /bookings", handler.Handler(bookingController.HandleBookVehicle))
-	router.Handle("GET /bookings", middleware.JWT(handler.Handler(bookingController.HandleGetAllBookings)))
+	router.Handle("GET /login", handler.Handler(controllers.Auth.Login))
+	router.Handle("GET /refresh", handler.Handler(controllers.Auth.Refresh))
+	router.Handle("GET /vehicles/{uuid}", handler.Handler(controllers.Vehicle.HandleGetVehicleByUUID))
+	router.Handle("POST /bookings", handler.Handler(controllers.Booking.HandleBookVehicle))
+	router.Handle("GET /bookings", middleware.JWT(handler.Handler(controllers.Booking.HandleGetAllBookings)))
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {

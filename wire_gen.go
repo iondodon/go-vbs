@@ -30,40 +30,34 @@ import (
 
 // Injectors from wire.go:
 
-// Wire injector functions for individual controllers
-func InitializeAuthController(db *sql.DB) (*authController.Controller, error) {
+// Wire injector function for Controllers
+func InitializeControllers(db *sql.DB) (*Controllers, error) {
 	infoLogger := ProvideInfoLogger()
 	errorLogger := ProvideErrorLogger()
 	controller := ProvideAuthController(infoLogger, errorLogger)
-	return controller, nil
-}
-
-func InitializeVehicleController(db *sql.DB) (*vehicleController.Controller, error) {
-	infoLogger := ProvideInfoLogger()
-	errorLogger := ProvideErrorLogger()
 	queries := ProvideQueries(db)
 	vehicleRepository := ProvideVehicleRepository(queries)
 	getVehicleUseCase := ProvideGetVehicleUseCase(vehicleRepository)
-	controller := ProvideVehicleController(infoLogger, errorLogger, getVehicleUseCase)
-	return controller, nil
-}
-
-func InitializeBookingController(db *sql.DB) (*bookingController.Controller, error) {
-	infoLogger := ProvideInfoLogger()
-	errorLogger := ProvideErrorLogger()
-	queries := ProvideQueries(db)
-	vehicleRepository := ProvideVehicleRepository(queries)
+	vehicleControllerController := ProvideVehicleController(infoLogger, errorLogger, getVehicleUseCase)
 	customerRepository := ProvideCustomerRepository(queries)
 	bookingRepository := ProvideBookingRepository(queries)
 	bookingDateRepository := ProvideBookingDateRepository(queries)
 	availabilityUseCase := ProvideAvailabilityUseCase(vehicleRepository)
 	bookVehicleUseCase := ProvideBookVehicleUseCase(infoLogger, errorLogger, vehicleRepository, customerRepository, bookingRepository, bookingDateRepository, availabilityUseCase)
 	getAllBookingsUseCase := ProvideGetAllBookingsUseCase(bookingRepository)
-	controller := ProvideBookingController(infoLogger, errorLogger, db, bookVehicleUseCase, getAllBookingsUseCase)
-	return controller, nil
+	bookingControllerController := ProvideBookingController(infoLogger, errorLogger, db, bookVehicleUseCase, getAllBookingsUseCase)
+	controllers := ProvideControllers(controller, vehicleControllerController, bookingControllerController)
+	return controllers, nil
 }
 
 // wire.go:
+
+// Controllers struct to hold all controllers
+type Controllers struct {
+	Auth    *authController.Controller
+	Vehicle *vehicleController.Controller
+	Booking *bookingController.Controller
+}
 
 // Logger wrapper types to distinguish between different loggers
 type InfoLogger struct {
@@ -162,6 +156,19 @@ func ProvideAuthController(infoLog InfoLogger, errorLog ErrorLogger) *authContro
 	return authController.New(infoLog.Logger, errorLog.Logger)
 }
 
+// Controllers provider
+func ProvideControllers(
+	authCtrl *authController.Controller,
+	vehicleCtrl *vehicleController.Controller,
+	bookingCtrl *bookingController.Controller,
+) *Controllers {
+	return &Controllers{
+		Auth:    authCtrl,
+		Vehicle: vehicleCtrl,
+		Booking: bookingCtrl,
+	}
+}
+
 // Provider sets
 var RepositorySet = wire.NewSet(
 	ProvideQueries,
@@ -199,4 +206,5 @@ var ApplicationSet = wire.NewSet(
 	VehicleSet,
 	BookingSet,
 	AuthSet,
+	ProvideControllers,
 )

@@ -3,7 +3,7 @@
 # Generate Wire dependency injection code
 wire:
 	@echo "Generating Wire code..."
-	wire
+	~/go/bin/wire
 
 # Build the application
 build: wire

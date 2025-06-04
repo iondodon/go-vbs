@@ -26,6 +26,13 @@ import (
 	"github.com/iondodon/go-vbs/vehicle/out/vehicleRepository"
 )
 
+// Controllers struct to hold all controllers
+type Controllers struct {
+	Auth    *authController.Controller
+	Vehicle *vehicleController.Controller
+	Booking *bookingController.Controller
+}
+
 // Logger wrapper types to distinguish between different loggers
 type InfoLogger struct {
 	*log.Logger
@@ -123,6 +130,19 @@ func ProvideAuthController(infoLog InfoLogger, errorLog ErrorLogger) *authContro
 	return authController.New(infoLog.Logger, errorLog.Logger)
 }
 
+// Controllers provider
+func ProvideControllers(
+	authCtrl *authController.Controller,
+	vehicleCtrl *vehicleController.Controller,
+	bookingCtrl *bookingController.Controller,
+) *Controllers {
+	return &Controllers{
+		Auth:    authCtrl,
+		Vehicle: vehicleCtrl,
+		Booking: bookingCtrl,
+	}
+}
+
 // Provider sets
 var RepositorySet = wire.NewSet(
 	ProvideQueries,
@@ -160,20 +180,11 @@ var ApplicationSet = wire.NewSet(
 	VehicleSet,
 	BookingSet,
 	AuthSet,
+	ProvideControllers,
 )
 
-// Wire injector functions for individual controllers
-func InitializeAuthController(db *sql.DB) (*authController.Controller, error) {
+// Wire injector function for Controllers
+func InitializeControllers(db *sql.DB) (*Controllers, error) {
 	wire.Build(ApplicationSet)
-	return &authController.Controller{}, nil
-}
-
-func InitializeVehicleController(db *sql.DB) (*vehicleController.Controller, error) {
-	wire.Build(ApplicationSet)
-	return &vehicleController.Controller{}, nil
-}
-
-func InitializeBookingController(db *sql.DB) (*bookingController.Controller, error) {
-	wire.Build(ApplicationSet)
-	return &bookingController.Controller{}, nil
+	return &Controllers{}, nil
 }
