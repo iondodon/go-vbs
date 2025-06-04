@@ -25,3 +25,7 @@ go.work
 
 coverage.out
 go-vbs
+
+# Generated mocks (mockery)
+**/mocks/
+mocks/
