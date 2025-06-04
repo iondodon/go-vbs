@@ -17,18 +17,18 @@ import (
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
-type Interface interface {
+type UseCase interface {
 	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
 }
 
-type UseCase struct {
+type Service struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
 	vehRepo            usecase.VehicleRepositoryInterface
 	custRepo           usecase.CustomerRepositoryInterface
 	bookingRepo        usecase.BookingRepositoryInterface
-	isAvailableForHire *isVehicleAvailable.UseCase
-	getBookingDates    *getBookingDate.UseCase
+	isAvailableForHire *isVehicleAvailable.Service
+	getBookingDates    *getBookingDate.Service
 }
 
 func New(
@@ -37,10 +37,10 @@ func New(
 	vehRepo usecase.VehicleRepositoryInterface,
 	custRepo usecase.CustomerRepositoryInterface,
 	bookingRepo usecase.BookingRepositoryInterface,
-	isAvailableForHire *isVehicleAvailable.UseCase,
-	getBookingDates *getBookingDate.UseCase,
-) Interface {
-	return &UseCase{
+	isAvailableForHire *isVehicleAvailable.Service,
+	getBookingDates *getBookingDate.Service,
+) UseCase {
+	return &Service{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		vehRepo:            vehRepo,
@@ -51,7 +51,7 @@ func New(
 	}
 }
 
-func (uc *UseCase) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
 	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err

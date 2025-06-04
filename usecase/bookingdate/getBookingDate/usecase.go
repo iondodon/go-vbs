@@ -11,17 +11,17 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type UseCase struct {
+type Service struct {
 	bdRepo usecase.BookingDateRepositoryInterface
 }
 
-func New(bookingDateRepo usecase.BookingDateRepositoryInterface) *UseCase {
-	return &UseCase{
+func New(bookingDateRepo usecase.BookingDateRepositoryInterface) *Service {
+	return &Service{
 		bdRepo: bookingDateRepo,
 	}
 }
 
-func (uc *UseCase) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err

@@ -16,11 +16,11 @@ type Controller struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
 	db                 *sql.DB
-	bookVehicleUseCase bookVehicle.Interface
-	getAllBookings     getAllBookings.Interface
+	bookVehicleUseCase bookVehicle.UseCase
+	getAllBookings     getAllBookings.UseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookVehicle.Interface, getAllBookings getAllBookings.Interface) *Controller {
+func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookVehicle.UseCase, getAllBookings getAllBookings.UseCase) *Controller {
 	return &Controller{
 		infoLog:            infoLog,
 		errorLog:           errorLog,

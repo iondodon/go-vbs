@@ -7,20 +7,20 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type Interface interface {
+type UseCase interface {
 	Execute(ctx context.Context) ([]domain.Booking, error)
 }
 
-type UseCase struct {
+type Service struct {
 	bookingRepo usecase.BookingRepositoryInterface
 }
 
-func New(bookingRepo usecase.BookingRepositoryInterface) Interface {
-	return &UseCase{
+func New(bookingRepo usecase.BookingRepositoryInterface) UseCase {
+	return &Service{
 		bookingRepo: bookingRepo,
 	}
 }
 
-func (uc *UseCase) Execute(ctx context.Context) ([]domain.Booking, error) {
+func (uc *Service) Execute(ctx context.Context) ([]domain.Booking, error) {
 	return uc.bookingRepo.GetAll(ctx)
 }

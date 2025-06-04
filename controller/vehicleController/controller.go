@@ -13,10 +13,10 @@ import (
 type Controller struct {
 	infoLog           *log.Logger
 	errorLog          *log.Logger
-	getVehicleUseCase getVehicle.Interface
+	getVehicleUseCase getVehicle.UseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle.Interface) *Controller {
+func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle.UseCase) *Controller {
 	return &Controller{
 		infoLog:           infoLog,
 		errorLog:          errorLog,

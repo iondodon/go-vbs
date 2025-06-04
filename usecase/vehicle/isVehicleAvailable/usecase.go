@@ -8,17 +8,17 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type UseCase struct {
+type Service struct {
 	vehRepo usecase.VehicleRepositoryInterface
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) *UseCase {
-	return &UseCase{
+func New(vehicleRepo usecase.VehicleRepositoryInterface) *Service {
+	return &Service{
 		vehRepo: vehicleRepo,
 	}
 }
 
-func (us *UseCase) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (us *Service) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
 	hasBookedDates, err := us.vehRepo.VehicleHasBookedDatesOnPeriod(ctx, vUUID, period)
 
 	if err != nil {

@@ -9,21 +9,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type Interface interface {
+type UseCase interface {
 	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
 }
 
-type UseCase struct {
+type Service struct {
 	vehicleRepository usecase.VehicleRepositoryInterface
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) Interface {
-	return &UseCase{
+func New(vehicleRepo usecase.VehicleRepositoryInterface) UseCase {
+	return &Service{
 		vehicleRepository: vehicleRepo,
 	}
 }
 
-func (gvuc *UseCase) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
+func (gvuc *Service) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
 	vehicle, err := gvuc.vehicleRepository.FindByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
