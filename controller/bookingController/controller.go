@@ -12,16 +12,16 @@ import (
 	"github.com/iondodon/go-vbs/usecase/booking/getAllBookings"
 )
 
-type BookingController struct {
+type Controller struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
 	db                 *sql.DB
-	bookVehicleUseCase bookVehicle.BookVehicleInterface
-	getAllBookings     getAllBookings.GetAllBookingsInterface
+	bookVehicleUseCase bookVehicle.Interface
+	getAllBookings     getAllBookings.Interface
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookVehicle.BookVehicleInterface, getAllBookings getAllBookings.GetAllBookingsInterface) *BookingController {
-	return &BookingController{
+func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookVehicle.Interface, getAllBookings getAllBookings.Interface) *Controller {
+	return &Controller{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
 		db:                 db,
@@ -30,7 +30,7 @@ func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCa
 	}
 }
 
-func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
+func (c *Controller) HandleBookVehicle(w http.ResponseWriter, r *http.Request) error {
 	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func (c *BookingController) HandleBookVehicle(w http.ResponseWriter, r *http.Req
 	return nil
 }
 
-func (c *BookingController) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
+func (c *Controller) HandleGetAllBookings(w http.ResponseWriter, r *http.Request) error {
 	bookings, err := c.getAllBookings.Execute(r.Context())
 	if err != nil {
 		return err

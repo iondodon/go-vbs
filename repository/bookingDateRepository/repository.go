@@ -10,17 +10,17 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type BookingDateRepository struct {
+type Repository struct {
 	queries *repository.Queries
 }
 
 func New(queries *repository.Queries) usecase.BookingDateRepositoryInterface {
-	return &BookingDateRepository{
+	return &Repository{
 		queries: queries,
 	}
 }
 
-func (repo *BookingDateRepository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
+func (repo *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
 	var bookingDates []*domain.BookingDate
 
 	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
@@ -43,7 +43,7 @@ func (repo *BookingDateRepository) FindAllInPeriodInclusive(ctx context.Context,
 	return bookingDates, nil
 }
 
-func (repo *BookingDateRepository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
+func (repo *Repository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
 	if err := repo.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
 		return err
 	}

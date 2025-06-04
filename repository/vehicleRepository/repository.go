@@ -13,17 +13,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type VehicleRepository struct {
+type Repository struct {
 	queries *repository.Queries
 }
 
 func New(queries *repository.Queries) usecase.VehicleRepositoryInterface {
-	return &VehicleRepository{
+	return &Repository{
 		queries: queries,
 	}
 }
 
-func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+func (repo *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
 	vehicleRow, err := repo.queries.GetVehicleByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (repo *VehicleRepository) FindByUUID(ctx context.Context, vUUID uuidLib.UUI
 	return &vehicle, nil
 }
 
-func (repo *VehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (repo *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
 	res, err := repo.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,
@@ -89,5 +89,4 @@ func (repo *VehicleRepository) VehicleHasBookedDatesOnPeriod(ctx context.Context
 	}
 
 	return false, nil
-
 }

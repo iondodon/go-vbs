@@ -22,9 +22,9 @@ import (
 )
 
 type Dependencies struct {
-	TokenController   *tokenController.TokenController
-	VehicleController *vehicleController.VehicleController
-	BookingController *bookingController.BookingController
+	TokenController   *tokenController.Controller
+	VehicleController *vehicleController.Controller
+	BookingController *bookingController.Controller
 }
 
 func BootstrapApplication(db *sql.DB) *Dependencies {

@@ -10,21 +10,21 @@ import (
 	uuidLib "github.com/google/uuid"
 )
 
-type VehicleController struct {
+type Controller struct {
 	infoLog           *log.Logger
 	errorLog          *log.Logger
-	getVehicleUseCase getVehicle.GetVehicleInterface
+	getVehicleUseCase getVehicle.Interface
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle.GetVehicleInterface) *VehicleController {
-	return &VehicleController{
+func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle.Interface) *Controller {
+	return &Controller{
 		infoLog:           infoLog,
 		errorLog:          errorLog,
 		getVehicleUseCase: getVehicleUseCase,
 	}
 }
 
-func (vc *VehicleController) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
+func (vc *Controller) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
 	uuid := r.PathValue("uuid")
 
 	vUUID, err := uuidLib.Parse(uuid)

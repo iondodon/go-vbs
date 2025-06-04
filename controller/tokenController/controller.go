@@ -10,13 +10,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type TokenController struct {
+type Controller struct {
 	infoLog  *log.Logger
 	errorLog *log.Logger
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger) *TokenController {
-	return &TokenController{
+func New(infoLog *log.Logger, errorLog *log.Logger) *Controller {
+	return &Controller{
 		infoLog:  infoLog,
 		errorLog: errorLog,
 	}
@@ -40,7 +40,7 @@ type refreshRequest struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-func (c *TokenController) Login(w http.ResponseWriter, r *http.Request) error {
+func (c *Controller) Login(w http.ResponseWriter, r *http.Request) error {
 	tokenPairs, err := newTokenPairs()
 	if err != nil {
 		return err
@@ -65,7 +65,7 @@ func (c *TokenController) Login(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (c *TokenController) Refresh(w http.ResponseWriter, r *http.Request) error {
+func (c *Controller) Refresh(w http.ResponseWriter, r *http.Request) error {
 	var refreshRequest refreshRequest
 	err := json.NewDecoder(r.Body).Decode(&refreshRequest)
 	if err != nil {

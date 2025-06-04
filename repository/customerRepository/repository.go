@@ -9,17 +9,17 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type CustomerRepository struct {
+type Repository struct {
 	queries *repository.Queries
 }
 
 func New(queries *repository.Queries) usecase.CustomerRepositoryInterface {
-	return &CustomerRepository{
+	return &Repository{
 		queries: queries,
 	}
 }
 
-func (repo *CustomerRepository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
+func (repo *Repository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
 	var customer domain.Customer
 
 	customerRow, err := repo.queries.GetCustomerByUUID(ctx, cUUID)

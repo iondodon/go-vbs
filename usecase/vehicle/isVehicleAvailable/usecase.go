@@ -8,21 +8,21 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type IsAvailableForHireInterface interface {
+type Interface interface {
 	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
 }
 
-type IsAvailableForHire struct {
+type UseCase struct {
 	vehRepo usecase.VehicleRepositoryInterface
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) IsAvailableForHireInterface {
-	return &IsAvailableForHire{
+func New(vehicleRepo usecase.VehicleRepositoryInterface) Interface {
+	return &UseCase{
 		vehRepo: vehicleRepo,
 	}
 }
 
-func (us *IsAvailableForHire) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+func (us *UseCase) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
 	hasBookedDates, err := us.vehRepo.VehicleHasBookedDatesOnPeriod(ctx, vUUID, period)
 
 	if err != nil {

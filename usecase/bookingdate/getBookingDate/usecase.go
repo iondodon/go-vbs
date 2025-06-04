@@ -11,21 +11,21 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type GetBookingDatesInterface interface {
+type Interface interface {
 	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
 }
 
-type GetBookingDates struct {
+type UseCase struct {
 	bdRepo usecase.BookingDateRepositoryInterface
 }
 
-func New(bookingDateRepo usecase.BookingDateRepositoryInterface) GetBookingDatesInterface {
-	return &GetBookingDates{
+func New(bookingDateRepo usecase.BookingDateRepositoryInterface) Interface {
+	return &UseCase{
 		bdRepo: bookingDateRepo,
 	}
 }
 
-func (uc *GetBookingDates) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (uc *UseCase) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
 	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
