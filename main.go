@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/iondodon/go-vbs/controller"
+	"github.com/iondodon/go-vbs/handler"
 	"github.com/iondodon/go-vbs/integration"
 	"github.com/iondodon/go-vbs/middleware"
 )
@@ -35,11 +35,11 @@ func main() {
 	deps := BootstrapApplication(db)
 
 	router := http.NewServeMux()
-	router.Handle("GET /login", controller.Handler(deps.TokenController.Login))
-	router.Handle("GET /refresh", controller.Handler(deps.TokenController.Refresh))
-	router.Handle("GET /vehicles/{uuid}", controller.Handler(deps.VehicleController.HandleGetVehicleByUUID))
-	router.Handle("POST /bookings", controller.Handler(deps.BookingController.HandleBookVehicle))
-	router.Handle("GET /bookings", middleware.JWT(controller.Handler(deps.BookingController.HandleGetAllBookings)))
+	router.Handle("GET /login", handler.Handler(deps.AuthController.Login))
+	router.Handle("GET /refresh", handler.Handler(deps.AuthController.Refresh))
+	router.Handle("GET /vehicles/{uuid}", handler.Handler(deps.VehicleController.HandleGetVehicleByUUID))
+	router.Handle("POST /bookings", handler.Handler(deps.BookingController.HandleBookVehicle))
+	router.Handle("GET /bookings", middleware.JWT(handler.Handler(deps.BookingController.HandleGetAllBookings)))
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {

@@ -5,24 +5,25 @@ import (
 	"log"
 	"os"
 
-	"github.com/iondodon/go-vbs/business"
-	"github.com/iondodon/go-vbs/business/booking/bookVehicle"
-	"github.com/iondodon/go-vbs/business/booking/getAllBookings"
-	"github.com/iondodon/go-vbs/business/bookingdate/getBookingDate"
-	"github.com/iondodon/go-vbs/business/vehicle/getVehicle"
-	"github.com/iondodon/go-vbs/business/vehicle/isVehicleAvailable"
-	"github.com/iondodon/go-vbs/controller/bookingController"
-	"github.com/iondodon/go-vbs/controller/tokenController"
-	"github.com/iondodon/go-vbs/controller/vehicleController"
+	authController "github.com/iondodon/go-vbs/auth/in/authController"
+	"github.com/iondodon/go-vbs/booking/business"
+	"github.com/iondodon/go-vbs/booking/business/bookVehicleService"
+	"github.com/iondodon/go-vbs/booking/business/getAllBookingsService"
+	bookingController "github.com/iondodon/go-vbs/booking/in/bookingController"
+	"github.com/iondodon/go-vbs/booking/out/bookingDateRepository"
+	"github.com/iondodon/go-vbs/booking/out/bookingRepository"
+	customerBusiness "github.com/iondodon/go-vbs/customer/business"
+	"github.com/iondodon/go-vbs/customer/out/customerRepository"
 	"github.com/iondodon/go-vbs/repository"
-	"github.com/iondodon/go-vbs/repository/bookingDateRepository"
-	"github.com/iondodon/go-vbs/repository/bookingRepository"
-	"github.com/iondodon/go-vbs/repository/customerRepository"
-	"github.com/iondodon/go-vbs/repository/vehicleRepository"
+	vehicleBusiness "github.com/iondodon/go-vbs/vehicle/business"
+	"github.com/iondodon/go-vbs/vehicle/business/availabilityService"
+	"github.com/iondodon/go-vbs/vehicle/business/getVehicleService"
+	vehicleController "github.com/iondodon/go-vbs/vehicle/in/vehicleController"
+	"github.com/iondodon/go-vbs/vehicle/out/vehicleRepository"
 )
 
 type Dependencies struct {
-	TokenController   *tokenController.Controller
+	AuthController    *authController.Controller
 	VehicleController *vehicleController.Controller
 	BookingController *bookingController.Controller
 }
@@ -31,36 +32,40 @@ func BootstrapApplication(db *sql.DB) *Dependencies {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	// Create repository layer
+	// Create repository layer (out adapters)
 	queries := repository.New(db)
 
-	var vehicleRepo business.VehicleRepository = vehicleRepository.New(queries)
-	var customerRepo business.CustomerRepository = customerRepository.New(queries)
+	// Vehicle domain
+	var vehicleRepo vehicleBusiness.Repository = vehicleRepository.New(queries)
+	var getVehicleUC vehicleBusiness.GetVehicleUseCase = getVehicleService.New(vehicleRepo)
+	var vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase = availabilityService.New(vehicleRepo)
+
+	// Customer domain
+	var customerRepo customerBusiness.Repository = customerRepository.New(queries)
+
+	// Booking domain
 	var bookingRepo business.BookingRepository = bookingRepository.New(queries)
 	var bookingDateRepo business.BookingDateRepository = bookingDateRepository.New(queries)
 
-	// Create use case layer
-	var getVehicleUC getVehicle.UseCase = getVehicle.New(vehicleRepo)
-	isAvailableForHireUC := isVehicleAvailable.New(vehicleRepo)
-	getBookingDatesUC := getBookingDate.New(bookingDateRepo)
-	var getAllBookingsUC getAllBookings.UseCase = getAllBookings.New(bookingRepo)
-	var bookVehicleUC bookVehicle.UseCase = bookVehicle.New(
+	var bookVehicleUC business.BookVehicleUseCase = bookVehicleService.New(
 		infoLog,
 		errorLog,
-		vehicleRepo,
-		customerRepo,
+		vehicleRepo,  // Cross-domain dependency (vehicle out implements booking business interface)
+		customerRepo, // Cross-domain dependency (customer out implements booking business interface)
 		bookingRepo,
-		isAvailableForHireUC,
-		getBookingDatesUC,
+		bookingDateRepo,
+		vehicleAvailabilityService, // Cross-domain dependency
 	)
 
-	// Create controller layer
-	tokenCtrl := tokenController.New(infoLog, errorLog)
+	var getAllBookingsUC business.GetAllBookingsUseCase = getAllBookingsService.New(bookingRepo)
+
+	// Create controller layer (in adapters)
+	authCtrl := authController.New(infoLog, errorLog)
 	vehicleCtrl := vehicleController.New(infoLog, errorLog, getVehicleUC)
 	bookingCtrl := bookingController.New(infoLog, errorLog, db, bookVehicleUC, getAllBookingsUC)
 
 	return &Dependencies{
-		TokenController:   tokenCtrl,
+		AuthController:    authCtrl,
 		VehicleController: vehicleCtrl,
 		BookingController: bookingCtrl,
 	}
