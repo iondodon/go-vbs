@@ -20,8 +20,8 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (repo *Repository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
-	if err := repo.queries.WithTx(tx).InsertNewBooking(ctx, repository.InsertNewBookingParams{
+func (r *Repository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
+	if err := r.queries.WithTx(tx).InsertNewBooking(ctx, repository.InsertNewBookingParams{
 		Uuid:       b.UUID,
 		VehicleID:  b.Vehicle.ID,
 		CustomerID: b.Customer.ID,
@@ -32,8 +32,8 @@ func (repo *Repository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking)
 	return nil
 }
 
-func (repo *Repository) GetAll(ctx context.Context) ([]domain.Booking, error) {
-	bookingsRows, err := repo.queries.SelectAllBookings(ctx)
+func (r *Repository) GetAll(ctx context.Context) ([]domain.Booking, error) {
+	bookingsRows, err := r.queries.SelectAllBookings(ctx)
 	if err != nil {
 		return nil, err
 	}

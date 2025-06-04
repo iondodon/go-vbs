@@ -18,8 +18,8 @@ func New(vehicleRepo business.VehicleRepository) *Service {
 	}
 }
 
-func (us *Service) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
-	hasBookedDates, err := us.vehRepo.VehicleHasBookedDatesOnPeriod(ctx, vUUID, period)
+func (s *Service) CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error) {
+	hasBookedDates, err := s.vehRepo.VehicleHasBookedDatesOnPeriod(ctx, vUUID, period)
 
 	if err != nil {
 		return false, err

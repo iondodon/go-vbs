@@ -47,8 +47,8 @@ func New(
 	}
 }
 
-func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
-	isAvailable, err := uc.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
+func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error {
+	isAvailable, err := s.isAvailableForHire.CheckForPeriod(ctx, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
@@ -56,19 +56,19 @@ func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehic
 		return fmt.Errorf(alreadyHired, vehicleUUID)
 	}
 
-	uc.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
+	s.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
 
-	bDates, err := uc.getBookingDates.ForPeriod(ctx, tx, customerUID, vehicleUUID, period)
+	bDates, err := s.getBookingDates.ForPeriod(ctx, tx, customerUID, vehicleUUID, period)
 	if err != nil {
 		return err
 	}
 
-	veh, err := uc.vehRepo.FindByUUID(ctx, vehicleUUID)
+	veh, err := s.vehRepo.FindByUUID(ctx, vehicleUUID)
 	if err != nil {
 		return err
 	}
 
-	cust, err := uc.custRepo.FindByUUID(ctx, customerUID)
+	cust, err := s.custRepo.FindByUUID(ctx, customerUID)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehic
 		Customer:     cust,
 	}
 
-	err = uc.bookingRepo.Save(ctx, tx, &booking)
+	err = s.bookingRepo.Save(ctx, tx, &booking)
 	if err != nil {
 		return err
 	}

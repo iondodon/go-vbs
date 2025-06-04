@@ -19,8 +19,8 @@ func New(vehicleRepo business.VehicleRepository) *Service {
 	}
 }
 
-func (gvuc *Service) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
-	vehicle, err := gvuc.vehicleRepository.FindByUUID(ctx, vUUID)
+func (s *Service) ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error) {
+	vehicle, err := s.vehicleRepository.FindByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
 	}

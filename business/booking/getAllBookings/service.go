@@ -17,6 +17,6 @@ func New(bookingRepo business.BookingRepository) *Service {
 	}
 }
 
-func (uc *Service) Execute(ctx context.Context) ([]domain.Booking, error) {
-	return uc.bookingRepo.GetAll(ctx)
+func (s *Service) Execute(ctx context.Context) ([]domain.Booking, error) {
+	return s.bookingRepo.GetAll(ctx)
 }

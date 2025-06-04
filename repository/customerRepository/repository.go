@@ -18,10 +18,10 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (repo *Repository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
+func (r *Repository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
 	var customer domain.Customer
 
-	customerRow, err := repo.queries.GetCustomerByUUID(ctx, cUUID)
+	customerRow, err := r.queries.GetCustomerByUUID(ctx, cUUID)
 	if err != nil {
 		return nil, err
 	}

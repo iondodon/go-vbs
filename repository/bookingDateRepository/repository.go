@@ -19,10 +19,10 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (repo *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
+func (r *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
 	var bookingDates []*domain.BookingDate
 
-	booking_date_rows, err := repo.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
+	booking_date_rows, err := r.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
 		Time:   from,
 		Time_2: to,
 	})
@@ -42,8 +42,8 @@ func (repo *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to t
 	return bookingDates, nil
 }
 
-func (repo *Repository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
-	if err := repo.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
+func (r *Repository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
+	if err := r.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
 		return err
 	}
 	return nil

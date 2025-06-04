@@ -24,7 +24,7 @@ func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase getVehicle
 	}
 }
 
-func (vc *Controller) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
+func (c *Controller) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Request) error {
 	uuid := r.PathValue("uuid")
 
 	vUUID, err := uuidLib.Parse(uuid)
@@ -32,7 +32,7 @@ func (vc *Controller) HandleGetVehicleByUUID(w http.ResponseWriter, r *http.Requ
 		return err
 	}
 
-	vehicle, err := vc.getVehicleUseCase.ByUUID(r.Context(), vUUID)
+	vehicle, err := c.getVehicleUseCase.ByUUID(r.Context(), vUUID)
 	if err != nil {
 		return err
 	}

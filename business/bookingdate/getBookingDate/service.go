@@ -21,8 +21,8 @@ func New(bookingDateRepo business.BookingDateRepository) *Service {
 	}
 }
 
-func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
-	persistedBookingDates, err := uc.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
+func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error) {
+	persistedBookingDates, err := s.bdRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (uc *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehi
 	for date := fromDate; date.Before(toDate) || date.Equal(toDate); date = date.Add(time.Hour + 24) {
 		if !contains(dates, date) {
 			bd := domain.BookingDate{Time: date}
-			uc.bdRepo.Save(ctx, tx, &bd)
+			s.bdRepo.Save(ctx, tx, &bd)
 			persistedBookingDates = append(persistedBookingDates, &bd)
 		}
 	}

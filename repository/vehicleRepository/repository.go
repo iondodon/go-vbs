@@ -22,8 +22,8 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (repo *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
-	vehicleRow, err := repo.queries.GetVehicleByUUID(ctx, vUUID)
+func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+	vehicleRow, err := r.queries.GetVehicleByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (repo *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*do
 	vehCat.VehicleType = domain.VehicleType(vehicleRow.Category)
 	vehicle.VehicleCategory = &vehCat
 
-	vehicleBookingsRows, err := repo.queries.SelectBookingsByVehicleID(ctx, vehicle.ID)
+	vehicleBookingsRows, err := r.queries.SelectBookingsByVehicleID(ctx, vehicle.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (repo *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*do
 	return &vehicle, nil
 }
 
-func (repo *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
-	res, err := repo.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
+func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period dto.DatePeriodDTO) (bool, error) {
+	res, err := r.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,
 		Time_2: period.ToDate,
