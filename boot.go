@@ -36,12 +36,12 @@ func BootstrapApplication(db *sql.DB) *Dependencies {
 	queries := repository.New(db)
 
 	// Vehicle domain
-	var vehicleRepo vehicleBusiness.Repository = vehicleRepository.New(queries)
+	var vehicleRepo vehicleBusiness.VehicleRepository = vehicleRepository.New(queries)
 	var getVehicleUC vehicleBusiness.GetVehicleUseCase = getVehicleService.New(vehicleRepo)
 	var vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase = availabilityService.New(vehicleRepo)
 
 	// Customer domain
-	var customerRepo customerBusiness.Repository = customerRepository.New(queries)
+	var customerRepo customerBusiness.CustomerRepository = customerRepository.New(queries)
 
 	// Booking domain
 	var bookingRepo business.BookingRepository = bookingRepository.New(queries)

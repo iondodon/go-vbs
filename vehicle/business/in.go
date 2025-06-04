@@ -8,12 +8,6 @@ import (
 	"github.com/iondodon/go-vbs/dto"
 )
 
-// Repository defines what the vehicle business logic needs from data access
-type Repository interface {
-	FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
-	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
-}
-
 // GetVehicleUseCase defines the interface for getting vehicle by UUID
 type GetVehicleUseCase interface {
 	ByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)

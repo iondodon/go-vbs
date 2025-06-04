@@ -10,11 +10,11 @@ import (
 
 // Service handles getting vehicle by UUID
 type Service struct {
-	vehicleRepository business.Repository
+	vehicleRepository business.VehicleRepository
 }
 
-// New creates a new GetVehicle service
-func New(vehicleRepo business.Repository) *Service {
+// New creates a new get vehicle service
+func New(vehicleRepo business.VehicleRepository) *Service {
 	return &Service{
 		vehicleRepository: vehicleRepo,
 	}

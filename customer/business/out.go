@@ -7,7 +7,7 @@ import (
 	"github.com/iondodon/go-vbs/domain"
 )
 
-// Repository defines what the customer business logic needs from data access
-type Repository interface {
+// CustomerRepository defines what the customer business logic needs from data access
+type CustomerRepository interface {
 	FindByUUID(ctx context.Context, cUUID uuid.UUID) (*domain.Customer, error)
 }

@@ -10,11 +10,11 @@ import (
 
 // Service handles vehicle availability checks
 type Service struct {
-	vehicleRepository business.Repository
+	vehicleRepository business.VehicleRepository
 }
 
 // New creates a new availability service
-func New(vehicleRepo business.Repository) *Service {
+func New(vehicleRepo business.VehicleRepository) *Service {
 	return &Service{
 		vehicleRepository: vehicleRepo,
 	}

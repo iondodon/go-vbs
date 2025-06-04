@@ -22,16 +22,6 @@ type BookingDateRepository interface {
 	Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error
 }
 
-// BookVehicleUseCase defines the interface for booking a vehicle
-type BookVehicleUseCase interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) error
-}
-
-// GetAllBookingsUseCase defines the interface for getting all bookings
-type GetAllBookingsUseCase interface {
-	Execute(ctx context.Context) ([]domain.Booking, error)
-}
-
 // Cross-domain dependencies (defined here since booking consumes them)
 type VehicleRepository interface {
 	FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)

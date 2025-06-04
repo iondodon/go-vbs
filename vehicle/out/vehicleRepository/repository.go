@@ -18,7 +18,7 @@ type Repository struct {
 }
 
 // Ensure Repository implements the business interface
-var _ business.Repository = (*Repository)(nil)
+var _ business.VehicleRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
