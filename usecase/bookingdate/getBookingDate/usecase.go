@@ -11,15 +11,11 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type Interface interface {
-	ForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period dto.DatePeriodDTO) ([]*domain.BookingDate, error)
-}
-
 type UseCase struct {
 	bdRepo usecase.BookingDateRepositoryInterface
 }
 
-func New(bookingDateRepo usecase.BookingDateRepositoryInterface) Interface {
+func New(bookingDateRepo usecase.BookingDateRepositoryInterface) *UseCase {
 	return &UseCase{
 		bdRepo: bookingDateRepo,
 	}

@@ -27,8 +27,8 @@ type UseCase struct {
 	vehRepo            usecase.VehicleRepositoryInterface
 	custRepo           usecase.CustomerRepositoryInterface
 	bookingRepo        usecase.BookingRepositoryInterface
-	isAvailableForHire isVehicleAvailable.Interface
-	getBookingDates    getBookingDate.Interface
+	isAvailableForHire *isVehicleAvailable.UseCase
+	getBookingDates    *getBookingDate.UseCase
 }
 
 func New(
@@ -37,8 +37,8 @@ func New(
 	vehRepo usecase.VehicleRepositoryInterface,
 	custRepo usecase.CustomerRepositoryInterface,
 	bookingRepo usecase.BookingRepositoryInterface,
-	isAvailableForHire isVehicleAvailable.Interface,
-	getBookingDates getBookingDate.Interface,
+	isAvailableForHire *isVehicleAvailable.UseCase,
+	getBookingDates *getBookingDate.UseCase,
 ) Interface {
 	return &UseCase{
 		infoLog:            infoLog,

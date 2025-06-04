@@ -8,15 +8,11 @@ import (
 	"github.com/iondodon/go-vbs/usecase"
 )
 
-type Interface interface {
-	CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
-}
-
 type UseCase struct {
 	vehRepo usecase.VehicleRepositoryInterface
 }
 
-func New(vehicleRepo usecase.VehicleRepositoryInterface) Interface {
+func New(vehicleRepo usecase.VehicleRepositoryInterface) *UseCase {
 	return &UseCase{
 		vehRepo: vehicleRepo,
 	}
