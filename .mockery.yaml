@@ -10,7 +10,7 @@ filename: '{{ .InterfaceFile | base | trimSuffix ".go" }}_mock.go'
 with-expecter: true
 
 packages:
-  github.com/iondodon/go-vbs/booking/business:
+  github.com/iondodon/go-vbs/booking/bookingBusiness:
     config:
     interfaces:
       BookingRepository:

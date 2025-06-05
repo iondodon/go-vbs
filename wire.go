@@ -9,21 +9,21 @@ import (
 	"os"
 
 	"github.com/google/wire"
-	authController "github.com/iondodon/go-vbs/auth/controller/authController"
-	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/booking/business/bookVehicleService"
-	"github.com/iondodon/go-vbs/booking/business/getAllBookingsService"
-	bookingController "github.com/iondodon/go-vbs/booking/controller/bookingController"
+	"github.com/iondodon/go-vbs/auth/controller/authController"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness/bookVehicleService"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness/getAllBookingsService"
+	"github.com/iondodon/go-vbs/booking/bookingController/bookingController"
 	"github.com/iondodon/go-vbs/booking/repository/bookingDateRepository"
 	"github.com/iondodon/go-vbs/booking/repository/bookingRepository"
-	customerBusiness "github.com/iondodon/go-vbs/customer/business"
+	"github.com/iondodon/go-vbs/customer/customerBusiness"
 	"github.com/iondodon/go-vbs/customer/repository/customerRepository"
 	"github.com/iondodon/go-vbs/repository"
-	vehicleBusiness "github.com/iondodon/go-vbs/vehicle/business"
-	"github.com/iondodon/go-vbs/vehicle/business/availabilityService"
-	"github.com/iondodon/go-vbs/vehicle/business/getVehicleService"
-	vehicleController "github.com/iondodon/go-vbs/vehicle/controller/vehicleController"
+	"github.com/iondodon/go-vbs/vehicle/controller/vehicleController"
 	"github.com/iondodon/go-vbs/vehicle/repository/vehicleRepository"
+	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness"
+	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness/availabilityService"
+	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness/getVehicleService"
 )
 
 // Controllers struct to hold all controllers
@@ -94,11 +94,11 @@ func ProvideCustomerRepository(queries *repository.Queries) customerBusiness.Cus
 }
 
 // Booking domain providers
-func ProvideBookingRepository(queries *repository.Queries) business.BookingRepository {
+func ProvideBookingRepository(queries *repository.Queries) bookingBusiness.BookingRepository {
 	return bookingRepository.New(queries)
 }
 
-func ProvideBookingDateRepository(queries *repository.Queries) business.BookingDateRepository {
+func ProvideBookingDateRepository(queries *repository.Queries) bookingBusiness.BookingDateRepository {
 	return bookingDateRepository.New(queries)
 }
 
@@ -107,10 +107,10 @@ func ProvideBookVehicleUseCase(
 	errorLog ErrorLogger,
 	vehicleRepo vehicleBusiness.VehicleRepository,
 	customerRepo customerBusiness.CustomerRepository,
-	bookingRepo business.BookingRepository,
-	bookingDateRepo business.BookingDateRepository,
+	bookingRepo bookingBusiness.BookingRepository,
+	bookingDateRepo bookingBusiness.BookingDateRepository,
 	vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase,
-) business.BookVehicleUseCase {
+) bookingBusiness.BookVehicleUseCase {
 	return bookVehicleService.New(
 		infoLog.Logger,
 		errorLog.Logger,
@@ -122,7 +122,7 @@ func ProvideBookVehicleUseCase(
 	)
 }
 
-func ProvideGetAllBookingsUseCase(bookingRepo business.BookingRepository) business.GetAllBookingsUseCase {
+func ProvideGetAllBookingsUseCase(bookingRepo bookingBusiness.BookingRepository) bookingBusiness.GetAllBookingsUseCase {
 	return getAllBookingsService.New(bookingRepo)
 }
 
@@ -130,8 +130,8 @@ func ProvideBookingController(
 	infoLog InfoLogger,
 	errorLog ErrorLogger,
 	db *sql.DB,
-	bookVehicleUC business.BookVehicleUseCase,
-	getAllBookingsUC business.GetAllBookingsUseCase,
+	bookVehicleUC bookingBusiness.BookVehicleUseCase,
+	getAllBookingsUC bookingBusiness.GetAllBookingsUseCase,
 ) *bookingController.Controller {
 	return bookingController.New(infoLog.Logger, errorLog.Logger, db, bookVehicleUC, getAllBookingsUC)
 }

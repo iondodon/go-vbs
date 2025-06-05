@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/iondodon/go-vbs/booking/business"
-	bookingController "github.com/iondodon/go-vbs/booking/controller"
-	"github.com/iondodon/go-vbs/booking/domain"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness"
+	"github.com/iondodon/go-vbs/booking/bookingController"
+	"github.com/iondodon/go-vbs/booking/bookingDomain"
 )
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
@@ -19,21 +19,21 @@ const alreadyHired = "vehicle with UUID %s is already taken for at leas one day 
 type Service struct {
 	infoLog             *log.Logger
 	errorLog            *log.Logger
-	vehicleRepo         business.VehicleRepository
-	customerRepo        business.CustomerRepository
-	bookingRepo         business.BookingRepository
-	bookingDateRepo     business.BookingDateRepository
-	availabilityService business.VehicleAvailabilityService
+	vehicleRepo         bookingBusiness.VehicleRepository
+	customerRepo        bookingBusiness.CustomerRepository
+	bookingRepo         bookingBusiness.BookingRepository
+	bookingDateRepo     bookingBusiness.BookingDateRepository
+	availabilityService bookingBusiness.VehicleAvailabilityService
 }
 
 func New(
 	infoLog *log.Logger,
 	errorLog *log.Logger,
-	vehicleRepo business.VehicleRepository,
-	customerRepo business.CustomerRepository,
-	bookingRepo business.BookingRepository,
-	bookingDateRepo business.BookingDateRepository,
-	availabilityService business.VehicleAvailabilityService,
+	vehicleRepo bookingBusiness.VehicleRepository,
+	customerRepo bookingBusiness.CustomerRepository,
+	bookingRepo bookingBusiness.BookingRepository,
+	bookingDateRepo bookingBusiness.BookingDateRepository,
+	availabilityService bookingBusiness.VehicleAvailabilityService,
 ) *Service {
 	return &Service{
 		infoLog:             infoLog,
@@ -72,7 +72,7 @@ func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicl
 		return err
 	}
 
-	booking := domain.Booking{
+	booking := bookingDomain.Booking{
 		UUID:         uuid.New(),
 		BookingDates: bDates,
 		Vehicle:      veh,
@@ -87,7 +87,7 @@ func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicl
 	return nil
 }
 
-func (s *Service) getBookingDatesForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period bookingController.DatePeriodDTO) ([]*domain.BookingDate, error) {
+func (s *Service) getBookingDatesForPeriod(ctx context.Context, tx *sql.Tx, customerUUID, vehicleUUID uuid.UUID, period bookingController.DatePeriodDTO) ([]*bookingDomain.BookingDate, error) {
 	persistedBookingDates, err := s.bookingDateRepo.FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (s *Service) getBookingDatesForPeriod(ctx context.Context, tx *sql.Tx, cust
 	toDate := removeTimePart(period.ToDate)
 	for date := fromDate; date.Before(toDate) || date.Equal(toDate); date = date.Add(time.Hour + 24) {
 		if !contains(dates, date) {
-			bd := domain.BookingDate{Time: date}
+			bd := bookingDomain.BookingDate{Time: date}
 			s.bookingDateRepo.Save(ctx, tx, &bd)
 			persistedBookingDates = append(persistedBookingDates, &bd)
 		}

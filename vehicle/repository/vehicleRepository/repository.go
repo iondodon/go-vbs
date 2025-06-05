@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	uuidLib "github.com/google/uuid"
-	"github.com/iondodon/go-vbs/booking/controller"
+	"github.com/iondodon/go-vbs/booking/bookingController"
 	"github.com/iondodon/go-vbs/repository"
-	"github.com/iondodon/go-vbs/vehicle/business"
-	"github.com/iondodon/go-vbs/vehicle/domain"
+	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness"
+	"github.com/iondodon/go-vbs/vehicle/vehicleDomain"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -18,7 +18,7 @@ type Repository struct {
 }
 
 // Ensure Repository implements the business interface
-var _ business.VehicleRepository = (*Repository)(nil)
+var _ vehicleBusiness.VehicleRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
@@ -26,13 +26,13 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domain.Vehicle, error) {
+func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*vehicleDomain.Vehicle, error) {
 	vehicleRow, err := r.queries.GetVehicleByUUID(ctx, vUUID)
 	if err != nil {
 		return nil, err
 	}
 
-	var vehicle domain.Vehicle
+	var vehicle vehicleDomain.Vehicle
 	vehicle.ID = vehicleRow.ID.(int64)
 	uuidStr := vehicleRow.Uuid.(string)
 	parsedUUID, err := uuidLib.Parse(uuidStr)
@@ -43,18 +43,18 @@ func (r *Repository) FindByUUID(ctx context.Context, vUUID uuidLib.UUID) (*domai
 	vehicle.RegistrationNumber = vehicleRow.RegistrationNumber
 	vehicle.Make = vehicleRow.Make
 	vehicle.Model = vehicleRow.Model
-	vehicle.FuelType = domain.FuelType(vehicleRow.FuelType)
+	vehicle.FuelType = vehicleDomain.FuelType(vehicleRow.FuelType)
 
-	var vehCat domain.VehicleCategory
+	var vehCat vehicleDomain.VehicleCategory
 	vehCat.ID = vehicleRow.ID_2.(int64)
 	vehCat.PricePerDay = float32(vehicleRow.PricePerDay)
-	vehCat.VehicleType = domain.VehicleType(vehicleRow.Category)
+	vehCat.VehicleType = vehicleDomain.VehicleType(vehicleRow.Category)
 	vehicle.VehicleCategory = &vehCat
 
 	return &vehicle, nil
 }
 
-func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period controller.DatePeriodDTO) (bool, error) {
+func (r *Repository) VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuidLib.UUID, period bookingController.DatePeriodDTO) (bool, error) {
 	res, err := r.queries.VehicleHasBookedDatesOnPeriod(ctx, repository.VehicleHasBookedDatesOnPeriodParams{
 		Uuid:   vUUID,
 		Time:   period.FromDate,

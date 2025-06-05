@@ -4,8 +4,8 @@ import (
 	"context"
 
 	uuidlib "github.com/google/uuid"
-	"github.com/iondodon/go-vbs/customer/business"
-	"github.com/iondodon/go-vbs/customer/domain"
+	"github.com/iondodon/go-vbs/customer/customerBusiness"
+	"github.com/iondodon/go-vbs/customer/customerDomain"
 	"github.com/iondodon/go-vbs/repository"
 )
 
@@ -14,7 +14,7 @@ type Repository struct {
 }
 
 // Ensure Repository implements the business interface
-var _ business.CustomerRepository = (*Repository)(nil)
+var _ customerBusiness.CustomerRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
@@ -22,8 +22,8 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (r *Repository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*domain.Customer, error) {
-	var customer domain.Customer
+func (r *Repository) FindByUUID(ctx context.Context, cUUID uuidlib.UUID) (*customerDomain.Customer, error) {
+	var customer customerDomain.Customer
 
 	customerRow, err := r.queries.GetCustomerByUUID(ctx, cUUID)
 	if err != nil {

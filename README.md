@@ -161,11 +161,11 @@ Wire elegantly handles cross-domain dependencies through interfaces:
 ```go
 // Booking domain needs vehicle functionality
 func ProvideBookVehicleUseCase(
-    vehicleRepo vehicleBusiness.VehicleRepository,  // From vehicle domain
-    customerRepo customerBusiness.CustomerRepository, // From customer domain
+    vehicleRepo vehicleBusiness.VehicleRepository,        // From vehicle domain
+    customerRepo customerBusiness.CustomerRepository,     // From customer domain
     vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase, // From vehicle domain
     // ... other dependencies
-) business.BookVehicleUseCase
+) bookingBusiness.BookVehicleUseCase
 ```
 
 Wire automatically resolves these dependencies from the appropriate domain providers.
@@ -222,19 +222,24 @@ Each domain package follows this enhanced structure where each struct has its ow
 
 ```go
 domain/
-├── business/
-│   ├── usecases.go           # Use case interfaces (what external systems can call)
-│   ├── repositories.go       # Repository interfaces (what business logic needs)
-│   ├── structName/           # Individual packages for each service
-│   │   └── service.go        # Service implementation (e.g., getVehicle.Service)
-│   └── anotherStruct/
-│       └── service.go        # Another service implementation
-├── controller/               # Input adapters (receive from outside world)
-│   └── structController/     # Individual controller packages
-│       └── controller.go     # Controller implementation (e.g., vehicleController.Controller)
-└── repository/               # Output adapters (send to outside world)
-    └── structRepository/     # Individual repository packages
-        └── repository.go     # Repository implementation (e.g., vehicleRepository.Repository)
+├── domainNameDomain/         # Domain entities (Vehicle, Booking, Customer)
+│   ├── entity1.go           # Domain entity structs (e.g., vehicle.go, booking.go)
+│   └── entity2.go           # Additional domain entities
+├── domainNameBusiness/       # Business logic layer
+│   ├── usecases.go          # Use case interfaces (what external systems can call)
+│   ├── repositories.go      # Repository interfaces (what business logic needs)
+│   ├── serviceNameService/  # Individual packages for each service
+│   │   ├── service.go       # Service implementation (named "Service")
+│   │   └── service_test.go  # Service tests
+│   └── anotherService/
+│       └── service.go       # Another service implementation
+├── domainNameController/     # Input adapters (receive from outside world)
+│   ├── dtoFile.go           # DTOs for API requests/responses
+│   └── domainNameController/  # Controller package
+│       └── controller.go    # Controller implementation (named "Controller")
+└── repository/              # Output adapters (send to outside world)
+    └── repositoryNameRepository/  # Individual repository packages
+        └── repository.go    # Repository implementation (named "Repository")
 ```
 
 **✅ Clean Architecture Compliance:**
@@ -247,12 +252,58 @@ domain/
 
 ### 3. Package Naming Conventions
 
-**Each struct gets its own package using camelCase naming:**
+**The project uses a consistent domain-prefixed naming convention:**
 
-- ✅ **Service packages**: `getVehicleService`, `availabilityService`, `bookVehicleService`, `getAllBookingsService`
-- ✅ **Repository packages**: `vehicleRepository`, `bookingRepository`, `customerRepository`
-- ✅ **Controller packages**: `vehicleController`, `bookingController`, `authController`
-- ✅ **Struct naming**: All structs are named `Service`, `Repository`, or `Controller` within their packages
+#### Domain Layer Structure:
+
+- ✅ **Domain packages**: `domainNameDomain` (e.g., `vehicleDomain`, `bookingDomain`, `customerDomain`)
+- ✅ **Business packages**: `domainNameBusiness` (e.g., `vehicleBusiness`, `bookingBusiness`, `customerBusiness`)
+- ✅ **Controller packages**: `domainNameController` (e.g., `vehicleController`, `bookingController`)
+
+#### Individual Implementation Packages:
+
+- ✅ **Service packages**: `serviceNameService` (e.g., `getVehicleService`, `availabilityService`, `bookVehicleService`, `getAllBookingsService`)
+- ✅ **Repository packages**: `repositoryNameRepository` (e.g., `vehicleRepository`, `bookingRepository`, `customerRepository`)
+- ✅ **Controller packages**: `controllerNameController` (e.g., `vehicleController`, `bookingController`, `authController`)
+
+#### Struct Naming:
+
+- ✅ **All service structs**: Named `Service` within their respective service packages
+- ✅ **All repository structs**: Named `Repository` within their respective repository packages
+- ✅ **All controller structs**: Named `Controller` within their respective controller packages
+
+#### Import Naming:
+
+- ✅ **No import aliases needed**: Package names are descriptive enough to avoid conflicts
+- ✅ **Direct package usage**: Import packages directly without aliases (e.g., `vehicleBusiness.VehicleRepository`)
+- ✅ **Clear naming**: Package names immediately indicate their domain and layer
+
+#### Complete Naming Pattern Examples:
+
+**Vehicle Domain:**
+
+- Package: `vehicle/vehicleDomain/` → Entities: `Vehicle`, `VehicleCategory`
+- Package: `vehicle/vehicleBusiness/` → Interfaces: `VehicleRepository`, `GetVehicleUseCase`, `AvailabilityUseCase`
+- Package: `vehicle/vehicleBusiness/getVehicleService/` → Struct: `Service`
+- Package: `vehicle/vehicleBusiness/availabilityService/` → Struct: `Service`
+- Package: `vehicle/repository/vehicleRepository/` → Struct: `Repository`
+- Package: `vehicle/controller/vehicleController/` → Struct: `Controller`
+
+**Booking Domain:**
+
+- Package: `booking/bookingDomain/` → Entities: `Booking`, `BookingDate`
+- Package: `booking/bookingBusiness/` → Interfaces: `BookingRepository`, `BookVehicleUseCase`, `GetAllBookingsUseCase`
+- Package: `booking/bookingBusiness/bookVehicleService/` → Struct: `Service`
+- Package: `booking/bookingBusiness/getAllBookingsService/` → Struct: `Service`
+- Package: `booking/bookingController/` → DTOs: `DatePeriodDTO`, `CreateBookingRequestDTO`
+- Package: `booking/bookingController/bookingController/` → Struct: `Controller`
+
+This naming convention ensures that:
+
+- 🎯 **Package names are self-documenting** (domain + layer immediately clear)
+- 🚫 **No naming conflicts** between domains or layers
+- 📦 **Consistent structure** across all domains
+- 🔍 **Easy navigation** - know exactly where to find any component
 
 ### 4. Interface Usage Rules
 
@@ -284,15 +335,15 @@ Each domain defines clear boundaries using separate files:
 Cross-domain dependencies are handled through interfaces defined in the consuming domain's interface files:
 
 ```go
-// In booking/business/repositories.go - booking domain needs data from other domains
+// In booking/bookingBusiness/repositories.go - booking domain needs data from other domains
 type VehicleRepository interface {
-    FindByUUID(ctx context.Context, vUUID uuid.UUID) (*domain.Vehicle, error)
-    VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
+    FindByUUID(ctx context.Context, vUUID uuid.UUID) (*vehicleDomain.Vehicle, error)
+    VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period bookingController.DatePeriodDTO) (bool, error)
 }
 
-// In booking/business/usecases.go - booking domain needs services from other domains
+// In booking/bookingBusiness/usecases.go - booking domain needs services from other domains
 type VehicleAvailabilityService interface {
-    CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period dto.DatePeriodDTO) (bool, error)
+    CheckForPeriod(ctx context.Context, vUUID uuid.UUID, period bookingController.DatePeriodDTO) (bool, error)
 }
 ```
 
@@ -300,56 +351,58 @@ type VehicleAvailabilityService interface {
 
 ```
 vehicle/
-├── domain/
+├── vehicleDomain/                   # Domain entities
 │   ├── vehicle.go                  # Vehicle domain entity
 │   └── vehicleCategory.go          # VehicleCategory domain entity
-├── business/
+├── vehicleBusiness/                 # Business logic layer
 │   ├── usecases.go                 # GetVehicleUseCase, AvailabilityUseCase interfaces
 │   ├── repositories.go             # VehicleRepository interface
-│   ├── getVehicleService/
+│   ├── getVehicleService/          # Individual service packages
 │   │   └── service.go             # getVehicleService.Service
 │   └── availabilityService/
 │       └── service.go             # availabilityService.Service
-├── controller/
+├── controller/                      # Controller layer
 │   └── vehicleController/
 │       └── controller.go          # vehicleController.Controller
-└── repository/
+└── repository/                      # Repository layer
     └── vehicleRepository/
         └── repository.go          # vehicleRepository.Repository
 
 booking/
-├── domain/
+├── bookingDomain/                   # Domain entities
 │   ├── booking.go                  # Booking domain entity
 │   └── bookingDate.go             # BookingDate domain entity
-├── controller/
+├── bookingController/               # Controller layer + DTOs
 │   ├── bookingController/
 │   │   └── controller.go          # bookingController.Controller
 │   ├── datePeriodDTO.go           # DatePeriodDTO for API requests
 │   └── createBookingRequestDTO.go # CreateBookingRequestDTO for API requests
-├── business/
+├── bookingBusiness/                 # Business logic layer
 │   ├── usecases.go                 # BookVehicleUseCase, GetAllBookingsUseCase, VehicleAvailabilityService interfaces
 │   ├── repositories.go             # Repository interfaces + cross-domain repository interfaces
-│   ├── bookVehicleService/
-│   │   └── service.go             # bookVehicleService.Service
+│   ├── mocks/                      # Generated test mocks
+│   ├── bookVehicleService/         # Individual service packages
+│   │   ├── service.go             # bookVehicleService.Service
+│   │   └── service_test.go        # Service tests
 │   └── getAllBookingsService/
 │       └── service.go             # getAllBookingsService.Service
-└── repository/
+└── repository/                      # Repository layer
     ├── bookingRepository/
     │   └── repository.go          # bookingRepository.Repository
     └── bookingDateRepository/
         └── repository.go          # bookingDateRepository.Repository
 
 customer/
-├── domain/
+├── customerDomain/                  # Domain entities
 │   └── customer.go                 # Customer domain entity
-├── business/
+├── customerBusiness/                # Business logic layer
 │   └── repositories.go             # CustomerRepository interface
-└── repository/
+└── repository/                      # Repository layer
     └── customerRepository/
         └── repository.go          # customerRepository.Repository
 
 auth/
-└── controller/
+└── controller/                      # Controller layer (no business/domain for auth)
     └── authController/
         └── controller.go          # authController.Controller
 
@@ -426,51 +479,46 @@ The `controller/` and `repository/` directories implement the **Ports & Adapters
 
 ### 11. Dependency Injection
 
-Dependencies are bootstrapped in `boot.go` with clear cross-domain dependency injection:
+This project uses **Google Wire** for compile-time dependency injection. Dependencies are defined in `wire.go` and generated code provides the application bootstrapping:
 
 ```go
-func BootstrapApplication(db *sql.DB) *Dependencies {
-    infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-    errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-    // Create repository layer (out adapters)
-    queries := repository.New(db)
-
-    // Vehicle domain
-    var vehicleRepo vehicleBusiness.VehicleRepository = vehicleRepository.New(queries)
-    var getVehicleUC vehicleBusiness.GetVehicleUseCase = getVehicleService.New(vehicleRepo)
-    var vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase = availabilityService.New(vehicleRepo)
-
-    // Customer domain
-    var customerRepo customerBusiness.CustomerRepository = customerRepository.New(queries)
-
-    // Booking domain
-    var bookingRepo business.BookingRepository = bookingRepository.New(queries)
-    var bookingDateRepo business.BookingDateRepository = bookingDateRepository.New(queries)
-
-    var bookVehicleUC business.BookVehicleUseCase = bookVehicleService.New(
-        infoLog,
-        errorLog,
-        vehicleRepo,  // Cross-domain dependency (vehicle out implements booking business interface)
-        customerRepo, // Cross-domain dependency (customer out implements booking business interface)
+// Example of how dependencies are wired together (from wire.go)
+func ProvideBookVehicleUseCase(
+    infoLog InfoLogger,
+    errorLog ErrorLogger,
+    vehicleRepo vehicleBusiness.VehicleRepository,        // From vehicle domain
+    customerRepo customerBusiness.CustomerRepository,     // From customer domain
+    bookingRepo bookingBusiness.BookingRepository,        // From booking domain
+    bookingDateRepo bookingBusiness.BookingDateRepository, // From booking domain
+    vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase, // From vehicle domain
+) bookingBusiness.BookVehicleUseCase {
+    return bookVehicleService.New(
+        infoLog.Logger,
+        errorLog.Logger,
+        vehicleRepo,  // Cross-domain dependency (vehicle implements booking interface)
+        customerRepo, // Cross-domain dependency (customer implements booking interface)
         bookingRepo,
         bookingDateRepo,
         vehicleAvailabilityService, // Cross-domain dependency
     )
+}
 
-    var getAllBookingsUC business.GetAllBookingsUseCase = getAllBookingsService.New(bookingRepo)
-
-    // Create controller layer (in adapters)
-    authCtrl := authController.New(infoLog, errorLog)
-    vehicleCtrl := vehicleController.New(infoLog, errorLog, getVehicleUC)
-    bookingCtrl := bookingController.New(infoLog, errorLog, db, bookVehicleUC, getAllBookingsUC)
-
-    return &Dependencies{
-        AuthController:    authCtrl,
-        VehicleController: vehicleCtrl,
-        BookingController: bookingCtrl,
+// Wire automatically generates InitializeApplication() function
+// Usage in main.go:
+func main() {
+    app, err := InitializeApplication()
+    if err != nil {
+        log.Fatal(err)
     }
+    // Use app.Controllers.Vehicle, app.Controllers.Booking, etc.
 }
 ```
+
+**Key Benefits of Wire Integration:**
+
+- 🔧 **Compile-time validation**: Dependency issues caught at build time
+- 🎯 **No runtime reflection**: Zero performance overhead
+- 📦 **Clear dependency graph**: Easy to see all dependencies in `wire.go`
+- 🧪 **Testable**: Easy to replace dependencies for testing
 
 This enhanced architecture provides maximum modularity and clear separation while maintaining clean architecture principles and enabling easy extraction of components into separate modules or microservices when needed.

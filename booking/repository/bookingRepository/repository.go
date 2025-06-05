@@ -6,11 +6,11 @@ import (
 	"fmt"
 
 	uuidLib "github.com/google/uuid"
-	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/booking/domain"
-	customerDomain "github.com/iondodon/go-vbs/customer/domain"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness"
+	"github.com/iondodon/go-vbs/booking/bookingDomain"
+	"github.com/iondodon/go-vbs/customer/customerDomain"
 	"github.com/iondodon/go-vbs/repository"
-	vehicleDomain "github.com/iondodon/go-vbs/vehicle/domain"
+	"github.com/iondodon/go-vbs/vehicle/vehicleDomain"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -21,7 +21,7 @@ type Repository struct {
 }
 
 // Ensure Repository implements the business interface
-var _ business.BookingRepository = (*Repository)(nil)
+var _ bookingBusiness.BookingRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
@@ -29,7 +29,7 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (r *Repository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) error {
+func (r *Repository) Save(ctx context.Context, tx *sql.Tx, b *bookingDomain.Booking) error {
 	if err := r.queries.WithTx(tx).InsertNewBooking(ctx, repository.InsertNewBookingParams{
 		Uuid:       b.UUID,
 		VehicleID:  b.Vehicle.ID,
@@ -41,15 +41,15 @@ func (r *Repository) Save(ctx context.Context, tx *sql.Tx, b *domain.Booking) er
 	return nil
 }
 
-func (r *Repository) GetAll(ctx context.Context) ([]domain.Booking, error) {
+func (r *Repository) GetAll(ctx context.Context) ([]bookingDomain.Booking, error) {
 	bookingsRows, err := r.queries.SelectAllBookings(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	bookings := []domain.Booking{}
+	bookings := []bookingDomain.Booking{}
 	for _, booking_row := range bookingsRows {
-		booking := domain.Booking{}
+		booking := bookingDomain.Booking{}
 		booking.ID = booking_row.ID.(int64)
 		uuidStr := booking_row.Uuid.(string)
 		parsedUUID, err := uuidLib.Parse(uuidStr)

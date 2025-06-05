@@ -10,20 +10,20 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/iondodon/go-vbs/booking/business/mocks"
-	"github.com/iondodon/go-vbs/booking/controller"
-	"github.com/iondodon/go-vbs/booking/domain"
-	customerDomain "github.com/iondodon/go-vbs/customer/domain"
-	vehicleDomain "github.com/iondodon/go-vbs/vehicle/domain"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness/mocks"
+	"github.com/iondodon/go-vbs/booking/bookingController"
+	"github.com/iondodon/go-vbs/booking/bookingDomain"
+	"github.com/iondodon/go-vbs/customer/customerDomain"
+	"github.com/iondodon/go-vbs/vehicle/vehicleDomain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 // Test data setup
-func setupTestData() (uuid.UUID, uuid.UUID, controller.DatePeriodDTO, *vehicleDomain.Vehicle, *customerDomain.Customer) {
+func setupTestData() (uuid.UUID, uuid.UUID, bookingController.DatePeriodDTO, *vehicleDomain.Vehicle, *customerDomain.Customer) {
 	customerUUID := uuid.New()
 	vehicleUUID := uuid.New()
-	period := controller.DatePeriodDTO{
+	period := bookingController.DatePeriodDTO{
 		FromDate: time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC),
 		ToDate:   time.Date(2024, 6, 3, 0, 0, 0, 0, time.UTC),
 	}
@@ -86,12 +86,12 @@ func TestService_ForPeriod_Success(t *testing.T) {
 
 	mockBookingDateRepo.EXPECT().
 		FindAllInPeriodInclusive(ctx, period.FromDate, period.ToDate).
-		Return([]*domain.BookingDate{}, nil).
+		Return([]*bookingDomain.BookingDate{}, nil).
 		Once()
 
 	// Allow any number of Save calls for BookingDate (implementation details may vary)
 	mockBookingDateRepo.EXPECT().
-		Save(ctx, tx, mock.MatchedBy(func(bd *domain.BookingDate) bool { return true })).
+		Save(ctx, tx, mock.MatchedBy(func(bd *bookingDomain.BookingDate) bool { return true })).
 		Return(nil).
 		Maybe()
 
@@ -101,7 +101,7 @@ func TestService_ForPeriod_Success(t *testing.T) {
 		Once()
 
 	mockBookingRepo.EXPECT().
-		Save(ctx, tx, mock.MatchedBy(func(b *domain.Booking) bool { return true })).
+		Save(ctx, tx, mock.MatchedBy(func(b *bookingDomain.Booking) bool { return true })).
 		Return(nil).
 		Once()
 

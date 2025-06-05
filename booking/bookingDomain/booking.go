@@ -1,9 +1,9 @@
-package domain
+package bookingDomain
 
 import (
 	"github.com/google/uuid"
-	customerDomain "github.com/iondodon/go-vbs/customer/domain"
-	vehicleDomain "github.com/iondodon/go-vbs/vehicle/domain"
+	"github.com/iondodon/go-vbs/customer/customerDomain"
+	"github.com/iondodon/go-vbs/vehicle/vehicleDomain"
 )
 
 type Booking struct {

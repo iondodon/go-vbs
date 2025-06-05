@@ -1,4 +1,4 @@
-package domain
+package customerDomain
 
 import "github.com/google/uuid"
 

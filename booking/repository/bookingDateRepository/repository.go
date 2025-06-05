@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/booking/domain"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness"
+	"github.com/iondodon/go-vbs/booking/bookingDomain"
 	"github.com/iondodon/go-vbs/repository"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -18,7 +18,7 @@ type Repository struct {
 }
 
 // Ensure Repository implements the business interface
-var _ business.BookingDateRepository = (*Repository)(nil)
+var _ bookingBusiness.BookingDateRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
@@ -26,8 +26,8 @@ func New(queries *repository.Queries) *Repository {
 	}
 }
 
-func (r *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*domain.BookingDate, error) {
-	var bookingDates []*domain.BookingDate
+func (r *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*bookingDomain.BookingDate, error) {
+	var bookingDates []*bookingDomain.BookingDate
 
 	booking_date_rows, err := r.queries.FindAllInPeriodInclusive(ctx, repository.FindAllInPeriodInclusiveParams{
 		Time:   from,
@@ -38,7 +38,7 @@ func (r *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time
 	}
 
 	for _, booking_date_row := range booking_date_rows {
-		bd := domain.BookingDate{}
+		bd := bookingDomain.BookingDate{}
 
 		bd.ID = booking_date_row.ID.(int64)
 		bd.Time = booking_date_row.Time
@@ -49,7 +49,7 @@ func (r *Repository) FindAllInPeriodInclusive(ctx context.Context, from, to time
 	return bookingDates, nil
 }
 
-func (r *Repository) Save(ctx context.Context, tx *sql.Tx, bd *domain.BookingDate) error {
+func (r *Repository) Save(ctx context.Context, tx *sql.Tx, bd *bookingDomain.BookingDate) error {
 	if err := r.queries.WithTx(tx).SaveNewBookingDate(ctx, bd.Time); err != nil {
 		return err
 	}

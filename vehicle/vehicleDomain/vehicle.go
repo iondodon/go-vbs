@@ -1,4 +1,4 @@
-package domain
+package vehicleDomain
 
 import "github.com/google/uuid"
 

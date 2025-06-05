@@ -1,4 +1,4 @@
-package domain
+package bookingDomain
 
 import "time"
 

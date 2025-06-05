@@ -7,19 +7,19 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iondodon/go-vbs/booking/business"
-	"github.com/iondodon/go-vbs/booking/controller"
+	"github.com/iondodon/go-vbs/booking/bookingBusiness"
+	"github.com/iondodon/go-vbs/booking/bookingController"
 )
 
 type Controller struct {
 	infoLog            *log.Logger
 	errorLog           *log.Logger
 	db                 *sql.DB
-	bookVehicleUseCase business.BookVehicleUseCase
-	getAllBookings     business.GetAllBookingsUseCase
+	bookVehicleUseCase bookingBusiness.BookVehicleUseCase
+	getAllBookings     bookingBusiness.GetAllBookingsUseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase business.BookVehicleUseCase, getAllBookings business.GetAllBookingsUseCase) *Controller {
+func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingBusiness.BookVehicleUseCase, getAllBookings bookingBusiness.GetAllBookingsUseCase) *Controller {
 	return &Controller{
 		infoLog:            infoLog,
 		errorLog:           errorLog,
@@ -35,7 +35,7 @@ func (c *Controller) HandleBookVehicle(w http.ResponseWriter, r *http.Request) e
 		return err
 	}
 
-	var cbr controller.CreateBookingRequestDTO
+	var cbr bookingController.CreateBookingRequestDTO
 	if err = json.Unmarshal(reqBody, &cbr); err != nil {
 		return err
 	}

@@ -5,18 +5,17 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iondodon/go-vbs/vehicle/business"
-
 	uuidLib "github.com/google/uuid"
+	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness"
 )
 
 type Controller struct {
 	infoLog           *log.Logger
 	errorLog          *log.Logger
-	getVehicleUseCase business.GetVehicleUseCase
+	getVehicleUseCase vehicleBusiness.GetVehicleUseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase business.GetVehicleUseCase) *Controller {
+func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehicleBusiness.GetVehicleUseCase) *Controller {
 	return &Controller{
 		infoLog:           infoLog,
 		errorLog:          errorLog,

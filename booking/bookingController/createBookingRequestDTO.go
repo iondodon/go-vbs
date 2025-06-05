@@ -1,4 +1,4 @@
-package controller
+package bookingController
 
 import (
 	"github.com/google/uuid"
