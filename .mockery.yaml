@@ -15,22 +15,22 @@ packages:
     interfaces:
       BookingRepository:
         config:
-          filename: "booking_repository_mock.go"
+          filename: "bookingRepository_mock.go"
       BookingDateRepository:
         config:
-          filename: "booking_date_repository_mock.go"
+          filename: "bookingDateRepository_mock.go"
       VehicleRepository:
         config:
-          filename: "vehicle_repository_mock.go"
+          filename: "vehicleRepository_mock.go"
       CustomerRepository:
         config:
-          filename: "customer_repository_mock.go"
+          filename: "customerRepository_mock.go"
       VehicleAvailabilityService:
         config:
-          filename: "vehicle_availability_service_mock.go"
+          filename: "vehicleAvailabilityService_mock.go"
       BookVehicleUseCase:
         config:
-          filename: "book_vehicle_usecase_mock.go"
+          filename: "bookVehicleUseCase_mock.go"
       GetAllBookingsUseCase:
         config:
-          filename: "get_all_bookings_usecase_mock.go"
+          filename: "getAllBookingsUseCase_mock.go"
