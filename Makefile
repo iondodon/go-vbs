@@ -49,6 +49,14 @@ install-mockery:
 install-tools: install-wire install-mockery
 	@echo "All development tools installed"
 
+# Download and setup Swagger UI
+swagger-ui:
+	curl -L https://github.com/swagger-api/swagger-ui/archive/refs/tags/v5.24.1.tar.gz | \
+	tar -xzf - && \
+	mkdir -p swagger-ui && \
+	mv swagger-ui-5.24.1/dist/* swagger-ui/ && \
+	rm -rf swagger-ui-5.24.1
+
 # Help
 help:
 	@echo "Available commands:"
@@ -62,4 +70,5 @@ help:
 	@echo "  install-wire  - Install Wire tool"
 	@echo "  install-mockery - Install Mockery tool"
 	@echo "  install-tools - Install all development tools"
+	@echo "  swagger-ui    - Download and setup Swagger UI (if not already installed). Remove the swagger-ui directory manually to update the Swagger UI."
 	@echo "  help          - Show this help" 

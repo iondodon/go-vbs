@@ -29,3 +29,5 @@ go-vbs
 # Generated mocks (mockery)
 **/mocks/
 mocks/
+
+/swagger-ui/
