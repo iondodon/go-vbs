@@ -31,3 +31,5 @@ go-vbs
 mocks/
 
 /swagger-ui/
+
+wire_gen.go
