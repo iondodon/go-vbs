@@ -4,9 +4,9 @@
       // "**/**_mock.go": true,
       // "**/**.sql.go": true
     },
-    "explorer.fileNesting.patterns": {
-      "*.go": "${capture}_test.go, ${capture}_mock.go"
-    },
+    // "explorer.fileNesting.patterns": {
+    //   "*.go": "${capture}_test.go, ${capture}_mock.go"
+    // },
     // REST Client settings
     "rest-client.enableTelemetry": false,
     "rest-client.showResponseInDifferentTab": true,
