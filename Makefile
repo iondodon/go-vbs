@@ -70,5 +70,7 @@ help:
 	@echo "  install-wire  - Install Wire tool"
 	@echo "  install-mockery - Install Mockery tool"
 	@echo "  install-tools - Install all development tools"
-	@echo "  swagger-ui    - Download and setup Swagger UI (if not already installed). Remove the swagger-ui directory manually to update the Swagger UI."
+	@echo "  swagger-ui    - Download and setup Swagger UI (if not already installed)."
+	@echo "                  Remove the swagger-ui directory manually to update the Swagger UI."
+	@echo "                  In swagger-ui/swagger-initializer.js, change the url /docs/swagger.json"
 	@echo "  help          - Show this help" 
