@@ -12,8 +12,6 @@ import (
 )
 
 type Controller struct {
-	infoLog            *log.Logger
-	errorLog           *log.Logger
 	db                 *sql.DB
 	bookVehicleUseCase bookingBusiness.BookVehicleUseCase
 	getAllBookings     bookingBusiness.GetAllBookingsUseCase
@@ -21,8 +19,6 @@ type Controller struct {
 
 func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingBusiness.BookVehicleUseCase, getAllBookings bookingBusiness.GetAllBookingsUseCase) *Controller {
 	return &Controller{
-		infoLog:            infoLog,
-		errorLog:           errorLog,
 		db:                 db,
 		bookVehicleUseCase: bookVehicleUseCase,
 		getAllBookings:     getAllBookings,

@@ -10,15 +10,11 @@ import (
 )
 
 type Controller struct {
-	infoLog           *log.Logger
-	errorLog          *log.Logger
 	getVehicleUseCase vehicleBusiness.GetVehicleUseCase
 }
 
 func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehicleBusiness.GetVehicleUseCase) *Controller {
 	return &Controller{
-		infoLog:           infoLog,
-		errorLog:          errorLog,
 		getVehicleUseCase: getVehicleUseCase,
 	}
 }

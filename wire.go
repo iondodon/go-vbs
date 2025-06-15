@@ -103,8 +103,6 @@ func ProvideBookingDateRepository(queries *repository.Queries) bookingBusiness.B
 }
 
 func ProvideBookVehicleUseCase(
-	infoLog InfoLogger,
-	errorLog ErrorLogger,
 	vehicleRepo vehicleBusiness.VehicleRepository,
 	customerRepo customerBusiness.CustomerRepository,
 	bookingRepo bookingBusiness.BookingRepository,
@@ -112,8 +110,6 @@ func ProvideBookVehicleUseCase(
 	vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase,
 ) bookingBusiness.BookVehicleUseCase {
 	return bookVehicleService.New(
-		infoLog.Logger,
-		errorLog.Logger,
 		vehicleRepo,
 		customerRepo,
 		bookingRepo,

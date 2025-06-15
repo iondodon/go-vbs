@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -34,26 +35,24 @@ func JWT(next http.Handler) http.Handler {
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// Don't forget to validate the alg is what you expect:
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
 
 			// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 			return []byte("access_token_key"), nil
 		})
 		if err != nil {
-			fmt.Println(err)
+			slog.Error("Error parsing access token", "error", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			fmt.Println(claims["foo"], claims["nbf"])
+			slog.Info("Access token claims", "claims", claims)
 		} else {
-			fmt.Println(err)
+			slog.Error("Error parsing access token", "error", err)
 		}
 
 		next.ServeHTTP(w, r)
-
-		fmt.Println("after checking jwt")
 	})
 }

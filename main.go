@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -35,7 +36,7 @@ func main() {
 
 	// Mount Swagger UI only in development mode
 	if os.Getenv("GO_ENV") == "development" {
-		println("Running in development mode - Swagger UI enabled")
+		slog.Info("Running in development mode - Swagger UI enabled")
 		router.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir("./swagger-ui"))))
 		router.Handle("/docs/openapi.yaml", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != "/docs/openapi.yaml" {
@@ -44,7 +45,7 @@ func main() {
 			}
 			http.ServeFile(w, r, "openapi.yaml")
 		}))
-		println("Swagger UI available at http://localhost:8000/docs")
+		slog.Info("Swagger UI available at http://localhost:8000/docs")
 	}
 
 	srv := &http.Server{
@@ -55,7 +56,7 @@ func main() {
 	}
 
 	go func() {
-		println("Server started")
+		slog.Info("Server started")
 		if err := srv.ListenAndServe(); err != nil {
 			panic(err)
 		}
@@ -78,7 +79,7 @@ func main() {
 		panic(err)
 	}
 
-	println("Shutting down...")
+	slog.Info("Shutting down...")
 
 	os.Exit(0)
 }

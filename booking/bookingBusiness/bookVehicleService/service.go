@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,8 +17,6 @@ const alreadyHired = "vehicle with UUID %s is already taken for at leas one day 
 
 // Service handles vehicle booking
 type Service struct {
-	infoLog             *log.Logger
-	errorLog            *log.Logger
 	vehicleRepo         bookingBusiness.VehicleRepository
 	customerRepo        bookingBusiness.CustomerRepository
 	bookingRepo         bookingBusiness.BookingRepository
@@ -27,8 +25,6 @@ type Service struct {
 }
 
 func New(
-	infoLog *log.Logger,
-	errorLog *log.Logger,
 	vehicleRepo bookingBusiness.VehicleRepository,
 	customerRepo bookingBusiness.CustomerRepository,
 	bookingRepo bookingBusiness.BookingRepository,
@@ -36,8 +32,6 @@ func New(
 	availabilityService bookingBusiness.VehicleAvailabilityService,
 ) *Service {
 	return &Service{
-		infoLog:             infoLog,
-		errorLog:            errorLog,
 		vehicleRepo:         vehicleRepo,
 		customerRepo:        customerRepo,
 		bookingRepo:         bookingRepo,
@@ -55,7 +49,7 @@ func (s *Service) ForPeriod(ctx context.Context, tx *sql.Tx, customerUID, vehicl
 		return fmt.Errorf(alreadyHired, vehicleUUID)
 	}
 
-	s.infoLog.Printf("Booking vehicle with UUID %s starting from %s to %s \n", vehicleUUID, period.FromDate, period.ToDate)
+	slog.Info("Booking vehicle", "vehicleUUID", vehicleUUID, "fromDate", period.FromDate, "toDate", period.ToDate)
 
 	bDates, err := s.getBookingDatesForPeriod(ctx, tx, customerUID, vehicleUUID, period)
 	if err != nil {

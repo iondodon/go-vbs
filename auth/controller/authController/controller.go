@@ -4,22 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Controller struct {
-	infoLog  *log.Logger
-	errorLog *log.Logger
-}
+type Controller struct {}
 
 func New(infoLog *log.Logger, errorLog *log.Logger) *Controller {
-	return &Controller{
-		infoLog:  infoLog,
-		errorLog: errorLog,
-	}
+	return &Controller{}
 }
 
 type MyCustomClaims struct {
@@ -49,8 +44,6 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) error {
 	login_response := loginResponse{
 		TokensPair: tokenPairs,
 	}
-
-	fmt.Printf("HERE: %+v", login_response)
 
 	response, err := json.Marshal(login_response)
 	if err != nil {
@@ -82,14 +75,14 @@ func (c *Controller) Refresh(w http.ResponseWriter, r *http.Request) error {
 	_, err = jwt.Parse(refreshRequest.RefreshToken, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 		return []byte("refresh_token_key"), nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Error parsing refresh token", "error", err)
 		return err
 	}
 

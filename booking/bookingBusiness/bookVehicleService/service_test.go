@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
 	"testing"
 	"time"
 
@@ -55,14 +53,8 @@ func TestService_ForPeriod_Success(t *testing.T) {
 	mockBookingDateRepo := mocks.NewMockBookingDateRepository(t)
 	mockAvailabilityService := mocks.NewMockVehicleAvailabilityService(t)
 
-	// Create loggers
-	infoLog := log.New(os.Stdout, "INFO: ", log.LstdFlags)
-	errorLog := log.New(os.Stderr, "ERROR: ", log.LstdFlags)
-
 	// Create service with mocked dependencies
 	service := New(
-		infoLog,
-		errorLog,
 		mockVehicleRepo,
 		mockCustomerRepo,
 		mockBookingRepo,
@@ -120,8 +112,6 @@ func TestService_ForPeriod_VehicleNotAvailable(t *testing.T) {
 
 	// Only need availability service for this test
 	service := New(
-		log.New(os.Stdout, "INFO: ", log.LstdFlags),
-		log.New(os.Stderr, "ERROR: ", log.LstdFlags),
 		nil, // not needed for this test
 		nil, // not needed for this test
 		nil, // not needed for this test
@@ -154,8 +144,6 @@ func TestService_ForPeriod_AvailabilityCheckError(t *testing.T) {
 	mockAvailabilityService := mocks.NewMockVehicleAvailabilityService(t)
 
 	service := New(
-		log.New(os.Stdout, "INFO: ", log.LstdFlags),
-		log.New(os.Stderr, "ERROR: ", log.LstdFlags),
 		nil,
 		nil,
 		nil,
