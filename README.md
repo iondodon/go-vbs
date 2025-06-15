@@ -10,6 +10,35 @@ This is [VBS](https://github.com/iondodon/vbs) (originally implemented in Java) 
 - swagger-ui - dist/ from [https://github.com/swagger-api/swagger-ui/releases](https://github.com/swagger-api/swagger-ui/releases)
 - **Google Wire** - Dependency injection code generation
 
+## Logging with slog
+
+This project uses Go's built-in structured logging package `log/slog` for all logging needs. Slog provides:
+
+- **Structured Logging**: All logs include structured fields for better filtering and analysis
+- **Leveled Logging**: Support for Info, Error, and other log levels
+- **Standard Library Integration**: Part of Go's standard library since Go 1.21
+
+### Usage Examples
+
+```go
+// Informational logging with structured fields
+slog.Info("Booking vehicle",
+    "vehicleUUID", vehicleUUID,
+    "fromDate", period.FromDate,
+    "toDate", period.ToDate)
+
+// Error logging with error details
+slog.Error("Error parsing access token",
+    "error", err)
+```
+
+### Key Logging Points
+
+- **Development Mode**: Logs when running in development mode and Swagger UI availability
+- **Server Lifecycle**: Logs server startup and shutdown events
+- **Authentication**: Logs token parsing errors and successful claims parsing
+- **Business Operations**: Logs important business operations like vehicle bookings
+
 ## Dependency Injection with Google Wire
 
 This project uses [Google Wire](https://github.com/google/wire) for compile-time dependency injection. Wire generates code that wires up all dependencies automatically, eliminating the need for manual dependency construction.
