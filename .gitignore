@@ -36,3 +36,4 @@ wire_gen.go
 
 # Generated SQL files
 /repository/query.sql.go
+/repository/db.go
