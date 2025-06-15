@@ -14,7 +14,8 @@ func main() {
 	// Initialize all dependencies using Wire
 	app, err := InitializeApplication()
 	if err != nil {
-		panic(err)
+		slog.Error("Error initializing application", "error", err)
+		os.Exit(1)
 	}
 	defer func() {
 		if err := app.database.Close(); err != nil {
@@ -41,7 +42,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
 	defer cancel()
 
-	// Optionally, you could run srv.Shutdown in a goroutine and block on
+	// Optionally, you could run app.server.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
 	if err := app.server.Shutdown(ctx); err != nil {
