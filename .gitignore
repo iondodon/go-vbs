@@ -35,4 +35,4 @@ mocks/
 wire_gen.go
 
 # Generated SQL files
-repository/query.sql.go
+/repository/query.sql.go
