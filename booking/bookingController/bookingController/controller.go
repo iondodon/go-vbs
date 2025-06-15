@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/iondodon/go-vbs/booking/bookingBusiness"
@@ -17,7 +16,7 @@ type Controller struct {
 	getAllBookings     bookingBusiness.GetAllBookingsUseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, db *sql.DB, bookVehicleUseCase bookingBusiness.BookVehicleUseCase, getAllBookings bookingBusiness.GetAllBookingsUseCase) *Controller {
+func New(db *sql.DB, bookVehicleUseCase bookingBusiness.BookVehicleUseCase, getAllBookings bookingBusiness.GetAllBookingsUseCase) *Controller {
 	return &Controller{
 		db:                 db,
 		bookVehicleUseCase: bookVehicleUseCase,

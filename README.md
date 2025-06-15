@@ -37,10 +37,6 @@ make install-wire
 Each component has a dedicated provider function in `wire.go`:
 
 ```go
-// Logger providers with wrapper types to avoid conflicts
-func ProvideInfoLogger() InfoLogger
-func ProvideErrorLogger() ErrorLogger
-
 // Repository layer providers
 func ProvideQueries(db *sql.DB) *repository.Queries
 func ProvideVehicleRepository(queries *repository.Queries) vehicleBusiness.VehicleRepository
@@ -137,22 +133,6 @@ make build
 - After adding new dependencies
 - After modifying provider functions
 - After changing provider sets
-
-### Logger Handling
-
-Wire requires unique types for dependency injection. Since multiple components need loggers, we use wrapper types:
-
-```go
-type InfoLogger struct {
-    *log.Logger
-}
-
-type ErrorLogger struct {
-    *log.Logger
-}
-```
-
-This allows Wire to distinguish between different logger types while maintaining the same underlying `*log.Logger` interface.
 
 ### Cross-Domain Dependencies
 
@@ -484,8 +464,6 @@ This project uses **Google Wire** for compile-time dependency injection. Depende
 ```go
 // Example of how dependencies are wired together (from wire.go)
 func ProvideBookVehicleUseCase(
-    infoLog InfoLogger,
-    errorLog ErrorLogger,
     vehicleRepo vehicleBusiness.VehicleRepository,        // From vehicle domain
     customerRepo customerBusiness.CustomerRepository,     // From customer domain
     bookingRepo bookingBusiness.BookingRepository,        // From booking domain
@@ -493,8 +471,6 @@ func ProvideBookVehicleUseCase(
     vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase, // From vehicle domain
 ) bookingBusiness.BookVehicleUseCase {
     return bookVehicleService.New(
-        infoLog.Logger,
-        errorLog.Logger,
         vehicleRepo,  // Cross-domain dependency (vehicle implements booking interface)
         customerRepo, // Cross-domain dependency (customer implements booking interface)
         bookingRepo,

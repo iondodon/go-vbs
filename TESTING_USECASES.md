@@ -104,8 +104,6 @@ func TestService_ForPeriod_Success(t *testing.T) {
 
     // Create service
     service := New(
-        infoLog,
-        errorLog,
         mockVehicleRepo,
         mockCustomerRepo,
         mockBookingRepo,

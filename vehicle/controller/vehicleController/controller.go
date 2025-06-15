@@ -2,7 +2,6 @@ package vehicleController
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	uuidLib "github.com/google/uuid"
@@ -13,7 +12,7 @@ type Controller struct {
 	getVehicleUseCase vehicleBusiness.GetVehicleUseCase
 }
 
-func New(infoLog *log.Logger, errorLog *log.Logger, getVehicleUseCase vehicleBusiness.GetVehicleUseCase) *Controller {
+func New(getVehicleUseCase vehicleBusiness.GetVehicleUseCase) *Controller {
 	return &Controller{
 		getVehicleUseCase: getVehicleUseCase,
 	}

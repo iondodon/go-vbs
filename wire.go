@@ -5,8 +5,6 @@ package main
 
 import (
 	"database/sql"
-	"log"
-	"os"
 
 	"github.com/google/wire"
 	"github.com/iondodon/go-vbs/auth/controller/authController"
@@ -39,24 +37,6 @@ type Application struct {
 	Database    *sql.DB
 }
 
-// Logger wrapper types to distinguish between different loggers
-type InfoLogger struct {
-	*log.Logger
-}
-
-type ErrorLogger struct {
-	*log.Logger
-}
-
-// Logger providers
-func ProvideInfoLogger() InfoLogger {
-	return InfoLogger{log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)}
-}
-
-func ProvideErrorLogger() ErrorLogger {
-	return ErrorLogger{log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)}
-}
-
 // Database provider
 func ProvideDatabase() (*sql.DB, error) {
 	return repository.NewInMemDBConn()
@@ -81,11 +61,9 @@ func ProvideAvailabilityUseCase(vehicleRepo vehicleBusiness.VehicleRepository) v
 }
 
 func ProvideVehicleController(
-	infoLog InfoLogger,
-	errorLog ErrorLogger,
 	getVehicleUC vehicleBusiness.GetVehicleUseCase,
 ) *vehicleController.Controller {
-	return vehicleController.New(infoLog.Logger, errorLog.Logger, getVehicleUC)
+	return vehicleController.New(getVehicleUC)
 }
 
 // Customer domain providers
@@ -123,18 +101,16 @@ func ProvideGetAllBookingsUseCase(bookingRepo bookingBusiness.BookingRepository)
 }
 
 func ProvideBookingController(
-	infoLog InfoLogger,
-	errorLog ErrorLogger,
 	db *sql.DB,
 	bookVehicleUC bookingBusiness.BookVehicleUseCase,
 	getAllBookingsUC bookingBusiness.GetAllBookingsUseCase,
 ) *bookingController.Controller {
-	return bookingController.New(infoLog.Logger, errorLog.Logger, db, bookVehicleUC, getAllBookingsUC)
+	return bookingController.New(db, bookVehicleUC, getAllBookingsUC)
 }
 
 // Auth domain providers
-func ProvideAuthController(infoLog InfoLogger, errorLog ErrorLogger) *authController.Controller {
-	return authController.New(infoLog.Logger, errorLog.Logger)
+func ProvideAuthController() *authController.Controller {
+	return authController.New()
 }
 
 // Controllers provider
@@ -187,14 +163,8 @@ var AuthSet = wire.NewSet(
 	ProvideAuthController,
 )
 
-var LoggerSet = wire.NewSet(
-	ProvideInfoLogger,
-	ProvideErrorLogger,
-)
-
 // Main provider set that combines all others
 var ApplicationSet = wire.NewSet(
-	LoggerSet,
 	DatabaseSet,
 	RepositorySet,
 	VehicleSet,

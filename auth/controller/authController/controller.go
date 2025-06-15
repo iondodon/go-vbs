@@ -3,7 +3,6 @@ package authController
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
 	"time"
@@ -13,7 +12,7 @@ import (
 
 type Controller struct {}
 
-func New(infoLog *log.Logger, errorLog *log.Logger) *Controller {
+func New() *Controller {
 	return &Controller{}
 }
 
