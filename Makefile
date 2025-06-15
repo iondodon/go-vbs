@@ -1,4 +1,4 @@
-.PHONY: wire build run clean test mocks install-tools
+.PHONY: wire build run clean test mocks install-tools sqlc install-sqlc
 
 # Generate Wire dependency injection code
 wire:
@@ -11,7 +11,7 @@ mocks:
 	~/go/bin/mockery
 
 # Build the application
-build: wire
+build: wire sqlc
 	@echo "Building application..."
 	go build -o go-vbs .
 
@@ -45,8 +45,18 @@ install-mockery:
 	@echo "Installing Mockery..."
 	go install github.com/vektra/mockery/v2@latest
 
+# Install SQLC tool if not present
+install-sqlc:
+	@echo "Installing SQLC..."
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+# Generate SQLC code
+sqlc:
+	@echo "Generating SQLC code..."
+	~/go/bin/sqlc generate
+
 # Install all development tools
-install-tools: install-wire install-mockery
+install-tools: install-wire install-mockery install-sqlc
 	@echo "All development tools installed"
 
 # Download and setup Swagger UI
@@ -62,13 +72,15 @@ help:
 	@echo "Available commands:"
 	@echo "  wire          - Generate Wire dependency injection code"
 	@echo "  mocks         - Generate mocks using mockery"
-	@echo "  build         - Build the application (includes wire generation)"
+	@echo "  sqlc          - Generate SQLC database code"
+	@echo "  build         - Build the application (includes wire and sqlc generation)"
 	@echo "  run           - Run the application in development mode"
 	@echo "  test          - Run tests"
 	@echo "  test-coverage - Run tests with coverage"
 	@echo "  clean         - Clean build artifacts"
 	@echo "  install-wire  - Install Wire tool"
 	@echo "  install-mockery - Install Mockery tool"
+	@echo "  install-sqlc  - Install SQLC tool"
 	@echo "  install-tools - Install all development tools"
 	@echo "  swagger-ui    - Download and setup Swagger UI (if not already installed)."
 	@echo "                  Remove the swagger-ui directory manually to update the Swagger UI."
