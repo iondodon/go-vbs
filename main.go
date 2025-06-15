@@ -17,7 +17,7 @@ func main() {
 		panic(err)
 	}
 	defer func() {
-		if err := app.Database.Close(); err != nil {
+		if err := app.database.Close(); err != nil {
 			slog.Error("Error closing database", "error", err)
 			os.Exit(1)
 		}
@@ -25,7 +25,7 @@ func main() {
 
 	go func() {
 		slog.Info("Server started")
-		if err := app.Server.ListenAndServe(); err != nil {
+		if err := app.server.ListenAndServe(); err != nil {
 			slog.Error("Error starting server", "error", err)
 			os.Exit(1)
 		}
@@ -44,7 +44,7 @@ func main() {
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
-	if err := app.Server.Shutdown(ctx); err != nil {
+	if err := app.server.Shutdown(ctx); err != nil {
 		slog.Error("Error shutting down server", "error", err)
 		os.Exit(1)
 	}

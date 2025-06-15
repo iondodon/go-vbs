@@ -27,9 +27,9 @@ import (
 )
 
 // Application struct to hold all application dependencies
-type Application struct {
-	Server      *http.Server
-	Database    *sql.DB
+type application struct {
+	server      *http.Server
+	database    *sql.DB
 }
 
 // Database provider
@@ -117,10 +117,10 @@ func ProvideServer(
 }
 
 // Application provider
-func ProvideApplication(server *http.Server, db *sql.DB) *Application {
-	return &Application{
-		Server:      server,
-		Database:    db,
+func ProvideApplication(server *http.Server, db *sql.DB) *application {
+	return &application{
+		server:   server,
+		database: db,
 	}
 }
 
@@ -164,8 +164,8 @@ var ApplicationSet = wire.NewSet(
 	ProvideApplication,
 )
 
-// Wire injector function for Application
-func InitializeApplication() (*Application, error) {
+// Wire injector function for application
+func InitializeApplication() (*application, error) {
 	wire.Build(ApplicationSet)
-	return &Application{}, nil
+	return &application{}, nil
 }
