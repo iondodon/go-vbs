@@ -5,6 +5,7 @@ package main
 
 import (
 	"database/sql"
+	"net/http"
 
 	"github.com/google/wire"
 	"github.com/iondodon/go-vbs/auth/controller/authController"
@@ -17,6 +18,7 @@ import (
 	"github.com/iondodon/go-vbs/customer/customerBusiness"
 	"github.com/iondodon/go-vbs/customer/repository/customerRepository"
 	"github.com/iondodon/go-vbs/repository"
+	"github.com/iondodon/go-vbs/server"
 	"github.com/iondodon/go-vbs/vehicle/controller/vehicleController"
 	"github.com/iondodon/go-vbs/vehicle/repository/vehicleRepository"
 	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness"
@@ -24,16 +26,9 @@ import (
 	"github.com/iondodon/go-vbs/vehicle/vehicleBusiness/getVehicleService"
 )
 
-// Controllers struct to hold all controllers
-type Controllers struct {
-	Auth    *authController.Controller
-	Vehicle *vehicleController.Controller
-	Booking *bookingController.Controller
-}
-
 // Application struct to hold all application dependencies
 type Application struct {
-	Controllers *Controllers
+	Server      *http.Server
 	Database    *sql.DB
 }
 
@@ -113,23 +108,18 @@ func ProvideAuthController() *authController.Controller {
 	return authController.New()
 }
 
-// Controllers provider
-func ProvideControllers(
+func ProvideServer(
 	authCtrl *authController.Controller,
 	vehicleCtrl *vehicleController.Controller,
 	bookingCtrl *bookingController.Controller,
-) *Controllers {
-	return &Controllers{
-		Auth:    authCtrl,
-		Vehicle: vehicleCtrl,
-		Booking: bookingCtrl,
-	}
+) *http.Server {
+	return server.NewServer(authCtrl, vehicleCtrl, bookingCtrl)
 }
 
 // Application provider
-func ProvideApplication(controllers *Controllers, db *sql.DB) *Application {
+func ProvideApplication(server *http.Server, db *sql.DB) *Application {
 	return &Application{
-		Controllers: controllers,
+		Server:      server,
 		Database:    db,
 	}
 }
@@ -170,7 +160,7 @@ var ApplicationSet = wire.NewSet(
 	VehicleSet,
 	BookingSet,
 	AuthSet,
-	ProvideControllers,
+	ProvideServer,
 	ProvideApplication,
 )
 

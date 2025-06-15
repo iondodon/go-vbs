@@ -17,6 +17,7 @@ This project uses Go's built-in structured logging package `log/slog` for all lo
 - **Structured Logging**: All logs include structured fields for better filtering and analysis
 - **Leveled Logging**: Support for Info, Error, and other log levels
 - **Standard Library Integration**: Part of Go's standard library since Go 1.21
+- **Graceful Error Handling**: Instead of panics, errors are properly logged with context
 
 ### Usage Examples
 
@@ -27,17 +28,52 @@ slog.Info("Booking vehicle",
     "fromDate", period.FromDate,
     "toDate", period.ToDate)
 
-// Error logging with error details
-slog.Error("Error parsing access token",
+// Error logging with error details and graceful shutdown
+slog.Error("Error starting server",
     "error", err)
+os.Exit(1)
 ```
 
 ### Key Logging Points
 
-- **Development Mode**: Logs when running in development mode and Swagger UI availability
-- **Server Lifecycle**: Logs server startup and shutdown events
-- **Authentication**: Logs token parsing errors and successful claims parsing
-- **Business Operations**: Logs important business operations like vehicle bookings
+- **Server Lifecycle**:
+  - Server startup and shutdown events
+  - Graceful shutdown with proper error logging
+  - Database connection closure
+- **Authentication**:
+  - Token parsing errors
+  - Successful claims parsing
+- **Business Operations**:
+  - Vehicle bookings
+  - Other critical business events
+
+### Error Handling Strategy
+
+The application now uses a consistent error handling approach:
+
+1. Critical errors are logged using `slog.Error` with contextual information
+2. Instead of panicking, the application performs graceful shutdown with `os.Exit(1)`
+3. All error conditions include structured logging fields for better debugging
+
+## Application Structure
+
+The application has been restructured with the following changes:
+
+### Server Setup
+
+- Server configuration moved to dedicated package
+- HTTP server instance is now part of the Application struct
+- Controllers are now wired directly into the server setup
+
+### Application Structure
+
+```go
+// Application struct to hold all application dependencies
+type Application struct {
+    Server   *http.Server
+    Database *sql.DB
+}
+```
 
 ## Dependency Injection with Google Wire
 

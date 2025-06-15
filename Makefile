@@ -11,7 +11,7 @@ mocks:
 	~/go/bin/mockery
 
 # Build the application
-build: wire sqlc
+build:
 	@echo "Building application..."
 	go build -o go-vbs .
 
