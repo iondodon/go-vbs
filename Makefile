@@ -1,4 +1,4 @@
-.PHONY: wire build run clean test mocks install-tools sqlc install-sqlc
+.PHONY: wire build run clean test mocks install-tools sqlc install-sqlc migrate migrate-create migrate-up migrate-down migrate-status install-goose
 
 # Generate Wire dependency injection code
 wire:
@@ -55,8 +55,34 @@ sqlc:
 	@echo "Generating SQLC code..."
 	~/go/bin/sqlc generate
 
+# Install Goose migration tool if not present
+install-goose:
+	@echo "Installing Goose..."
+	go install github.com/pressly/goose/v3/cmd/goose@latest
+
+# Create a new migration file
+migrate-create:
+	@echo "Creating new migration..."
+	@read -p "Enter migration name: " name; \
+	~/go/bin/goose -dir repository/migrations create $$name sql
+
+# Apply all migrations
+migrate-up:
+	@echo "Applying migrations..."
+	~/go/bin/goose -dir repository/migrations sqlite3 vbs.db up
+
+# Rollback last migration
+migrate-down:
+	@echo "Rolling back last migration..."
+	~/go/bin/goose -dir repository/migrations sqlite3 vbs.db down
+
+# Show migration status
+migrate-status:
+	@echo "Migration status..."
+	~/go/bin/goose -dir repository/migrations sqlite3 vbs.db status
+
 # Install all development tools
-install-tools: install-wire install-mockery install-sqlc
+install-tools: install-wire install-mockery install-sqlc install-goose
 	@echo "All development tools installed"
 
 # Download and setup Swagger UI
@@ -81,7 +107,12 @@ help:
 	@echo "  install-wire  - Install Wire tool"
 	@echo "  install-mockery - Install Mockery tool"
 	@echo "  install-sqlc  - Install SQLC tool"
+	@echo "  install-goose - Install Goose migration tool"
 	@echo "  install-tools - Install all development tools"
+	@echo "  migrate-create - Create a new migration file"
+	@echo "  migrate-up    - Apply all pending migrations"
+	@echo "  migrate-down  - Rollback last migration"
+	@echo "  migrate-status - Show migration status"
 	@echo "  swagger-ui    - Download and setup Swagger UI (if not already installed)."
 	@echo "                  Remove the swagger-ui directory manually to update the Swagger UI."
 	@echo "                  In swagger-ui/swagger-initializer.js, change the url /docs/openapi.yaml"

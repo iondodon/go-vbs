@@ -10,6 +10,75 @@ This is [VBS](https://github.com/iondodon/vbs) (originally implemented in Java) 
 - swagger-ui - dist/ from [https://github.com/swagger-api/swagger-ui/releases](https://github.com/swagger-api/swagger-ui/releases)
 - **Google Wire** - Dependency injection code generation
 
+## Database Migrations with Goose
+
+This project uses [Goose](https://github.com/pressly/goose) for managing database migrations. Goose provides a simple and effective way to manage database schema changes.
+
+### Installation
+
+```bash
+# Install Goose using the Makefile
+make install-goose
+
+# Or install directly
+go install github.com/pressly/goose/v3/cmd/goose@latest
+```
+
+### Migration Commands
+
+The following commands are available through the Makefile:
+
+```bash
+# Create a new migration file
+make migrate-create
+# You will be prompted to enter a migration name
+
+# Apply all pending migrations
+make migrate-up
+
+# Rollback the last migration
+make migrate-down
+
+# Check migration status
+make migrate-status
+```
+
+### Migration Files
+
+Migration files are stored in the `repository/migrations/` directory and follow this naming convention:
+
+```
+YYYYMMDDHHMMSS_migration_name.sql
+```
+
+Each migration file contains two sections:
+
+- `-- +goose Up`: SQL statements for applying the migration
+- `-- +goose Down`: SQL statements for rolling back the migration
+
+Example migration file:
+
+```sql
+-- +goose Up
+CREATE TABLE vehicles (
+    uuid TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- +goose Down
+DROP TABLE vehicles;
+```
+
+### Best Practices
+
+1. **Always include Down migrations**: Each migration should have both Up and Down sections
+2. **Keep migrations small**: Each migration should make a single, atomic change
+3. **Use meaningful names**: Migration names should clearly describe the change
+4. **Test migrations**: Test both Up and Down migrations before committing
+5. **Version control**: Always commit migration files to version control
+
 ## Logging with slog
 
 This project uses Go's built-in structured logging package `log/slog` for all logging needs. Slog provides:
