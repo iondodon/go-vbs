@@ -1,0 +1,36 @@
+all: False
+
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: "mocks"
+mockname: "Mock{{.InterfaceName}}"
+
+# https://pkg.go.dev/github.com/vektra/mockery/v3/template#section-readme
+filename: '{{ .InterfaceFile | base | trimSuffix ".go" }}_mock.go'
+
+with-expecter: true
+
+packages:
+  github.com/iondodon/go-vbs/booking/business:
+    config:
+    interfaces:
+      BookingRepository:
+        config:
+          filename: "bookingRepository_mock.go"
+      BookingDateRepository:
+        config:
+          filename: "bookingDateRepository_mock.go"
+      VehicleRepository:
+        config:
+          filename: "vehicleRepository_mock.go"
+      CustomerRepository:
+        config:
+          filename: "customerRepository_mock.go"
+      VehicleAvailabilityService:
+        config:
+          filename: "vehicleAvailabilityService_mock.go"
+      BookVehicleUseCase:
+        config:
+          filename: "bookVehicleUseCase_mock.go"
+      GetAllBookingsUseCase:
+        config:
+          filename: "getAllBookingsUseCase_mock.go"
