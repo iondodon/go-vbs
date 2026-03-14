@@ -24,7 +24,7 @@ go.work
 
 
 coverage.out
-go-vbs
+./go-vbs
 
 # Generated mocks (mockery)
 **/mocks/
@@ -35,6 +35,6 @@ mocks/
 wire_gen.go
 
 # Generated SQL files
-/repository/query.sql.go
-/repository/db.go
-/repository/models.go
+/internal/repository/query.sql.go
+/internal/repository/db.go
+/internal/repository/models.go
