@@ -77,4 +77,5 @@ swagger-ui:
   curl -L https://github.com/swagger-api/swagger-ui/archive/refs/tags/v5.24.1.tar.gz | tar -xzf -
   mkdir -p swagger-ui
   mv swagger-ui-5.24.1/dist/* swagger-ui/
+  sed -i 's|https://petstore.swagger.io/v2/swagger.json|/docs/openapi.yaml|' swagger-ui/swagger-initializer.js
   rm -rf swagger-ui-5.24.1
