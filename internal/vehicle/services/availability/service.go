@@ -5,16 +5,16 @@ import (
 
 	"github.com/google/uuid"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller"
-	vehicleBusiness "github.com/iondodon/go-vbs/internal/vehicle/business"
+	vehicleServices "github.com/iondodon/go-vbs/internal/vehicle/services"
 )
 
 // Service handles vehicle availability checks
 type Service struct {
-	vehicleRepository vehicleBusiness.VehicleRepository
+	vehicleRepository vehicleServices.VehicleRepository
 }
 
 // New creates a new availability service
-func New(vehicleRepo vehicleBusiness.VehicleRepository) *Service {
+func New(vehicleRepo vehicleServices.VehicleRepository) *Service {
 	return &Service{
 		vehicleRepository: vehicleRepo,
 	}

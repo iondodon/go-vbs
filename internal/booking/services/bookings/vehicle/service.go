@@ -8,28 +8,28 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller"
 	bookingDomain "github.com/iondodon/go-vbs/internal/booking/domain"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
 )
 
 const alreadyHired = "vehicle with UUID %s is already taken for at leas one day of this period"
 
 // Service handles vehicle booking
 type Service struct {
-	vehicleRepo         bookingBusiness.VehicleRepository
-	customerRepo        bookingBusiness.CustomerRepository
-	bookingRepo         bookingBusiness.BookingRepository
-	bookingDateRepo     bookingBusiness.BookingDateRepository
-	availabilityService bookingBusiness.VehicleAvailabilityService
+	vehicleRepo         bookingServices.VehicleRepository
+	customerRepo        bookingServices.CustomerRepository
+	bookingRepo         bookingServices.BookingRepository
+	bookingDateRepo     bookingServices.BookingDateRepository
+	availabilityService bookingServices.VehicleAvailabilityService
 }
 
 func New(
-	vehicleRepo bookingBusiness.VehicleRepository,
-	customerRepo bookingBusiness.CustomerRepository,
-	bookingRepo bookingBusiness.BookingRepository,
-	bookingDateRepo bookingBusiness.BookingDateRepository,
-	availabilityService bookingBusiness.VehicleAvailabilityService,
+	vehicleRepo bookingServices.VehicleRepository,
+	customerRepo bookingServices.CustomerRepository,
+	bookingRepo bookingServices.BookingRepository,
+	bookingDateRepo bookingServices.BookingDateRepository,
+	availabilityService bookingServices.VehicleAvailabilityService,
 ) *Service {
 	return &Service{
 		vehicleRepo:         vehicleRepo,

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/iondodon/go-vbs/internal/booking/business/mocks"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller"
 	bookingDomain "github.com/iondodon/go-vbs/internal/booking/domain"
+	"github.com/iondodon/go-vbs/internal/booking/services/mocks"
 	customerDomain "github.com/iondodon/go-vbs/internal/customer/domain"
 	vehicleDomain "github.com/iondodon/go-vbs/internal/vehicle/domain"
 	"github.com/stretchr/testify/assert"

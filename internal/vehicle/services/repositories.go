@@ -1,4 +1,4 @@
-package vehicleBusiness
+package vehicleServices
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	vehicleDomain "github.com/iondodon/go-vbs/internal/vehicle/domain"
 )
 
-// VehicleRepository defines what the vehicle business logic needs from data access
+// VehicleRepository defines what the vehicle services layer needs from data access
 type VehicleRepository interface {
 	FindByUUID(ctx context.Context, vUUID uuid.UUID) (*vehicleDomain.Vehicle, error)
 	VehicleHasBookedDatesOnPeriod(ctx context.Context, vUUID uuid.UUID, period bookingController.DatePeriodDTO) (bool, error)

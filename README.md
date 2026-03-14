@@ -80,7 +80,7 @@ just --list
 Two parts of the repository are generated:
 
 - `internal/repository/db.go`, `internal/repository/models.go`, `internal/repository/query.sql.go` from `internal/repository/query.sql` via `sqlc`
-- `internal/booking/business/mocks/` from `internal/booking/business` interfaces via `mockery`
+- `internal/booking/services/mocks/` from `internal/booking/services` interfaces via `mockery`
 
 Normal `just build` runs `sqlc` first.
 Normal `just test` runs `sqlc` and `mocks` first.
@@ -141,7 +141,7 @@ just migrate-create add_something
 cmd/go-vbs/       application entrypoint
 internal/app/     dependency bootstrap
 internal/auth/    authentication controller
-internal/booking/ booking business logic, controllers, repositories, mocks
+internal/booking/ booking services, controllers, repositories, mocks
 internal/customer/ customer domain and repository
 internal/vehicle/ vehicle domain, use cases, repository
 internal/http/    HTTP server, middleware, and handler glue

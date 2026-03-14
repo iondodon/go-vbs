@@ -9,21 +9,21 @@ import (
 
 	"github.com/google/wire"
 	authController "github.com/iondodon/go-vbs/internal/auth/controller"
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
-	getAllBookingsService "github.com/iondodon/go-vbs/internal/booking/business/bookings/all/get"
-	bookVehicleService "github.com/iondodon/go-vbs/internal/booking/business/bookings/vehicle"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller/booking"
 	bookingRepository "github.com/iondodon/go-vbs/internal/booking/repository/booking"
 	bookingDateRepository "github.com/iondodon/go-vbs/internal/booking/repository/booking_date"
-	customerBusiness "github.com/iondodon/go-vbs/internal/customer/business"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
+	getAllBookingsService "github.com/iondodon/go-vbs/internal/booking/services/bookings/all/get"
+	bookVehicleService "github.com/iondodon/go-vbs/internal/booking/services/bookings/vehicle"
 	customerRepository "github.com/iondodon/go-vbs/internal/customer/repository/customer"
+	customerServices "github.com/iondodon/go-vbs/internal/customer/services"
 	"github.com/iondodon/go-vbs/internal/http/server"
 	"github.com/iondodon/go-vbs/internal/repository"
-	vehicleBusiness "github.com/iondodon/go-vbs/internal/vehicle/business"
-	availabilityService "github.com/iondodon/go-vbs/internal/vehicle/business/availability"
-	getVehicleService "github.com/iondodon/go-vbs/internal/vehicle/business/vehicle/get"
 	vehicleController "github.com/iondodon/go-vbs/internal/vehicle/controller/vehicle"
 	vehicleRepository "github.com/iondodon/go-vbs/internal/vehicle/repository/vehicle"
+	vehicleServices "github.com/iondodon/go-vbs/internal/vehicle/services"
+	availabilityService "github.com/iondodon/go-vbs/internal/vehicle/services/availability"
+	getVehicleService "github.com/iondodon/go-vbs/internal/vehicle/services/vehicle/get"
 )
 
 // Application struct to hold all application dependencies
@@ -37,45 +37,45 @@ func ProvideQueries(db *sql.DB) *repository.Queries {
 }
 
 // Vehicle domain providers
-func ProvideVehicleRepository(queries *repository.Queries) vehicleBusiness.VehicleRepository {
+func ProvideVehicleRepository(queries *repository.Queries) vehicleServices.VehicleRepository {
 	return vehicleRepository.New(queries)
 }
 
-func ProvideGetVehicleUseCase(vehicleRepo vehicleBusiness.VehicleRepository) vehicleBusiness.GetVehicleUseCase {
+func ProvideGetVehicleUseCase(vehicleRepo vehicleServices.VehicleRepository) vehicleServices.GetVehicleUseCase {
 	return getVehicleService.New(vehicleRepo)
 }
 
-func ProvideAvailabilityUseCase(vehicleRepo vehicleBusiness.VehicleRepository) vehicleBusiness.AvailabilityUseCase {
+func ProvideAvailabilityUseCase(vehicleRepo vehicleServices.VehicleRepository) vehicleServices.AvailabilityUseCase {
 	return availabilityService.New(vehicleRepo)
 }
 
 func ProvideVehicleController(
-	getVehicleUC vehicleBusiness.GetVehicleUseCase,
+	getVehicleUC vehicleServices.GetVehicleUseCase,
 ) *vehicleController.Controller {
 	return vehicleController.New(getVehicleUC)
 }
 
 // Customer domain providers
-func ProvideCustomerRepository(queries *repository.Queries) customerBusiness.CustomerRepository {
+func ProvideCustomerRepository(queries *repository.Queries) customerServices.CustomerRepository {
 	return customerRepository.New(queries)
 }
 
 // Booking domain providers
-func ProvideBookingRepository(queries *repository.Queries) bookingBusiness.BookingRepository {
+func ProvideBookingRepository(queries *repository.Queries) bookingServices.BookingRepository {
 	return bookingRepository.New(queries)
 }
 
-func ProvideBookingDateRepository(queries *repository.Queries) bookingBusiness.BookingDateRepository {
+func ProvideBookingDateRepository(queries *repository.Queries) bookingServices.BookingDateRepository {
 	return bookingDateRepository.New(queries)
 }
 
 func ProvideBookVehicleUseCase(
-	vehicleRepo vehicleBusiness.VehicleRepository,
-	customerRepo customerBusiness.CustomerRepository,
-	bookingRepo bookingBusiness.BookingRepository,
-	bookingDateRepo bookingBusiness.BookingDateRepository,
-	vehicleAvailabilityService vehicleBusiness.AvailabilityUseCase,
-) bookingBusiness.BookVehicleUseCase {
+	vehicleRepo vehicleServices.VehicleRepository,
+	customerRepo customerServices.CustomerRepository,
+	bookingRepo bookingServices.BookingRepository,
+	bookingDateRepo bookingServices.BookingDateRepository,
+	vehicleAvailabilityService vehicleServices.AvailabilityUseCase,
+) bookingServices.BookVehicleUseCase {
 	return bookVehicleService.New(
 		vehicleRepo,
 		customerRepo,
@@ -85,14 +85,14 @@ func ProvideBookVehicleUseCase(
 	)
 }
 
-func ProvideGetAllBookingsUseCase(bookingRepo bookingBusiness.BookingRepository) bookingBusiness.GetAllBookingsUseCase {
+func ProvideGetAllBookingsUseCase(bookingRepo bookingServices.BookingRepository) bookingServices.GetAllBookingsUseCase {
 	return getAllBookingsService.New(bookingRepo)
 }
 
 func ProvideBookingController(
 	db *sql.DB,
-	bookVehicleUC bookingBusiness.BookVehicleUseCase,
-	getAllBookingsUC bookingBusiness.GetAllBookingsUseCase,
+	bookVehicleUC bookingServices.BookVehicleUseCase,
+	getAllBookingsUC bookingServices.GetAllBookingsUseCase,
 ) *bookingController.Controller {
 	return bookingController.New(db, bookVehicleUC, getAllBookingsUC)
 }

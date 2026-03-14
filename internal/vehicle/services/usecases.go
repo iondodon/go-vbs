@@ -1,4 +1,4 @@
-package vehicleBusiness
+package vehicleServices
 
 import (
 	"context"

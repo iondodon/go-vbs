@@ -4,8 +4,8 @@ import (
 	"context"
 
 	uuidlib "github.com/google/uuid"
-	customerBusiness "github.com/iondodon/go-vbs/internal/customer/business"
 	customerDomain "github.com/iondodon/go-vbs/internal/customer/domain"
+	customerServices "github.com/iondodon/go-vbs/internal/customer/services"
 	"github.com/iondodon/go-vbs/internal/repository"
 )
 
@@ -13,8 +13,8 @@ type Repository struct {
 	queries *repository.Queries
 }
 
-// Ensure Repository implements the business interface
-var _ customerBusiness.CustomerRepository = (*Repository)(nil)
+// Ensure Repository implements the services interface
+var _ customerServices.CustomerRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{

@@ -1,4 +1,4 @@
-package bookingBusiness
+package bookingServices
 
 import (
 	"context"
@@ -12,13 +12,13 @@ import (
 	vehicleDomain "github.com/iondodon/go-vbs/internal/vehicle/domain"
 )
 
-// BookingRepository defines what the booking business logic needs from booking data access
+// BookingRepository defines what the booking services layer needs from booking data access
 type BookingRepository interface {
 	Save(ctx context.Context, tx *sql.Tx, b *bookingDomain.Booking) error
 	GetAll(ctx context.Context) ([]bookingDomain.Booking, error)
 }
 
-// BookingDateRepository defines what the booking business logic needs from booking date data access
+// BookingDateRepository defines what the booking services layer needs from booking date data access
 type BookingDateRepository interface {
 	FindAllInPeriodInclusive(ctx context.Context, from, to time.Time) ([]*bookingDomain.BookingDate, error)
 	Save(ctx context.Context, tx *sql.Tx, bd *bookingDomain.BookingDate) error

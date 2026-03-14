@@ -5,21 +5,21 @@ import (
 	"net/http"
 
 	authController "github.com/iondodon/go-vbs/internal/auth/controller"
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
-	getAllBookingsService "github.com/iondodon/go-vbs/internal/booking/business/bookings/all/get"
-	bookVehicleService "github.com/iondodon/go-vbs/internal/booking/business/bookings/vehicle"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller/booking"
 	bookingRepository "github.com/iondodon/go-vbs/internal/booking/repository/booking"
 	bookingDateRepository "github.com/iondodon/go-vbs/internal/booking/repository/booking_date"
-	customerBusiness "github.com/iondodon/go-vbs/internal/customer/business"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
+	getAllBookingsService "github.com/iondodon/go-vbs/internal/booking/services/bookings/all/get"
+	bookVehicleService "github.com/iondodon/go-vbs/internal/booking/services/bookings/vehicle"
 	customerRepository "github.com/iondodon/go-vbs/internal/customer/repository/customer"
+	customerServices "github.com/iondodon/go-vbs/internal/customer/services"
 	"github.com/iondodon/go-vbs/internal/http/server"
 	"github.com/iondodon/go-vbs/internal/repository"
-	vehicleBusiness "github.com/iondodon/go-vbs/internal/vehicle/business"
-	availabilityService "github.com/iondodon/go-vbs/internal/vehicle/business/availability"
-	getVehicleService "github.com/iondodon/go-vbs/internal/vehicle/business/vehicle/get"
 	vehicleController "github.com/iondodon/go-vbs/internal/vehicle/controller/vehicle"
 	vehicleRepository "github.com/iondodon/go-vbs/internal/vehicle/repository/vehicle"
+	vehicleServices "github.com/iondodon/go-vbs/internal/vehicle/services"
+	availabilityService "github.com/iondodon/go-vbs/internal/vehicle/services/availability"
+	getVehicleService "github.com/iondodon/go-vbs/internal/vehicle/services/vehicle/get"
 )
 
 type Application struct {
@@ -35,11 +35,11 @@ func InitializeApplication() (*Application, error) {
 
 	queries := repository.New(db)
 
-	var vehicleRepo vehicleBusiness.VehicleRepository = vehicleRepository.New(queries)
-	var customerRepo customerBusiness.CustomerRepository = customerRepository.New(queries)
-	var bookingRepo bookingBusiness.BookingRepository = bookingRepository.New(queries)
-	var bookingDateRepo bookingBusiness.BookingDateRepository = bookingDateRepository.New(queries)
-	var vehicleAvailabilityService bookingBusiness.VehicleAvailabilityService = availabilityService.New(vehicleRepo)
+	var vehicleRepo vehicleServices.VehicleRepository = vehicleRepository.New(queries)
+	var customerRepo customerServices.CustomerRepository = customerRepository.New(queries)
+	var bookingRepo bookingServices.BookingRepository = bookingRepository.New(queries)
+	var bookingDateRepo bookingServices.BookingDateRepository = bookingDateRepository.New(queries)
+	var vehicleAvailabilityService bookingServices.VehicleAvailabilityService = availabilityService.New(vehicleRepo)
 
 	vehicleCtrl := vehicleController.New(getVehicleService.New(vehicleRepo))
 	bookingCtrl := bookingController.New(

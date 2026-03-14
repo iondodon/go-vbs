@@ -6,17 +6,17 @@ import (
 	"io"
 	"net/http"
 
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
 )
 
 type Controller struct {
 	db                 *sql.DB
-	bookVehicleUseCase bookingBusiness.BookVehicleUseCase
-	getAllBookings     bookingBusiness.GetAllBookingsUseCase
+	bookVehicleUseCase bookingServices.BookVehicleUseCase
+	getAllBookings     bookingServices.GetAllBookingsUseCase
 }
 
-func New(db *sql.DB, bookVehicleUseCase bookingBusiness.BookVehicleUseCase, getAllBookings bookingBusiness.GetAllBookingsUseCase) *Controller {
+func New(db *sql.DB, bookVehicleUseCase bookingServices.BookVehicleUseCase, getAllBookings bookingServices.GetAllBookingsUseCase) *Controller {
 	return &Controller{
 		db:                 db,
 		bookVehicleUseCase: bookVehicleUseCase,

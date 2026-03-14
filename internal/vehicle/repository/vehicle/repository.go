@@ -7,8 +7,8 @@ import (
 	uuidLib "github.com/google/uuid"
 	bookingController "github.com/iondodon/go-vbs/internal/booking/controller"
 	"github.com/iondodon/go-vbs/internal/repository"
-	vehicleBusiness "github.com/iondodon/go-vbs/internal/vehicle/business"
 	vehicleDomain "github.com/iondodon/go-vbs/internal/vehicle/domain"
+	vehicleServices "github.com/iondodon/go-vbs/internal/vehicle/services"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,8 +17,8 @@ type Repository struct {
 	queries *repository.Queries
 }
 
-// Ensure Repository implements the business interface
-var _ vehicleBusiness.VehicleRepository = (*Repository)(nil)
+// Ensure Repository implements the services interface
+var _ vehicleServices.VehicleRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{

@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	uuidLib "github.com/google/uuid"
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
 	bookingDomain "github.com/iondodon/go-vbs/internal/booking/domain"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
 	customerDomain "github.com/iondodon/go-vbs/internal/customer/domain"
 	"github.com/iondodon/go-vbs/internal/repository"
 	vehicleDomain "github.com/iondodon/go-vbs/internal/vehicle/domain"
@@ -20,8 +20,8 @@ type Repository struct {
 	queries *repository.Queries
 }
 
-// Ensure Repository implements the business interface
-var _ bookingBusiness.BookingRepository = (*Repository)(nil)
+// Ensure Repository implements the services interface
+var _ bookingServices.BookingRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{

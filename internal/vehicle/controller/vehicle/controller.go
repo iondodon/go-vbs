@@ -5,14 +5,14 @@ import (
 	"net/http"
 
 	uuidLib "github.com/google/uuid"
-	vehicleBusiness "github.com/iondodon/go-vbs/internal/vehicle/business"
+	vehicleServices "github.com/iondodon/go-vbs/internal/vehicle/services"
 )
 
 type Controller struct {
-	getVehicleUseCase vehicleBusiness.GetVehicleUseCase
+	getVehicleUseCase vehicleServices.GetVehicleUseCase
 }
 
-func New(getVehicleUseCase vehicleBusiness.GetVehicleUseCase) *Controller {
+func New(getVehicleUseCase vehicleServices.GetVehicleUseCase) *Controller {
 	return &Controller{
 		getVehicleUseCase: getVehicleUseCase,
 	}

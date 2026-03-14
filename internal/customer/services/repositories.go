@@ -1,4 +1,4 @@
-package customerBusiness
+package customerServices
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	customerDomain "github.com/iondodon/go-vbs/internal/customer/domain"
 )
 
-// CustomerRepository defines what the customer business logic needs from data access
+// CustomerRepository defines what the customer services layer needs from data access
 type CustomerRepository interface {
 	FindByUUID(ctx context.Context, cUUID uuid.UUID) (*customerDomain.Customer, error)
 }

@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	bookingBusiness "github.com/iondodon/go-vbs/internal/booking/business"
 	bookingDomain "github.com/iondodon/go-vbs/internal/booking/domain"
+	bookingServices "github.com/iondodon/go-vbs/internal/booking/services"
 	"github.com/iondodon/go-vbs/internal/repository"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,8 +17,8 @@ type Repository struct {
 	queries *repository.Queries
 }
 
-// Ensure Repository implements the business interface
-var _ bookingBusiness.BookingDateRepository = (*Repository)(nil)
+// Ensure Repository implements the services interface
+var _ bookingServices.BookingDateRepository = (*Repository)(nil)
 
 func New(queries *repository.Queries) *Repository {
 	return &Repository{
