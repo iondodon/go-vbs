@@ -79,8 +79,8 @@ just --list
 
 Two parts of the repository are generated:
 
-- `repository/db.go`, `repository/models.go`, `repository/query.sql.go` from `repository/query.sql` via `sqlc`
-- `booking/business/mocks/` from `booking/business` interfaces via `mockery`
+- `internal/repository/db.go`, `internal/repository/models.go`, `internal/repository/query.sql.go` from `internal/repository/query.sql` via `sqlc`
+- `internal/booking/business/mocks/` from `internal/booking/business` interfaces via `mockery`
 
 Normal `just build` runs `sqlc` first.
 Normal `just test` runs `sqlc` and `mocks` first.
@@ -124,7 +124,7 @@ The app uses a local SQLite database file:
 
 Schema and seed data live in:
 
-- `repository/migrations/`
+- `internal/repository/migrations/`
 
 Migration commands:
 
@@ -138,19 +138,19 @@ just migrate-create add_something
 ## Project Layout
 
 ```text
-auth/         authentication controller
-booking/      booking business logic, controllers, repositories, mocks
-customer/     customer domain and repository
-vehicle/      vehicle domain, use cases, repository
-repository/   SQLite connection, migrations, sqlc input and generated queries
-server/       HTTP route registration
-middleware/   JWT middleware
-handler/      HTTP error wrapper
+cmd/go-vbs/       application entrypoint
+internal/app/     dependency bootstrap
+internal/auth/    authentication controller
+internal/booking/ booking business logic, controllers, repositories, mocks
+internal/customer/ customer domain and repository
+internal/vehicle/ vehicle domain, use cases, repository
+internal/http/    HTTP server, middleware, and handler glue
+internal/repository/ SQLite connection, migrations, sqlc input and generated queries
 ```
 
 ## Architecture Notes
 
-- Runtime wiring currently happens in `init_application.go`.
+- Runtime wiring currently happens in `internal/app/application.go`.
 - The `wire` recipe is still available, but it is not part of the normal build or test flow.
 - Persistence uses `github.com/mattn/go-sqlite3`, so CGO support is required for builds.
 
