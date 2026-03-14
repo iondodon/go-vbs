@@ -24,7 +24,7 @@ go.work
 
 
 coverage.out
-./go-vbs
+/go-vbs
 
 # Generated mocks (mockery)
 **/mocks/
@@ -32,7 +32,7 @@ mocks/
 
 /swagger-ui/
 
-wire_gen.go
+/internal/app/wire_gen.go
 
 # Generated SQL files
 /internal/repository/query.sql.go

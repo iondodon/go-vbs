@@ -6,9 +6,9 @@ gocache := env_var_or_default("GOCACHE", "/tmp/go-build-cache")
 default:
   @just --list
 
-wire:
+wire: sqlc
   @echo "Generating Wire code..."
-  ~/go/bin/wire
+  cd internal/app && GOCACHE={{gocache}} ~/go/bin/wire
 
 mocks:
   @echo "Generating mocks in organized directories..."
