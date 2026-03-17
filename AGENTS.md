@@ -84,8 +84,9 @@ var _ bookingServices.BookingRepository = (*Repository)(nil)
 
 - Keep dependency construction explicit in `internal/app`.
 - Constructor functions are preferred over global state.
-- Compile-time DI is acceptable. This project uses `wire`, but the actual principle is explicit provider graphs, not mandatory Wire usage.
-- Generated wiring may be committed if it is part of the normal build path.
+- Use compile-time DI with `wire`.
+- Keep provider functions explicit and grouped in `internal/app`.
+- Commit generated wiring when it is part of the normal build path.
 
 ## Dependency Rules
 
@@ -157,7 +158,7 @@ For projects following this pattern:
 - keep SQL queries named and small
 - favor repository mapping code that is explicit even if repetitive
 
-If using `sqlc`, commit the generated output when the repository expects local builds/tests without regeneration surprises.
+Use sqlc. Commit the generated output when the repository expects local builds/tests without regeneration surprises.
 
 ## Generated Code Policy
 
@@ -178,22 +179,24 @@ Rules:
 
 ## Tooling Principles
 
-`go-vbs` uses a minimal toolchain:
+`go-vbs` uses a minimal but mandatory toolchain:
 
 - Go toolchain for build and test
 - `just` as the single task runner
 - `sqlc` for query generation
 - `mockery` for mocks
 - `goose` for migrations
-- `wire` for optional compile-time DI generation
+- `wire` for compile-time DI generation
+
+In a project following this model, these tools are not optional add-ons. They are part of how the repository is built, tested, generated, wired, and maintained.
 
 Transferable principle:
 
-- expose one obvious command surface for developers and agents
+- expose one obvious mandatory command surface for developers and agents
 - automate generation before build/test
 - keep infra tooling lightweight and local
 
-If another repository prefers `make`, `task`, or plain scripts, preserve the same simplicity rather than forcing `just`.
+If another repository adopts these principles with a different task runner such as `make` or `task`, that task runner should still be treated as mandatory project infrastructure rather than a convenience layer.
 
 ## Testing Principles
 
@@ -255,7 +258,7 @@ If you are an agent operating in another Go repository and asked to follow `go-v
 - define interfaces where they are consumed
 - keep repositories as adapters, not business logic containers
 - do not edit generated files directly
-- prefer explicit constructors and explicit wiring
+- use `wire` for explicit compile-time wiring
 - use the repo's single task runner for generation, build, and test
 - add tests at the service layer when changing behavior
 
