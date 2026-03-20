@@ -10,6 +10,8 @@ Try to make the project exactly with the same structure, principles, style, tool
 
 - each module has its `controller` package, `domain` package, `repository` package, `services` package and anything else that is needed - in other words - each module has its own layer in the hexagonal/onion architecture.
 
+- bettern not to use domain modules at all. They will be introduced only when the projects grous too big and there will be a need to separate parts of the project into modules.
+
 - keep all units (service, repository, domain struct, controller) as small as possible to keep the single responsibility principle and to provide more flexibility.
 
 - one package per unit (service, controller, repository, etc). Not really necessary for domain because they are really simple and they can be grouped more in one single package, but still should be grouped in subpackages.
