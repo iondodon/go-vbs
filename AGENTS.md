@@ -27,3 +27,5 @@ Try to make the project exactly with the same structure, principles, style, tool
 - one service should live in its own package and in that package usually will be only service.go and service_test.go. The idea is to keep services as small as possible. For code readability, in places where the services will be used, aliases will be used.
 
 - write unit tests only at use case interface level. this means to not unit test each service separately, but to unit test use cases. Under a use case can be one or a group of services.
+
+- a function should have as fewer input argumets as possible. Preferrably no more than 3. If the first argument is the context and the second a transaction, and there are still needed more than 1 business argument, thne the business arguments can be grouped in a single struct like the command design pattern.
