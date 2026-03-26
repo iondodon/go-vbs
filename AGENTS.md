@@ -18,6 +18,8 @@ Try to make the project exactly with the same structure, principles, style, tool
 
 - each service should usually consist of only one single exported function, plus maybe a few unexported helper functions. There can be multiple exported functions, but those are only with purposes to provide the client of the service a more flexible API (like function overloading) by providing the possibility to call the service with different input parameters (a more flexible API). This would mean that those exported functions most probably will call each other internally in the service's package. One package per service.
 
+- then actuall could be more exported functions in the same service, not necessarily that just offers a different API to call the service, but also does somethig else. But, that something else, should be very very uch related to the actually service and to what the other exported functions in the service do. In other words, the exported function should not decrease the cohesio of the service. Each service should have a high cohesion and in general each unit (controller, repository, etc) should have a high cohesion.
+
 - If context.Context is needed then it should be the first argument in the function. If a transaction is needed, then it should be after context, if context exists, otherwise, it should be the first.
 
 - use exactly the same tools: wire, just, mockery, goose, sqlc, swagger-ui, etc.
