@@ -1,4 +1,4 @@
-package bookingDateRepository
+package booking_date
 
 import (
 	"context"

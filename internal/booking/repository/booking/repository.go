@@ -1,4 +1,4 @@
-package bookingRepository
+package booking
 
 import (
 	"context"

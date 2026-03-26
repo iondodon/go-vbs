@@ -1,4 +1,4 @@
-package bookVehicleService
+package vehicle
 
 import (
 	"context"

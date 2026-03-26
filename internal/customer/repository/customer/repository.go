@@ -1,4 +1,4 @@
-package customerRepository
+package customer
 
 import (
 	"context"

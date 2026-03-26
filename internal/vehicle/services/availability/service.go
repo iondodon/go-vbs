@@ -1,4 +1,4 @@
-package availabilityService
+package availability
 
 import (
 	"context"

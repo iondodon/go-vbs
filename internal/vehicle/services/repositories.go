@@ -1,4 +1,4 @@
-package vehicleServices
+package services
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package bookingController
+package controller
 
 import "time"
 

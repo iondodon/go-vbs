@@ -1,4 +1,4 @@
-package vehicleController
+package vehicle
 
 import (
 	"encoding/json"

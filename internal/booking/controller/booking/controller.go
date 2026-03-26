@@ -1,4 +1,4 @@
-package bookingController
+package booking
 
 import (
 	"database/sql"

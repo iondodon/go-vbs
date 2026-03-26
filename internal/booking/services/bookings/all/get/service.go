@@ -1,4 +1,4 @@
-package getAllBookingsService
+package get
 
 import (
 	"context"

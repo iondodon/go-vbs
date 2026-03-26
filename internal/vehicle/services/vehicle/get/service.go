@@ -1,4 +1,4 @@
-package getVehicleService
+package get
 
 import (
 	"context"

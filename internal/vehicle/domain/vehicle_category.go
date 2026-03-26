@@ -1,4 +1,4 @@
-package vehicleDomain
+package domain
 
 type VehicleType string
 
